@@ -18,7 +18,7 @@
     <meta name="author" content="Muhammad Andrean Fahlefi" />
     <meta
       property="og:image"
-      content="https://yourwebsite.com/images/preview.jpg"
+      content="https://portfolio-lefarcaos-projects.vercel.app/img/my1.png"
     />
     <meta name="theme-color" content="#3B82F6" />
     <!-- Preload important resources -->
@@ -59,6 +59,8 @@
       rel="stylesheet"
     />
 
+    <link rel="stylesheet" type="text/tailwindcss" href="styles.css" />
+
     <style type="text/tailwindcss">
       /* Improved cursor styles with performance considerations */
       a {
@@ -68,6 +70,22 @@
       body {
         -webkit-tap-highlight-color: transparent;
         -webkit-text-size-adjust: 100%;
+      }
+
+      .fade-in {
+        animation: fadeIn 0.3s;
+      }
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+
+      .chatbot-icon {
+        transition: opacity 0.3s, transform 0.3s;
       }
 
       @media (hover: hover) and (pointer: fine) {
@@ -236,27 +254,29 @@
           opacity: 0;
         }
       }
-      
+
       /* New animations */
       .float {
         animation: float 6s ease-in-out infinite;
       }
-      
+
       @keyframes float {
-        0%, 100% {
+        0%,
+        100% {
           transform: translateY(0);
         }
         50% {
           transform: translateY(-20px);
         }
       }
-      
+
       .wave {
         animation: wave 2s linear infinite;
       }
-      
+
       @keyframes wave {
-        0%, 100% {
+        0%,
+        100% {
           transform: rotate(0deg);
         }
         25% {
@@ -266,26 +286,28 @@
           transform: rotate(-5deg);
         }
       }
-      
+
       .pulse {
         animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
       }
-      
+
       @keyframes pulse {
-        0%, 100% {
+        0%,
+        100% {
           opacity: 1;
         }
         50% {
           opacity: 0.5;
         }
       }
-      
+
       .bounce {
         animation: bounce 1s infinite;
       }
-      
+
       @keyframes bounce {
-        0%, 100% {
+        0%,
+        100% {
           transform: translateY(-25%);
           animation-timing-function: cubic-bezier(0.8, 0, 1, 1);
         }
@@ -294,7 +316,7 @@
           animation-timing-function: cubic-bezier(0, 0, 0.2, 1);
         }
       }
-      
+
       .typing {
         position: relative;
       }
@@ -304,87 +326,94 @@
         right: 0;
         animation: typing 1s infinite;
       }
-      
+
       @keyframes typing {
-        0%, 100% {
+        0%,
+        100% {
           opacity: 0;
         }
         50% {
           opacity: 1;
         }
       }
-      
+
       /* Gradient text */
       .gradient-text {
         background-clip: text;
         -webkit-background-clip: text;
         color: transparent;
-        background-image: linear-gradient(90deg, #3B82F6, #10B981);
+        background-image: linear-gradient(90deg, #3b82f6, #10b981);
       }
-      
+
       /* Section entry animations */
       .section-entry {
         opacity: 0;
         transform: translateY(20px);
         transition: opacity 0.6s ease, transform 0.6s ease;
       }
-      
+
       .section-entry.visible {
         opacity: 1;
         transform: translateY(0);
       }
-      
+
       /* Button hover effects */
       .btn-hover {
         position: relative;
         overflow: hidden;
         z-index: 1;
       }
-      
+
       .btn-hover::before {
-        content: '';
+        content: "";
         position: absolute;
         top: 0;
         left: -100%;
         width: 100%;
         height: 100%;
-        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+        background: linear-gradient(
+          90deg,
+          transparent,
+          rgba(255, 255, 255, 0.2),
+          transparent
+        );
         transition: 0.5s;
         z-index: -1;
       }
-      
+
       .btn-hover:hover::before {
         left: 100%;
       }
-      
+
       /* Social icon hover */
       .social-icon {
         transition: all 0.3s ease;
       }
-      
+
       .social-icon:hover {
         transform: scale(1.1) rotate(5deg);
       }
-      
+
       /* Navbar scroll effect */
       .nav-scroll {
-        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+          0 2px 4px -1px rgba(0, 0, 0, 0.06);
         backdrop-filter: blur(10px);
         background-color: rgba(255, 255, 255, 0.8);
       }
-      
+
       .dark .nav-scroll {
         background-color: rgba(31, 41, 55, 0.8);
       }
-      
+
       /* Project card shine effect */
       .project-card {
         position: relative;
         overflow: hidden;
       }
-      
+
       .project-card::after {
-        content: '';
+        content: "";
         position: absolute;
         top: -50%;
         left: -60%;
@@ -396,42 +425,42 @@
           rgba(255, 255, 255, 0.13) 0%,
           rgba(255, 255, 255, 0.13) 77%,
           rgba(255, 255, 255, 0.5) 92%,
-          rgba(255, 255, 255, 0.0) 100%
+          rgba(255, 255, 255, 0) 100%
         );
         transform: rotate(30deg);
         transition: all 0.7s ease;
       }
-      
+
       .project-card:hover::after {
         left: 120%;
       }
-      
+
       /* Skill bar animation */
       .skill-bar {
         height: 4px;
-        background: #E5E7EB;
+        background: #e5e7eb;
         border-radius: 2px;
         overflow: hidden;
         position: relative;
       }
-      
+
       .skill-progress {
         height: 100%;
-        background: #3B82F6;
+        background: #3b82f6;
         position: absolute;
         left: 0;
         top: 0;
         transition: width 1.5s ease-out;
       }
-      
+
       /* Text highlight animation */
       .highlight {
         position: relative;
         display: inline-block;
       }
-      
+
       .highlight::after {
-        content: '';
+        content: "";
         position: absolute;
         bottom: 0;
         left: 0;
@@ -441,7 +470,7 @@
         z-index: -1;
         transition: height 0.3s ease;
       }
-      
+
       .highlight:hover::after {
         height: 100%;
       }
@@ -501,9 +530,17 @@
         <div class="flex justify-between h-16 items-center">
           <div class="flex items-center">
             <div class="block sm:hidden flex gap-2">
-              <div class="w-3 h-3 rounded-full bg-linux-merah-error animate-pulse"></div>
-              <div class="w-3 h-3 rounded-full bg-linux-kuning-awas animate-pulse" style="animation-delay: 0.2s"></div>
-              <div class="w-3 h-3 rounded-full bg-linux-ijo-sukses animate-pulse" style="animation-delay: 0.4s"></div>
+              <div
+                class="w-3 h-3 rounded-full bg-linux-merah-error animate-pulse"
+              ></div>
+              <div
+                class="w-3 h-3 rounded-full bg-linux-kuning-awas animate-pulse"
+                style="animation-delay: 0.2s"
+              ></div>
+              <div
+                class="w-3 h-3 rounded-full bg-linux-ijo-sukses animate-pulse"
+                style="animation-delay: 0.4s"
+              ></div>
             </div>
             <a
               href="#home"
@@ -520,28 +557,36 @@
                 class="text-gray-700 dark:text-gray-300 hover:text-primary dark:hover:text-blue-400 transition-colors relative group"
               >
                 Home
-                <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-primary group-hover:w-full transition-all duration-300"></span>
+                <span
+                  class="absolute bottom-0 left-0 w-0 h-0.5 bg-primary group-hover:w-full transition-all duration-300"
+                ></span>
               </a>
               <a
                 href="#about"
                 class="text-gray-700 dark:text-gray-300 hover:text-primary dark:hover:text-blue-400 transition-colors relative group"
               >
                 About
-                <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-primary group-hover:w-full transition-all duration-300"></span>
+                <span
+                  class="absolute bottom-0 left-0 w-0 h-0.5 bg-primary group-hover:w-full transition-all duration-300"
+                ></span>
               </a>
               <a
                 href="#projects"
                 class="text-gray-700 dark:text-gray-300 hover:text-primary dark:hover:text-blue-400 transition-colors relative group"
               >
                 Projects
-                <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-primary group-hover:w-full transition-all duration-300"></span>
+                <span
+                  class="absolute bottom-0 left-0 w-0 h-0.5 bg-primary group-hover:w-full transition-all duration-300"
+                ></span>
               </a>
               <a
                 href="#contact"
                 class="text-gray-700 dark:text-gray-300 hover:text-primary dark:hover:text-blue-400 transition-colors relative group"
               >
                 Contact
-                <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-primary group-hover:w-full transition-all duration-300"></span>
+                <span
+                  class="absolute bottom-0 left-0 w-0 h-0.5 bg-primary group-hover:w-full transition-all duration-300"
+                ></span>
               </a>
             </div>
 
@@ -633,6 +678,54 @@
       </div>
     </nav>
 
+    <!-- Chatbot -->
+    <div class="fixed bottom-6 right-6 z-50">
+      <!-- Chat Icon -->
+      <div
+        id="chatbotIcon"
+        class="w-14 h-14 bg-primary text-white rounded-full flex items-center justify-center text-2xl shadow-lg hover:scale-110 transition-transform cursor-pointer"
+      >
+        💬
+      </div>
+
+      <!-- Chat Box -->
+      <div
+        id="chatbotBox"
+        class="hidden w-80 bg-white rounded-lg shadow-xl overflow-hidden flex flex-col mt-4 fade-in"
+      >
+        <!-- Header -->
+        <div
+          class="bg-blue-700 text-white p-3 flex justify-between items-center"
+        >
+          <span class="font-medium">Portfolio Assistant</span>
+          <button id="closeBtn" class="border-transparent bg-blue-700 text-xl text-dark hover:text-gray-700">×</button>
+        </div>
+
+        <!-- Messages -->
+        <div
+          id="chatbotMessages"
+          class="chat-messages flex-1 p-4 bg-gray-50 overflow-y-auto max-h-80"
+        >
+          <!-- Pesan pembuka dari bot -->
+          <div class="mb-3">
+            <div
+              class="inline-block bg-gray-200 rounded-lg px-4 py-2 max-w-[85%] rounded-tl-none"
+            >
+              Halo! Saya asisten portfolio Anda. Pilih pertanyaan:
+            </div>
+          </div>
+        </div>
+
+        <!-- Tombol Pilihan -->
+        <div
+          id="buttonOptions"
+          class="grid grid-cols-2 gap-2 p-3 bg-white border-t border-gray-200"
+        >
+          <!-- Tombol akan diisi oleh JavaScript -->
+        </div>
+      </div>
+    </div>
+
     <!-- Hero Section -->
     <section
       id="home"
@@ -660,7 +753,9 @@
                 >!</span
               >
             </p>
-            <div class="flex flex-wrap gap-4 animate__animated animate__fadeIn animate__delay-3s">
+            <div
+              class="flex flex-wrap gap-4 animate__animated animate__fadeIn animate__delay-3s"
+            >
               <a
                 href="#contact"
                 class="bg-primary hover:bg-blue-600 text-white px-6 py-3 rounded-lg transition-colors shadow-md hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 btn-hover transform hover:-translate-y-1"
@@ -682,8 +777,7 @@
             >
               <div
                 class="profile-image image-placeholder w-full h-full bg-gray-300 dark:bg-gray-600 flex items-center justify-center text-gray-500 dark:text-gray-300"
-              >
-              </div>
+              ></div>
               <div
                 class="absolute inset-0 border-4 border-white dark:border-gray-800 rounded-full opacity-10 pointer-events-none"
               ></div>
@@ -713,12 +807,14 @@
             >
               <div
                 class="about-image image-placeholder w-full h-full flex items-center justify-center text-gray-500 dark:text-gray-300"
-              >
-              </div>
+              ></div>
             </div>
           </div>
 
-          <div class="md:w-2/3 md:pl-12 section-entry" style="transition-delay: 0.2s">
+          <div
+            class="md:w-2/3 md:pl-12 section-entry"
+            style="transition-delay: 0.2s"
+          >
             <h3 class="text-2xl font-semibold text-dark dark:text-white mb-4">
               Who <span class="highlight">Am I?</span>
             </h3>
@@ -875,7 +971,11 @@
                 target="_blank"
                 class="inline-flex items-center text-primary hover:text-blue-600 dark:hover:text-blue-400 font-medium transition-colors group"
               >
-                View Project <span class="ml-1 group-hover:translate-x-1 transition-transform">→</span>
+                View Project
+                <span
+                  class="ml-1 group-hover:translate-x-1 transition-transform"
+                  >→</span
+                >
               </a>
             </div>
           </div>
@@ -917,7 +1017,11 @@
                 target="_blank"
                 class="inline-flex items-center text-primary hover:text-blue-600 dark:hover:text-blue-400 font-medium transition-colors group"
               >
-                View Project <span class="ml-1 group-hover:translate-x-1 transition-transform">→</span>
+                View Project
+                <span
+                  class="ml-1 group-hover:translate-x-1 transition-transform"
+                  >→</span
+                >
               </a>
             </div>
           </div>
@@ -955,13 +1059,20 @@
                 target="_blank"
                 class="inline-flex items-center text-primary hover:text-blue-600 dark:hover:text-blue-400 font-medium transition-colors group"
               >
-                View Project <span class="ml-1 group-hover:translate-x-1 transition-transform">→</span>
+                View Project
+                <span
+                  class="ml-1 group-hover:translate-x-1 transition-transform"
+                  >→</span
+                >
               </a>
             </div>
           </div>
         </div>
 
-        <div class="text-center mt-12 section-entry" style="transition-delay: 0.3s">
+        <div
+          class="text-center mt-12 section-entry"
+          style="transition-delay: 0.3s"
+        >
           <a
             href="https://github.com/LEFarcao07"
             target="_blank"
@@ -1080,7 +1191,9 @@
               </h3>
 
               <div class="space-y-6">
-                <div class="flex items-start transform hover:translate-x-2 transition-transform">
+                <div
+                  class="flex items-start transform hover:translate-x-2 transition-transform"
+                >
                   <div
                     class="flex-shrink-0 bg-primary bg-opacity-10 dark:bg-opacity-20 p-3 rounded-full text-primary dark:text-blue-400"
                   >
@@ -1105,7 +1218,9 @@
                   </div>
                 </div>
 
-                <div class="flex items-start transform hover:translate-x-2 transition-transform">
+                <div
+                  class="flex items-start transform hover:translate-x-2 transition-transform"
+                >
                   <div
                     class="flex-shrink-0 bg-primary bg-opacity-10 dark:bg-opacity-20 p-3 rounded-full text-primary dark:text-blue-400"
                   >
@@ -1130,7 +1245,9 @@
                   </div>
                 </div>
 
-                <div class="flex items-start transform hover:translate-x-2 transition-transform">
+                <div
+                  class="flex items-start transform hover:translate-x-2 transition-transform"
+                >
                   <div
                     class="flex-shrink-0 bg-primary bg-opacity-10 dark:bg-opacity-20 p-3 rounded-full text-primary dark:text-blue-400"
                   >
@@ -1222,7 +1339,7 @@
                     </svg>
                   </a>
                   <a
-                    href="https://www.linkedin.com/in/andre-fahlefi-446491313"
+                    href="https://www.linkedin.com/in/lefarcao"
                     target="_blank"
                     class="social-icon bg-gray-200 dark:bg-gray-600 hover:bg-primary hover:text-white w-10 h-10 rounded-full flex items-center justify-center text-gray-700 dark:text-white transition-colors"
                     aria-label="LinkedIn"
@@ -1303,283 +1420,6 @@
         </div>
       </div>
     </footer>
-
-    <script>
-      document.addEventListener("DOMContentLoaded", function () {
-        const profileImgContainer = document.querySelector(
-          ".profile-image-container"
-        );
-        const aboutImgContainer = document.querySelector(
-          ".about-image-container"
-        );
-        const profileImg = document.querySelector(".profile-image");
-        const aboutImg = document.querySelector(".about-image");
-        const btn = document.getElementById("button");
-
-        document
-          .getElementById("form")
-          .addEventListener("submit", function (event) {
-            event.preventDefault();
-
-            btn.value = "Sending...";
-
-            const serviceID = "default_service";
-            const templateID = "portfolio";
-
-            emailjs.sendForm(serviceID, templateID, this).then(
-              () => {
-                btn.value = "Send Email";
-                alert("Sent!");
-              },
-              (err) => {
-                btn.value = "Send Email";
-                alert(JSON.stringify(err));
-              }
-            );
-          });
-        const profileImageUrl = "./img/my1.png";
-        const aboutImageUrl = "./img/my2.png";
-
-        // Preload gambar
-        const profileImgEl = new Image();
-        profileImgEl.src = profileImageUrl;
-
-        const aboutImgEl = new Image();
-        aboutImgEl.src = aboutImageUrl;
-
-        // Animasi saat scroll
-        function handleScroll() {
-          const aboutSection = document.getElementById("about");
-          const aboutRect = aboutSection.getBoundingClientRect();
-          const windowHeight = window.innerHeight;
-
-          // Jika about section masuk ke viewport
-          if (aboutRect.top < windowHeight * 0.7) {
-            // Animasi keluar profile image
-            profileImgContainer.style.transform = "translateY(20px) scale(0.9)";
-            profileImg.style.opacity = "0.5";
-
-            // Animasi masuk about image
-            aboutImgContainer.style.transform = "translateY(0)";
-            aboutImg.style.opacity = "1";
-
-            // Set background image dengan efek fade
-            setTimeout(() => {
-              profileImg.style.backgroundImage = `url(${profileImageUrl})`;
-              aboutImg.style.backgroundImage = `url(${aboutImageUrl})`;
-            }, 300);
-          } else {
-            // Kembalikan ke state awal
-            profileImgContainer.style.transform = "none";
-            profileImg.style.opacity = "1";
-            aboutImgContainer.style.transform = "translateY(20px)";
-            aboutImg.style.opacity = "0.5";
-          }
-        }
-
-        // Inisialisasi
-        aboutImgContainer.style.transform = "translateY(20px)";
-        aboutImg.style.opacity = "0.5";
-
-        // Set background image awal
-        profileImg.style.backgroundImage = `url(${profileImageUrl})`;
-        aboutImg.style.backgroundImage = `url(${aboutImageUrl})`;
-
-        window.addEventListener("scroll", handleScroll);
-        window.addEventListener("resize", handleScroll);
-
-        // Intersection Observer for section animations
-        const sections = document.querySelectorAll('.section-entry');
-        
-        const observerOptions = {
-          threshold: 0.1,
-          rootMargin: "0px 0px -50px 0px"
-        };
-        
-        const sectionObserver = new IntersectionObserver((entries, observer) => {
-          entries.forEach(entry => {
-            if (entry.isIntersecting) {
-              entry.target.classList.add('visible');
-              observer.unobserve(entry.target);
-            }
-          });
-        }, observerOptions);
-        
-        sections.forEach(section => {
-          sectionObserver.observe(section);
-        });
-
-        // Navbar scroll effect
-        const navbar = document.getElementById('navbar');
-        let lastScroll = 0;
-        
-        window.addEventListener('scroll', () => {
-          const currentScroll = window.pageYOffset;
-          
-          if (currentScroll <= 0) {
-            navbar.classList.remove('nav-scroll');
-            return;
-          }
-          
-          if (currentScroll > lastScroll && !navbar.classList.contains('nav-scroll')) {
-            // Scrolling down
-            navbar.classList.add('nav-scroll');
-          } else if (currentScroll < lastScroll && navbar.classList.contains('nav-scroll')) {
-            // Scrolling up
-            navbar.classList.remove('nav-scroll');
-          }
-          
-          lastScroll = currentScroll;
-        });
-
-        // Custom Cursor
-        const cursorOuter = document.querySelector(".cursor-outer");
-        const cursorInner = document.querySelector(".cursor-inner");
-        const links = document.querySelectorAll(
-          "a, button, .link, .btn, input, textarea"
-        );
-
-        let mouseX = 0;
-        let mouseY = 0;
-        let innerX = 0;
-        let innerY = 0;
-        let outerX = 0;
-        let outerY = 0;
-
-        const innerSpeed = 0.15;
-        const outerSpeed = 0.1;
-
-        function updateCursor() {
-          const dx = mouseX - outerX;
-          const dy = mouseY - outerY;
-          const angle = (Math.atan2(dy, dx) * 180) / Math.PI;
-
-          innerX = mouseX;
-          innerY = mouseY;
-          cursorInner.style.left = innerX + "px";
-          cursorInner.style.top = innerY + "px";
-
-          outerX += dx * outerSpeed;
-          outerY += dy * outerSpeed;
-          cursorOuter.style.left = outerX + "px";
-          cursorOuter.style.top = outerY + "px";
-
-          cursorOuter.style.transform = `translate(-50%, -50%) rotate(${
-            angle + 90
-          }deg)`;
-
-          requestAnimationFrame(updateCursor);
-        }
-
-        document.addEventListener("mousemove", function (e) {
-          mouseX = e.clientX;
-          mouseY = e.clientY;
-        });
-
-        links.forEach((link) => {
-          link.addEventListener("mouseenter", function () {
-            document.body.classList.add("link-hover");
-            cursorOuter.style.transform = "translate(-50%, -50%) scale(1.5)";
-          });
-
-          link.addEventListener("mouseleave", function () {
-            document.body.classList.remove("link-hover");
-            cursorOuter.style.transform = "translate(-50%, -50%) scale(1)";
-          });
-        });
-
-        // Initialize cursor animation
-        updateCursor();
-
-        // Theme Toggle
-        const themeToggle = document.getElementById("theme-toggle");
-        const themeToggleDarkIcon = document.getElementById(
-          "theme-toggle-dark-icon"
-        );
-        const themeToggleLightIcon = document.getElementById(
-          "theme-toggle-light-icon"
-        );
-
-        if (
-          localStorage.getItem("color-theme") === "dark" ||
-          (!localStorage.getItem("color-theme") &&
-            window.matchMedia("(prefers-color-scheme: dark)").matches)
-        ) {
-          document.documentElement.classList.add("dark");
-          themeToggleDarkIcon.classList.add("hidden");
-          themeToggleLightIcon.classList.remove("hidden");
-        } else {
-          document.documentElement.classList.remove("dark");
-          themeToggleDarkIcon.classList.remove("hidden");
-          themeToggleLightIcon.classList.add("hidden");
-        }
-
-        themeToggle.addEventListener("click", function () {
-          themeToggleDarkIcon.classList.toggle("hidden");
-          themeToggleLightIcon.classList.toggle("hidden");
-
-          document.documentElement.classList.add("transition-colors");
-          document.documentElement.classList.add("duration-300");
-
-          if (document.documentElement.classList.contains("dark")) {
-            document.documentElement.classList.remove("dark");
-            localStorage.setItem("color-theme", "light");
-          } else {
-            document.documentElement.classList.add("dark");
-            localStorage.setItem("color-theme", "dark");
-          }
-
-          setTimeout(() => {
-            document.documentElement.classList.remove("transition-colors");
-            document.documentElement.classList.remove("duration-300");
-          }, 300);
-        });
-
-        // Mobile Menu Toggle
-        const mobileMenuButton = document.getElementById("mobile-menu-button");
-        const mobileMenu = document.getElementById("mobile-menu");
-
-        mobileMenuButton.addEventListener("click", function () {
-          mobileMenu.classList.toggle("hidden");
-          const isExpanded =
-            mobileMenuButton.getAttribute("aria-expanded") === "true";
-          mobileMenuButton.setAttribute("aria-expanded", !isExpanded);
-        });
-
-        // Close mobile menu when clicking on a link
-        document.querySelectorAll("#mobile-menu a").forEach((link) => {
-          link.addEventListener("click", () => {
-            mobileMenu.classList.add("hidden");
-            mobileMenuButton.setAttribute("aria-expanded", "false");
-          });
-        });
-
-        // Form submission
-        const contactForm = document.querySelector("form");
-        if (contactForm) {
-          contactForm.addEventListener("submit", function (e) {
-            e.preventDefault();
-            // Here you would typically send the form data to a server
-            alert("Thank you for your message! I will get back to you soon.");
-            this.reset();
-          });
-        }
-        
-        // Add wave animation to profile title
-        const title = document.querySelector('h1');
-        title.addEventListener('mouseenter', () => {
-          title.classList.add('wave');
-        });
-        title.addEventListener('animationend', () => {
-          title.classList.remove('wave');
-        });
-        
-        // Add pulse animation to contact button
-        const contactBtn = document.querySelector('a[href="#contact"]');
-        setInterval(() => {
-          contactBtn.classList.toggle('pulse');
-        }, 4000);
-      });
-    </script>
+    <script src="script.js"></script>
   </body>
 </html>
