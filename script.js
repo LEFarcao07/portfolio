@@ -1,4 +1,30 @@
 document.addEventListener("DOMContentLoaded", function () {
+  document.addEventListener("mousemove", (e) => {
+    if (window.innerWidth > 768) {
+      // Hanya aktif di desktop
+      const eyes = document.querySelectorAll(".pupil");
+      const eyesContainer = document.querySelector("#chatbotIcon");
+      const rect = eyesContainer.getBoundingClientRect();
+
+      // Posisi tengah ikon
+      const iconCenterX = rect.left + rect.width / 2;
+      const iconCenterY = rect.top + rect.height / 2;
+
+      // Hitung sudut antara kursor dan tengah ikon
+      const angle = Math.atan2(e.pageY - iconCenterY, e.pageX - iconCenterX);
+
+      // Jarak maksimal pupil bergerak (dalam px)
+      const distance = 2;
+
+      // Posisi pupil
+      const pupilX = Math.cos(angle) * distance;
+      const pupilY = Math.sin(angle) * distance;
+
+      eyes.forEach((eye) => {
+        eye.style.transform = `translate(${pupilX}px, ${pupilY}px)`;
+      });
+    }
+  });
   // Data Q&A
   const qaPairs = [
     {
@@ -90,14 +116,14 @@ document.addEventListener("DOMContentLoaded", function () {
   chatbotIcon.addEventListener("click", () => {
     chatbotBox.classList.toggle("hidden");
     chatbotBox.classList.toggle("flex");
-    chatbotIcon.classList.toggle('hidden');
+    chatbotIcon.classList.toggle("hidden");
     renderButtons();
   });
 
   closeBtn.addEventListener("click", () => {
     chatbotBox.classList.add("hidden");
     chatbotBox.classList.remove("flex");
-    chatbotIcon.classList.remove('hidden');
+    chatbotIcon.classList.remove("hidden");
   });
 
   buttonOptions.addEventListener("click", handleOptionClick);

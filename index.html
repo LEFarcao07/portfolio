@@ -21,6 +21,14 @@
       content="https://portfolio-lefarcaos-projects.vercel.app/img/my1.png"
     />
     <meta name="theme-color" content="#3B82F6" />
+    <!-- Untuk Windows Phone -->
+    <meta name="msapplication-TileColor" content="#3B82F6" />
+    <!-- Untuk iOS -->
+    <meta
+      name="apple-mobile-web-app-status-bar-style"
+      content="black-translucent"
+    />
+
     <!-- Preload important resources -->
     <link rel="preload" href="https://cdn.tailwindcss.com" as="script" />
     <link
@@ -59,8 +67,6 @@
       rel="stylesheet"
     />
 
-    <link rel="stylesheet" type="text/tailwindcss" href="styles.css" />
-
     <style type="text/tailwindcss">
       /* Improved cursor styles with performance considerations */
       a {
@@ -84,8 +90,14 @@
         }
       }
 
-      .chatbot-icon {
-        transition: opacity 0.3s, transform 0.3s;
+      /* Style untuk mata */
+      .eye-container {
+        position: relative;
+        overflow: hidden;
+      }
+
+      .pupil {
+        transition: transform 0.1s ease-out;
       }
 
       @media (hover: hover) and (pointer: fine) {
@@ -115,6 +127,10 @@
         .cursor-outer,
         .cursor-inner {
           display: none !important;
+        }
+
+        .pupil {
+          transform: none !important;
         }
       }
 
@@ -683,9 +699,26 @@
       <!-- Chat Icon -->
       <div
         id="chatbotIcon"
-        class="w-14 h-14 bg-primary text-white rounded-full flex items-center justify-center text-2xl shadow-lg hover:scale-110 transition-transform cursor-pointer"
+        class="w-14 h-14 bg-primary text-white rounded-full flex items-center justify-center text-2xl shadow-lg hover:scale-110 transition-transform cursor-pointer relative"
       >
-        💬
+        <!-- Bot Face -->
+        <div class="relative w-full h-full flex items-center justify-center">
+          <!-- Eyes Container -->
+          <div class="flex space-x-2 relative">
+            <!-- Left Eye -->
+            <div
+              class="eye-container w-4 h-4 bg-white rounded-full flex items-center justify-center"
+            >
+              <div class="pupil w-2 h-2 bg-primary rounded-full absolute"></div>
+            </div>
+            <!-- Right Eye -->
+            <div
+              class="eye-container w-4 h-4 bg-white rounded-full flex items-center justify-center"
+            >
+              <div class="pupil w-2 h-2 bg-primary rounded-full absolute"></div>
+            </div>
+          </div>
+        </div>
       </div>
 
       <!-- Chat Box -->
@@ -1388,7 +1421,9 @@
     </section>
 
     <!-- Footer -->
-    <footer class="bg-indigo-50 dark:bg-gray-900 text-white py-8 transition-colors">
+    <footer
+      class="bg-indigo-50 dark:bg-gray-900 text-white py-8 transition-colors"
+    >
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex flex-col md:flex-row justify-between items-center">
           <div class="mb-4 md:mb-0 text-center md:text-left">
@@ -1397,7 +1432,9 @@
               class="text-xl font-bold text-primary hover:text-blue-400 transition-colors inline-block transform hover:scale-105"
               >PORTFOLIO</a
             >
-            <p class="text-gray-700 dark:text-gray-300 mt-2">© 2025. All rights reserved.</p>
+            <p class="text-gray-700 dark:text-gray-300 mt-2">
+              © 2025. All rights reserved.
+            </p>
           </div>
 
           <div class="flex flex-wrap justify-center gap-4 md:gap-6">
