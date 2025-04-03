@@ -20,12 +20,6 @@
     },
 
     { 
-      "src": "/old-blog/(.*)", 
-      "status": 301, 
-      "dest": "https://blog.domain.com/$1" 
-    },
-
-    { 
       "handle": "filesystem" 
     },
     { 
