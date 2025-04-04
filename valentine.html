@@ -1,0 +1,953 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
+    <meta name="theme-color" content="#ff6b81" />
+    <meta property="og:title" content="Valentine" />
+    <meta
+      property="og:description"
+      content="Rayakan Hari Valentine dengan pesan romantis dan momen spesial bersama orang tersayang!"
+    />
+    <meta
+      property="og:image"
+      content="https://portfolio-lefarcaos-projects.vercel.app/img/p1.jpg"
+    />
+    <meta
+      property="og:url"
+      content="https://portfolio-lefarcaos-projects.vercel.app/valentine.html"
+    />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Valentine" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Valentine" />
+    <meta
+      name="twitter:description"
+      content="Rayakan Hari Valentine dengan pesan romantis dan momen spesial bersama orang tersayang!"
+    />
+    <meta
+      name="twitter:image"
+      content="https://portfolio-lefarcaos-projects.vercel.app/img/p1.jpg"
+    />
+    <meta
+      name="twitter:url"
+      content="https://portfolio-lefarcaos-projects.vercel.app/valentine.html"
+    />
+    <meta name="twitter:site" content="@Valentine" />
+    <meta name="twitter:creator" content="@You" />
+    <title>Valentine</title>
+    <link
+      rel="icon"
+      href="https://raw.githubusercontent.com/LEFarcao07/valentine-annoying-button-html/1ee98c029eeeed353e94283e8049739e7ff0a131/assets/img/favicon.svg"
+    />
+    <style>
+      .valentine-loader {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(45deg, #ff6b81, #ff8e8e);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        z-index: 2000;
+        font-family: "Poppins", sans-serif;
+        color: white;
+      }
+
+      .valentine-loader.hide {
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 1s ease;
+      }
+
+      .heart-loader {
+        position: relative;
+        width: 100px;
+        height: 90px;
+        margin-bottom: 20px;
+        animation: heartbeat 1.5s infinite;
+      }
+
+      .heart-loader:before,
+      .heart-loader:after {
+        position: absolute;
+        content: "";
+        left: 50px;
+        top: 0;
+        width: 50px;
+        height: 80px;
+        background: white;
+        border-radius: 50px 50px 0 0;
+        transform: rotate(-45deg);
+        transform-origin: 0 100%;
+      }
+
+      .heart-loader:after {
+        left: 0;
+        transform: rotate(45deg);
+        transform-origin: 100% 100%;
+      }
+
+      @keyframes heartbeat {
+        0% {
+          transform: scale(0.8);
+        }
+        50% {
+          transform: scale(1.1);
+        }
+        100% {
+          transform: scale(0.8);
+        }
+      }
+
+      .loader-text {
+        font-size: 1.5rem;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        margin-bottom: 15px;
+      }
+
+      .progress-container {
+        width: 80%;
+        max-width: 300px;
+        height: 10px;
+        background: rgba(255, 255, 255, 0.3);
+        border-radius: 5px;
+        overflow: hidden;
+      }
+
+      .progress-bar {
+        height: 100%;
+        width: 0%;
+        background: white;
+        border-radius: 5px;
+        transition: width 0.3s ease;
+      }
+      .splash-screen {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(45deg, #ff6b81, #ff8e8e);
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+        transition: transform 1s ease-in-out;
+      }
+      .splash-screen.hide {
+        transform: translateY(-100%);
+      }
+      .splash-button {
+        padding: 15px 30px;
+        font-size: 1.5rem;
+        background-color: white;
+        color: #ff6b81;
+        border: none;
+        border-radius: 50px;
+        font-family: "Poppins", sans-serif;
+        font-weight: bold;
+        cursor: pointer;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        transition: all 0.3s ease;
+      }
+      .splash-button:hover {
+        transform: scale(1.05);
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+      }
+      .splash-title {
+        color: white;
+        font-size: 2.5rem;
+        margin-bottom: 30px;
+        text-align: center;
+        font-family: "Dancing Script", cursive;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+      }
+      .main-content {
+        position: relative;
+        z-index: 1;
+      }
+      body {
+        margin: 0;
+        padding: 0;
+        height: 100vh;
+        display: flex;
+        background: linear-gradient(45deg, #ff9a9e, #fad0c4);
+        font-family: "Dancing Script", cursive;
+        overflow: hidden;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        touch-action: manipulation;
+        -webkit-tap-highlight-color: transparent;
+        cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="%23ff0000" d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>'),
+          auto;
+      }
+      .container {
+        z-index: 10;
+        position: relative;
+        width: 90%;
+        max-width: 500px;
+        margin: 0 auto;
+      }
+      h1 {
+        color: #d23669;
+        font-size: clamp(2rem, 8vw, 3rem);
+        margin-bottom: 2rem;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+        padding: 0 10px;
+      }
+      .buttons {
+        display: flex;
+        justify-content: space-between;
+        width: 100%;
+      }
+      .btn-yes {
+        font-family: "Poppins", sans-serif;
+        font-weight: bold;
+        background-color: #ff6b81;
+        color: white;
+        box-shadow: 0 4px 8px rgba(255, 107, 129, 0.4);
+        z-index: 21;
+        -webkit-tap-highlight-color: transparent;
+        min-width: 100px;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        border: none;
+        border-radius: 50px;
+        padding: 12px 80px;
+        font-size: clamp(1.2rem, 5vw, 1.5rem);
+      }
+      .btn-no {
+        font-family: "Poppins", sans-serif;
+        font-weight: bold;
+        background-color: white;
+        color: #ff6b81;
+        box-shadow: 0 4px 8px rgba(206, 214, 224, 0.4);
+        position: relative;
+        z-index: 21;
+        transition: all 0.3s ease;
+        -webkit-tap-highlight-color: transparent;
+        min-width: 100px;
+        overflow: hidden;
+        cursor: pointer;
+        border: none;
+        border-radius: 50px;
+        padding: 12px 80px;
+        font-size: clamp(1.2rem, 5vw, 1.5rem);
+      }
+      .btn-yes:hover,
+      .btn-yes:active {
+        transform: scale(1.05);
+        background-color: #ff4757;
+      }
+      .hidden {
+        display: none;
+      }
+      .options-header {
+        display: flex;
+        justify-content: center;
+        position: relative;
+        width: 100%;
+        margin-bottom: 20px;
+      }
+
+      .category-title {
+        color: #d23669;
+        font-size: 1.8rem;
+        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+        text-align: center;
+        margin: 0; /* Reset margin */
+      }
+
+      .scroll-hint {
+        position: absolute;
+        right: -20px;
+        top: 50%;
+        transform: translateY(-50%);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .scroll-hint-text {
+        color: #d23669;
+        font-family: "Poppins", sans-serif;
+        font-size: 0.9rem;
+        white-space: nowrap;
+        margin-bottom: 3px;
+      }
+
+      .scroll-hint-arrow {
+        width: 16px;
+        height: 16px;
+        border-right: 2px solid #d23669;
+        border-bottom: 2px solid #d23669;
+        transform: rotate(45deg);
+        animation: bounce 1.5s infinite;
+      }
+
+      @keyframes bounce {
+        0%,
+        100% {
+          transform: rotate(45deg) translateY(0);
+        }
+        50% {
+          transform: rotate(45deg) translateY(-3px);
+        }
+      }
+
+      @media (max-width: 768px) {
+        .scroll-hint {
+          display: none;
+        }
+
+        .options-header {
+          justify-content: center;
+        }
+
+        .category-title {
+          font-size: 1.5rem;
+        }
+      }
+      .surprise {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        display: none;
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: center;
+        background: rgba(255, 192, 203, 0.9);
+        z-index: 15;
+        opacity: 0;
+        transition: opacity 0.5s ease;
+        animation: fadeIn 0.5s ease;
+        padding: 20px;
+        box-sizing: border-box;
+        overflow-y: auto;
+      }
+      .surprise.show {
+        display: flex;
+        opacity: 1;
+      }
+      .surprise h2 {
+        color: #d23669;
+        font-size: clamp(2.5rem, 10vw, 4rem);
+        margin-bottom: 2rem;
+        animation: pulse 1.5s infinite;
+        text-align: center;
+      }
+      .surprise img {
+        max-width: 100%;
+        max-height: 50vh;
+        border-radius: 10px;
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+      }
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+      @keyframes pulse {
+        0% {
+          transform: scale(1);
+        }
+        50% {
+          transform: scale(1.1);
+        }
+        100% {
+          transform: scale(1);
+        }
+      }
+      .heart {
+        position: absolute;
+        pointer-events: none;
+        animation: float 4s ease-in-out infinite;
+        font-size: 20px;
+        opacity: 0;
+        user-select: none;
+        -webkit-user-select: none;
+      }
+      @keyframes float {
+        0% {
+          transform: translateY(0) rotate(0deg);
+          opacity: 1;
+        }
+        100% {
+          transform: translateY(-100px) rotate(360deg);
+          opacity: 0;
+        }
+      }
+      .floating-hearts {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        z-index: 1;
+      }
+      .floating-heart {
+        position: absolute;
+        font-size: 24px;
+        animation: floating 15s linear infinite;
+        opacity: 0.6;
+        user-select: none;
+        -webkit-user-select: none;
+      }
+      @keyframes floating {
+        0% {
+          transform: translateY(100vh) translateX(0);
+          opacity: 0;
+        }
+        10% {
+          opacity: 0.6;
+        }
+        90% {
+          opacity: 0.6;
+        }
+        100% {
+          transform: translateY(-100px) translateX(100px);
+          opacity: 0;
+        }
+      }
+      .options-container {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+        width: 90%;
+        max-width: 500px;
+        margin-top: 20px;
+      }
+      .option-btn {
+        font-family: "Poppins", sans-serif;
+        font-weight: bold;
+        background-color: white;
+        color: #ff6b81;
+        border: none;
+        border-radius: 50px;
+        padding: 15px;
+        font-size: 1.2rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      }
+      .option-btn:hover {
+        transform: scale(1.05);
+        background-color: #ff6b81;
+        color: white;
+      }
+      .custom-invitation {
+        margin-top: 20px;
+        width: 90%;
+        max-width: 500px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+      .custom-invitation textarea {
+        width: 100%;
+        padding: 15px;
+        border-radius: 15px;
+        border: 2px solid #ff6b81;
+        font-family: "Poppins", sans-serif;
+        font-size: 1.2rem;
+        resize: none;
+        margin-bottom: 10px;
+        text-align: center;
+      }
+      .send-btn {
+        font-family: "Poppins", sans-serif;
+        font-weight: bold;
+        background-color: #ff6b81;
+        color: white;
+        border: none;
+        border-radius: 50px;
+        padding: 12px 30px;
+        font-size: 1.2rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+      .send-btn:hover {
+        transform: scale(1.05);
+        background-color: #ff4757;
+      }
+      .category-title {
+        color: #d23669;
+        font-size: 1.8rem;
+        margin-bottom: 10px;
+        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+      }
+      @media (max-width: 600px) {
+        .buttons {
+          flex-direction: column;
+          align-items: center;
+          gap: 15px;
+        }
+
+        .btn {
+          width: 80%;
+          max-width: 200px;
+        }
+
+        h1 {
+          margin-bottom: 1.5rem;
+          font-size: 2.2rem;
+        }
+
+        .splash-title {
+          font-size: 2rem;
+        }
+
+        .splash-button {
+          font-size: 1.2rem;
+          padding: 12px 25px;
+        }
+
+        .option-btn {
+          font-size: 1rem;
+          padding: 12px;
+        }
+
+        .category-title {
+          font-size: 1.5rem;
+        }
+      }
+      #audioEnableBtn {
+        position: fixed;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 1000;
+        padding: 10px 20px;
+        border-radius: 20px;
+        background-color: #ff6b81;
+        color: white;
+        border: none;
+        font-family: "Dancing Script", cursive;
+        font-size: 1.2rem;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        display: none;
+      }
+    </style>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Poppins:wght@400;600&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div class="valentine-loader" id="valentineLoader">
+      <div class="heart-loader"></div>
+      <p class="loader-text">Preparing your Valentine's surprise...</p>
+      <div class="progress-container">
+        <div class="progress-bar" id="progressBar"></div>
+      </div>
+    </div>
+    <div class="splash-screen" id="splashScreen">
+      <h1 class="splash-title">Valentine's Day Special</h1>
+      <button class="splash-button" id="enterButton">
+        Tap to Open Your Gift
+      </button>
+    </div>
+    <div class="main-content" id="mainContent">
+      <div class="floating-hearts" id="floatingHearts"></div>
+      <div class="container">
+        <h1>Will You Be My Valentine?</h1>
+        <img
+          src="https://raw.githubusercontent.com/LEFarcao07/valentine-annoying-button-html/refs/heads/main/assets/img/yes.gif"
+          padding="0"
+          style="
+            width: 50%;
+            max-width: 300px;
+            border-radius: 10px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+            margin-bottom: 20px;
+          "
+        />
+        <div class="buttons">
+          <button class="btn-yes" id="yesBtn">YES</button>
+          <button class="btn-no" id="noBtn">NO</button>
+        </div>
+      </div>
+      <div class="surprise" id="surprise">
+        <h2>I LOVE YOU! ❤️</h2>
+        <img
+          src="https://raw.githubusercontent.com/LEFarcao07/valentine-annoying-button-html/refs/heads/main/assets/img/love.gif"
+          alt="Happy Valentine's Day"
+        />
+        <div class="options-container" id="optionsContainer">
+          <div class="options-header">
+            <h3 class="category-title">Choose Your Valentine Experience</h3>
+            <div class="scroll-hint">
+              <div class="scroll-hint-text">Scroll Down</div>
+              <div class="scroll-hint-arrow"></div>
+            </div>
+          </div>
+          <button class="option-btn" data-category="romantic">Romantic</button>
+          <button class="option-btn" data-category="casual">Casual</button>
+          <button class="option-btn" data-category="fun">Fun</button><br />
+        </div>
+        <div class="custom-invitation" id="customInvitation">
+          <textarea
+            placeholder="Write your custom invitation here..."
+          ></textarea>
+          <button class="send-btn" id="sendBtn">Send via WhatsApp</button>
+        </div>
+        <br />
+        <div class="hidden" id="categoryDetails">
+        </div>
+      </div>
+      <button id="audioEnableBtn">🔊</button>
+      <audio id="loveSong" loop>
+        <source
+          src="https://github.com/LEFarcao07/valentine-annoying-button-html/raw/refs/heads/main/assets/music/song.mp3"
+          type="audio/mpeg"
+        />
+      </audio>
+    </div>
+    <script>
+      const resources = [
+        "https://raw.githubusercontent.com/LEFarcao07/valentine-annoying-button-html/refs/heads/main/assets/img/yes.gif",
+        "https://raw.githubusercontent.com/LEFarcao07/valentine-annoying-button-html/refs/heads/main/assets/img/love.gif",
+        "https://github.com/LEFarcao07/valentine-annoying-button-html/raw/refs/heads/main/assets/music/song.mp3",
+      ];
+      let loadedResources = 0;
+      const progressBar = document.getElementById("progressBar");
+      const loader = document.getElementById("valentineLoader");
+
+      function loadResource(url) {
+        return new Promise((resolve) => {
+          const xhr = new XMLHttpRequest();
+          xhr.open("GET", url, true);
+          xhr.responseType = "blob";
+
+          xhr.onprogress = function (e) {
+            if (e.lengthComputable) {
+              const percent =
+                (loadedResources / resources.length) * 100 +
+                (e.loaded / e.total) * (100 / resources.length);
+              progressBar.style.width = percent + "%";
+            }
+          };
+
+          xhr.onload = function () {
+            loadedResources++;
+            progressBar.style.width =
+              (loadedResources / resources.length) * 100 + "%";
+
+            const blob = xhr.response;
+            const objectUrl = URL.createObjectURL(blob);
+
+            if (url.includes(".mp3")) {
+              const audio = document.getElementById("loveSong");
+              audio.src = objectUrl;
+            }
+
+            resolve(objectUrl);
+
+            if (loadedResources === resources.length) {
+              setTimeout(() => {
+                loader.classList.add("hide");
+                setTimeout(() => {
+                  loader.style.display = "none";
+                }, 1000);
+              }, 500);
+            }
+          };
+
+          xhr.send();
+        });
+      }
+
+      window.addEventListener("DOMContentLoaded", function () {
+        const loadPromises = resources.map((url) => loadResource(url));
+
+        setTimeout(() => {
+          if (loadedResources < resources.length) {
+            loader.classList.add("hide");
+            setTimeout(() => {
+              loader.style.display = "none";
+            }, 1000);
+          }
+        }, 5000);
+      });
+      const splashScreen = document.getElementById("splashScreen");
+      const enterButton = document.getElementById("enterButton");
+      enterButton.addEventListener("click", function () {
+        splashScreen.classList.add("hide");
+        setTimeout(() => {
+          splashScreen.style.display = "none";
+        }, 1000);
+        initMainContent();
+      });
+
+      function initMainContent() {
+        function createFloatingHearts() {
+          const container = document.getElementById("floatingHearts");
+          const heartCount = 20;
+          for (let i = 0; i < heartCount; i++) {
+            const heart = document.createElement("div");
+            heart.className = "floating-heart";
+            heart.innerHTML = "❤️";
+            heart.style.left = Math.random() * 100 + "vw";
+            heart.style.animationDuration = 10 + Math.random() * 20 + "s";
+            heart.style.animationDelay = Math.random() * 5 + "s";
+            heart.style.fontSize = 20 + Math.random() * 30 + "px";
+            container.appendChild(heart);
+          }
+        }
+
+        function handleInteraction(x, y) {
+          createHeart(x, y);
+        }
+
+        document.addEventListener("click", function (e) {
+          handleInteraction(e.clientX, e.clientY);
+        });
+
+        document.addEventListener(
+          "touchstart",
+          function (e) {
+            for (let i = 0; i < e.touches.length; i++) {
+              handleInteraction(e.touches[i].clientX, e.touches[i].clientY);
+            }
+          },
+          { passive: true }
+        );
+
+        function createHeart(x, y) {
+          const heart = document.createElement("div");
+          heart.className = "heart";
+          heart.innerHTML = "❤️";
+          heart.style.left = x + "px";
+          heart.style.top = y + "px";
+          heart.style.color = `hsl(${Math.random() * 60 + 330}, 100%, 65%)`;
+          heart.style.fontSize = 20 + Math.random() * 30 + "px";
+          document.body.appendChild(heart);
+          setTimeout(() => {
+            heart.remove();
+          }, 4000);
+        }
+
+        const yesBtn = document.getElementById("yesBtn");
+        const noBtn = document.getElementById("noBtn");
+        const surprise = document.getElementById("surprise");
+        const loveSong = document.getElementById("loveSong");
+        const audioEnableBtn = document.getElementById("audioEnableBtn");
+        const optionsContainer = document.getElementById("optionsContainer");
+        const customInvitation = document.getElementById("customInvitation");
+        const categoryDetails = document.getElementById("categoryDetails");
+        const sendBtn = document.getElementById("sendBtn");
+
+        let noTexts = [
+          "Are you sure?",
+          "Think again!",
+          "Last chance!",
+          "Really??",
+          "Don't do this!",
+          "I'll cry!",
+          "Pleeeease?",
+          "You're breaking my heart!",
+        ];
+
+        let currentNoText = 0;
+        let isMobile = /Mobi|Android/i.test(navigator.userAgent);
+
+        // Ganti dengan foto anda
+        const categories = {
+          romantic: {
+            title: "Romantic Date",
+            options: ["Candlelight Dinner", "Movie Night", "Gift Exchange"],
+            gif: "https://raw.githubusercontent.com/LEFarcao07/valentine-annoying-button-html/refs/heads/main/assets/img/love.gif",
+          },
+          casual: {
+            title: "Casual Date",
+            options: ["Picnic in the Park", "Staycation", "Couple Spa Day"],
+            gif: "https://raw.githubusercontent.com/LEFarcao07/valentine-annoying-button-html/refs/heads/main/assets/img/love.gif",
+          },
+          fun: {
+            title: "Fun Date",
+            options: ["Game Night", "Amusement Park", "Workshop Together"],
+            gif: "https://raw.githubusercontent.com/LEFarcao07/valentine-annoying-button-html/refs/heads/main/assets/img/love.gif",
+          },
+        };
+
+        function initAudio() {
+          const playPromise = loveSong.play();
+          if (playPromise !== undefined) {
+            playPromise.catch((error) => {
+              audioEnableBtn.style.display = "block";
+            });
+          }
+        }
+
+        audioEnableBtn.addEventListener("click", function () {
+          loveSong
+            .play()
+            .then(() => {
+              audioEnableBtn.style.display = "none";
+            })
+            .catch((e) => {
+              console.log("Audio still blocked:", e);
+            });
+        });
+
+        function handleFirstInteraction() {
+          initAudio();
+          document.body.removeEventListener("click", handleFirstInteraction);
+          document.body.removeEventListener(
+            "touchstart",
+            handleFirstInteraction
+          );
+        }
+
+        document.body.addEventListener("click", handleFirstInteraction, {
+          once: true,
+        });
+        document.body.addEventListener("touchstart", handleFirstInteraction, {
+          once: true,
+        });
+
+        function moveNoButton() {
+          if (currentNoText < noTexts.length) {
+            noBtn.textContent = noTexts[currentNoText];
+            currentNoText++;
+          } else {
+            currentNoText = 0;
+            noBtn.textContent = noTexts[currentNoText];
+            currentNoText++;
+          }
+          const maxX = window.innerWidth - noBtn.offsetWidth - 20;
+          const maxY = window.innerHeight - noBtn.offsetHeight - 20;
+          const x = Math.max(20, Math.min(maxX, Math.random() * maxX));
+          const y = Math.max(20, Math.min(maxY, Math.random() * maxY));
+          noBtn.style.position = "fixed";
+          noBtn.style.left = x + "px";
+          noBtn.style.top = y + "px";
+        }
+
+        if (isMobile) {
+          noBtn.addEventListener(
+            "touchstart",
+            function (e) {
+              e.preventDefault();
+              moveNoButton();
+            },
+            { passive: false }
+          );
+          yesBtn.addEventListener(
+            "touchend",
+            function (e) {
+              e.preventDefault();
+              handleYesClick();
+            },
+            { passive: false }
+          );
+        } else {
+          noBtn.addEventListener("mouseover", moveNoButton);
+          yesBtn.addEventListener("click", handleYesClick);
+        }
+
+        function showCategoryDetails(category) {
+          const data = categories[category];
+          let html = `
+            <h3 class="category-title">${data.title}</h3>
+            <img src="${data.gif}" alt="${data.title}" style="width: 80%; max-width: 300px; border-radius: 10px; margin-bottom: 20px;">
+            <div class="options-container">
+          `;
+
+          data.options.forEach((option) => {
+            html += `<button class="option-btn">${option}</button>`;
+          });
+
+          html += `
+            </div>
+            <button class="option-btn" id="backBtn" style="margin-top: 20px;">⬅ Back</button>
+          `;
+
+          categoryDetails.innerHTML = html;
+          categoryDetails.classList.remove("hidden");
+          optionsContainer.classList.add("hidden");
+
+          document
+            .getElementById("backBtn")
+            .addEventListener("click", function () {
+              categoryDetails.classList.add("hidden");
+              optionsContainer.classList.remove("hidden");
+            });
+
+          document
+            .querySelectorAll("#categoryDetails .option-btn:not(#backBtn)")
+            .forEach((btn) => {
+              btn.addEventListener("click", function () {
+                const selectedOption = btn.textContent;
+                const textarea = customInvitation.querySelector("textarea");
+                textarea.value = "";
+                textarea.placeholder = `Let's go for ${selectedOption} on Valentine's Day!`;
+                customInvitation.classList.remove("hidden");
+                categoryDetails.classList.add("hidden");
+                optionsContainer.classList.add("hidden");
+
+                customInvitation.scrollIntoView({ behavior: "smooth" });
+              });
+            });
+        }
+
+        document
+          .querySelectorAll(".option-btn[data-category]")
+          .forEach((btn) => {
+            btn.addEventListener("click", function () {
+              const category = this.getAttribute("data-category");
+              showCategoryDetails(category);
+            });
+          });
+
+        // Ganti dengan no. wa Anda
+        sendBtn.addEventListener("click", function () {
+          const message =
+            customInvitation.querySelector("textarea").value ||
+            customInvitation.querySelector("textarea").placeholder;
+          const encodedMessage = encodeURIComponent(message);
+          const whatsappUrl = isMobile
+            ? `https://wa.me/your_no?text=${encodedMessage}`
+            : `https://web.whatsapp.com/send?phone=your_no&text=${encodedMessage}`;
+          window.open(whatsappUrl, "_blank");
+        });
+
+        function handleYesClick() {
+          yesBtn.style.transform = "scale(10)";
+          yesBtn.style.opacity = "0";
+          noBtn.style.display = "none";
+          for (let i = 0; i < 100; i++) {
+            setTimeout(() => {
+              createHeart(
+                Math.random() * window.innerWidth,
+                Math.random() * window.innerHeight
+              );
+            }, i * 30);
+          }
+          setTimeout(() => {
+            surprise.classList.add("show");
+            document.body.style.overflow = "hidden";
+          }, 1500);
+        }
+
+        createFloatingHearts();
+        initAudio();
+      }
+    </script>
+  </body>
+</html>
