@@ -7,8 +7,8 @@ document.addEventListener("DOMContentLoaded", function () {
       const rect = eyesContainer.getBoundingClientRect();
 
       // Posisi tengah ikon
-      const iconCenterX = rect.left + rect.width / 2;
-      const iconCenterY = rect.top + rect.height / 2;
+      const iconCenterX = rect.left + rect.width / 2 + window.scrollX;
+      const iconCenterY = rect.top + rect.height / 2 + window.scrollY;
 
       // Hitung sudut antara kursor dan tengah ikon
       const angle = Math.atan2(e.pageY - iconCenterY, e.pageX - iconCenterX);
@@ -146,19 +146,47 @@ document.addEventListener("DOMContentLoaded", function () {
   document.getElementById("form").addEventListener("submit", function (event) {
     event.preventDefault();
 
+    const originalBtnValue = btn.value;
     btn.value = "Sending...";
 
-    const serviceID = "default_service";
-    const templateID = "portfolio";
+    const serviceID = "portfolio"; // Replace with your service ID
+    const templateID = "portfolio"; // Replace with your template ID
 
+    // Show loading indicator
+    Swal.fire({
+      title: "Sending your message...",
+      html: "Please wait a moment",
+      allowOutsideClick: false,
+      didOpen: () => {
+        Swal.showLoading();
+      },
+    });
+
+    // Send email
     emailjs.sendForm(serviceID, templateID, this).then(
       () => {
-        btn.value = "Send Email";
-        alert("Sent!");
+        // Success notification
+        btn.value = originalBtnValue;
+        Swal.fire({
+          icon: "success",
+          title: "Message Sent!",
+          text: "Thank you for your message. I will get back to you soon.",
+          confirmButtonColor: "#3085d6",
+          timer: 4000,
+          timerProgressBar: true,
+        });
+        this.reset(); // Reset form
       },
       (err) => {
-        btn.value = "Send Email";
-        alert(JSON.stringify(err));
+        // Error notification
+        btn.value = originalBtnValue;
+        Swal.fire({
+          icon: "error",
+          title: "Failed to Send",
+          text: "An error occurred: " + (err.text || "Please try again later"),
+          confirmButtonColor: "#d33",
+        });
+        console.error("EmailJS Error:", err);
       }
     );
   });
@@ -382,17 +410,6 @@ document.addEventListener("DOMContentLoaded", function () {
       mobileMenuButton.setAttribute("aria-expanded", "false");
     });
   });
-
-  // Form submission
-  const contactForm = document.querySelector("form");
-  if (contactForm) {
-    contactForm.addEventListener("submit", function (e) {
-      e.preventDefault();
-      // Here you would typically send the form data to a server
-      alert("Thank you for your message! I will get back to you soon.");
-      this.reset();
-    });
-  }
 
   // Add wave animation to profile title
   const title = document.querySelector("h1");
