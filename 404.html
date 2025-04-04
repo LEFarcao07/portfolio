@@ -1,102 +1,260 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- Favicon -->
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="alternate icon" href="/favicon.ico" type="image/x-icon" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <title>404 Not Found</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', system-ui, sans-serif;
-        }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Segoe UI", system-ui, sans-serif;
+      }
 
-        html, body {
-            width: 100%;
-            height: 100%;
-            overflow: hidden; /* Mematikan scroll bar */
-        }
+      html,
+      body {
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+      }
 
-        body {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background: #f5f7fa;
-            color: #2d3748;
-            text-align: center;
-        }
+      body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background: #f5f7fa;
+        color: #2d3748;
+        text-align: center;
+        background-image: radial-gradient(
+          circle at 25% 60%,
+          rgba(255, 255, 255, 0.8) 0%,
+          rgba(255, 255, 255, 0) 50%
+        );
+      }
 
+      .container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 20px;
+        max-width: 100%;
+        width: 100%;
+        animation: fadeIn 0.8s ease-out;
+      }
+
+      h1 {
+        font-size: clamp(5rem, 25vw, 8rem);
+        font-weight: 800;
+        color: #4a5568;
+        line-height: 1;
+        margin-bottom: 0.5rem;
+        position: relative;
+        display: inline-block;
+      }
+
+      h1::after {
+        content: "";
+        position: absolute;
+        bottom: -5px;
+        left: 0;
+        width: 100%;
+        height: 3px;
+        background: #4299e1;
+        transform: scaleX(0);
+        transform-origin: right;
+        animation: errorLine 1.5s ease-in-out infinite;
+      }
+
+      h2 {
+        font-size: clamp(1.5rem, 5vw, 2rem);
+        margin-bottom: 1rem;
+        color: #1a202c;
+        animation: shake 0.5s ease-in-out infinite alternate;
+      }
+
+      p {
+        font-size: clamp(1rem, 3vw, 1.1rem);
+        color: #718096;
+        max-width: 500px;
+        margin: 0 auto 2rem;
+      }
+
+      .btn {
+        display: inline-block;
+        padding: 12px 28px;
+        background: #4299e1;
+        color: white;
+        text-decoration: none;
+        border-radius: 8px;
+        font-weight: 600;
+        transition: all 0.3s;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .btn:hover {
+        background: #3182ce;
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(66, 153, 225, 0.4);
+      }
+
+      .btn::after {
+        content: "";
+        position: absolute;
+        top: -50%;
+        left: -60%;
+        width: 200%;
+        height: 200%;
+        background: rgba(255, 255, 255, 0.2);
+        transform: rotate(30deg);
+        transition: all 0.3s;
+      }
+
+      .btn:hover::after {
+        left: 100%;
+      }
+
+      .anime-character {
+        width: 200px;
+        display: block;
+        margin: 0 auto;
+        filter: drop-shadow(0 5px 10px rgba(0, 0, 0, 0.1));
+        animation: float 3s ease-in-out infinite;
+      }
+
+      /* Animations */
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @keyframes errorLine {
+        0% {
+          transform: scaleX(0);
+          transform-origin: right;
+        }
+        50% {
+          transform: scaleX(1);
+          transform-origin: right;
+        }
+        51% {
+          transform-origin: left;
+        }
+        100% {
+          transform: scaleX(0);
+          transform-origin: left;
+        }
+      }
+
+      @keyframes shake {
+        0% {
+          transform: translateX(-3px);
+        }
+        100% {
+          transform: translateX(3px);
+        }
+      }
+
+      @keyframes float {
+        0% {
+          transform: translateY(0px);
+        }
+        50% {
+          transform: translateY(-15px);
+        }
+        100% {
+          transform: translateY(0px);
+        }
+      }
+
+      /* Error animation */
+      .error-animation {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        z-index: -1;
+      }
+
+      .error-dot {
+        position: absolute;
+        width: 8px;
+        height: 8px;
+        background: rgba(66, 153, 225, 0.6);
+        border-radius: 50%;
+        animation: errorFloating 5s linear infinite;
+      }
+
+      @keyframes errorFloating {
+        0% {
+          transform: translateY(0) translateX(0);
+          opacity: 0;
+        }
+        10% {
+          opacity: 1;
+        }
+        90% {
+          opacity: 1;
+        }
+        100% {
+          transform: translateY(-100vh)
+            translateX(calc(var(--random-x) * 100vw));
+          opacity: 0;
+        }
+      }
+
+      @media (max-height: 600px) {
         .container {
-            padding: 20px;
-            max-width: 100%; /* Pastikan tidak melebihi lebar layar */
-            width: 100%;
+          transform: scale(0.9);
         }
-
-        h1 {
-            font-size: clamp(5rem, 25vw, 8rem); /* Responsif tanpa overflow */
-            font-weight: 800;
-            color: #4a5568;
-            line-height: 1;
-            margin-bottom: 0.5rem;
-        }
-
-        h2 {
-            font-size: clamp(1.5rem, 5vw, 2rem);
-            margin-bottom: 1rem;
-            color: #1a202c;
-        }
-
-        p {
-            font-size: clamp(1rem, 3vw, 1.1rem);
-            color: #718096;
-            max-width: 500px;
-            margin: 0 auto 2rem;
-        }
-
-        .btn {
-            display: inline-block;
-            padding: 12px 28px;
-            background: #4299e1;
-            color: white;
-            text-decoration: none;
-            border-radius: 8px;
-            font-weight: 600;
-            transition: transform 0.2s;
-        }
-
-        .btn:hover {
-            background: #3182ce;
-            transform: translateY(-2px);
-        }
-
-        /* SVG Illustration yang selalu pas */
-        .illustration {
-            width: min(200px, 30vw);
-            height: auto;
-            margin-bottom: 1.5rem;
-            opacity: 0.9;
-        }
-
-        /* Pastikan konten tidak melebihi tinggi layar */
-        @media (max-height: 600px) {
-            .container {
-                transform: scale(0.9);
-            }
-        }
+      }
     </style>
-</head>
-<body>
-    <div class="container">
-        <!-- SVG Warning Icon -->
-        <svg class="illustration" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M12 9V11M12 15H12.01M5.07183 19H18.9282C20.4678 19 21.4301 17.3333 20.6603 16L13.7321 4C12.9623 2.66667 11.0377 2.66667 10.2679 4L3.33975 16C2.56995 17.3333 3.53216 19 5.07183 19Z" stroke="#4A5568" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
+  </head>
+  <body>
+    <!-- Background error animation dots -->
+    <div class="error-animation" id="errorAnimation"></div>
 
-        <h1>404</h1>
-        <h2>Page Not Found</h2>
-        <p>The requested page was lost in the digital wilderness.</p>
-        <a href="/" class="btn">Go Back Home</a>
+    <div class="container">
+      <!-- Anime Character GIF -->
+      <img
+        class="anime-character"
+        src="https://media1.tenor.com/m/MYDG91HHJ-oAAAAC/vestia-zeta-hololive.gif"
+        alt="Confused Anime Character"
+      />
+
+      <h1>404</h1>
+      <h2>Page Not Found</h2>
+      <p>The page has wandered off like a lost little kitten.</p>
+      <a href="/" class="btn">Go Back Home</a>
     </div>
-</body>
+
+    <script>
+      // Create random error dots
+      const errorAnimation = document.getElementById("errorAnimation");
+      for (let i = 0; i < 20; i++) {
+        const dot = document.createElement("div");
+        dot.classList.add("error-dot");
+        dot.style.left = `${Math.random() * 100}%`;
+        dot.style.top = `${Math.random() * 100 + 100}%`;
+        dot.style.setProperty("--random-x", Math.random() * 2 - 1);
+        dot.style.animationDelay = `${Math.random() * 5}s`;
+        dot.style.width = `${Math.random() * 6 + 4}px`;
+        dot.style.height = dot.style.width;
+        errorAnimation.appendChild(dot);
+      }
+    </script>
+  </body>
 </html>

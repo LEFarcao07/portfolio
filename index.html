@@ -77,6 +77,23 @@
 
     <style type="text/tailwindcss">
       /* Improved cursor styles with performance considerations */
+      input[type="text"],
+      input[type="email"],
+      input[type="password"],
+      input[type="number"],
+      textarea {
+        width: 100%;
+        max-width: 100%;
+        box-sizing: border-box;
+        padding: 12px;
+      }
+      @media (max-width: 480px) {
+        input,
+        textarea {
+          font-size: 15px;
+          padding: 10px;
+        }
+      }
       a {
         text-decoration: none;
       }
@@ -957,8 +974,7 @@
             </div>
 
             <a
-              href=""
-              target="_blank"
+              href="404.html"
               class="inline-block bg-primary hover:bg-blue-600 text-white px-6 py-3 rounded-lg transition-colors shadow-md hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 btn-hover transform hover:-translate-y-1"
             >
               Download CV
@@ -1159,20 +1175,20 @@
         </div>
 
         <div class="flex flex-col md:flex-row gap-16">
-          <div class="md:w-1/2 section-entry overflow-x-hidden">
+          <div class="md:w-1/2 section-entry">
             <form class="space-y-4" id="form">
               <div class="animate__animated animate__fadeIn">
                 <label
                   for="name"
                   class="block text-gray-700 dark:text-gray-300 mb-2"
                 >
-                  Full Name
+                  Name
                 </label>
                 <input
                   type="text"
                   name="name"
                   id="name"
-                  class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-colors hover:shadow-md"
+                  class="border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-colors hover:shadow-md"
                   placeholder="Your name"
                   required
                 />
@@ -1189,7 +1205,7 @@
                   type="email"
                   name="email"
                   id="email"
-                  class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-colors hover:shadow-md"
+                  class="border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-colors hover:shadow-md"
                   placeholder="email@example.com"
                   required
                 />
@@ -1206,7 +1222,7 @@
                   type="text"
                   name="title"
                   id="title"
-                  class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-colors hover:shadow-md"
+                  class="border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-colors hover:shadow-md"
                   placeholder="Message subject"
                   required
                 />
@@ -1223,7 +1239,7 @@
                   id="message"
                   name="message"
                   rows="5"
-                  class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-colors hover:shadow-md"
+                  class="border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-colors hover:shadow-md"
                   placeholder="Your message here..."
                   required
                 ></textarea>
