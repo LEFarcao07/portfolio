@@ -43,10 +43,9 @@
     />
 
     <!-- Favicon -->
-    <link
-      rel="icon"
-      href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>👨‍💻</text></svg>"
-    />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="alternate icon" href="/favicon.ico" type="image/x-icon" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
 
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -1160,11 +1159,8 @@
         </div>
 
         <div class="flex flex-col md:flex-row gap-16">
-          <div class="md:w-1/2 section-entry">
-            <form
-              class="space-y-4"
-              id="form"
-            >
+          <div class="md:w-1/2 section-entry overflow-x-hidden">
+            <form class="space-y-4" id="form">
               <div class="animate__animated animate__fadeIn">
                 <label
                   for="name"
