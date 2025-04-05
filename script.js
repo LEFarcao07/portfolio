@@ -1,4 +1,98 @@
 document.addEventListener("DOMContentLoaded", function () {
+  // Efek hover yang lebih dinamis
+  document.querySelectorAll(".project-card, .skill-badge").forEach((item) => {
+    item.addEventListener("mouseenter", () => {
+      item.style.transform = "translateY(-10px) scale(1.02)";
+      item.style.boxShadow =
+        "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)";
+    });
+
+    item.addEventListener("mouseleave", () => {
+      item.style.transform = "translateY(0) scale(1)";
+      item.style.boxShadow = "";
+    });
+  });
+
+  // Efek scroll reveal untuk teks
+  function animateTextOnScroll() {
+    const textElements = document.querySelectorAll("h1, h2, h3, p");
+
+    textElements.forEach((el) => {
+      const elPosition = el.getBoundingClientRect().top;
+      const windowHeight = window.innerHeight;
+
+      if (elPosition < windowHeight * 0.75) {
+        el.classList.add("text-reveal");
+      }
+    });
+  }
+
+  // Jalankan saat load dan scroll
+  window.addEventListener("load", animateTextOnScroll);
+  window.addEventListener("scroll", animateTextOnScroll);
+
+  const portfolioTitle = document.getElementById("portfolio-title");
+  let easterEggTriggered = false;
+
+  portfolioTitle.addEventListener("click", function (e) {
+    // Prevent default only if it's not the first click
+    if (easterEggTriggered) {
+      e.preventDefault();
+      return;
+    }
+
+    easterEggTriggered = true;
+
+    // Get all elements except script, style, and cursor elements
+    const allElements = document.querySelectorAll(
+      "body *:not(script):not(style):not(.cursor-outer):not(.cursor-inner)"
+    );
+
+    // Make all elements fall simultaneously
+    allElements.forEach((el) => {
+      if (el.classList.contains("falling-element")) return;
+
+      // Save original position and styles
+      const rect = el.getBoundingClientRect();
+      // Save original styles
+      el.dataset.originalPosition = window.getComputedStyle(el).position;
+      el.dataset.originalTop = rect.top;
+      el.dataset.originalLeft = rect.left;
+
+      // Apply falling animation
+      el.classList.add("falling-element");
+
+      // Set fixed position at original location
+      el.style.position = "fixed";
+      el.style.top = `${rect.top}px`;
+      el.style.left = `${rect.left}px`;
+      el.style.width = `${rect.width}px`;
+      el.style.height = `${rect.height}px`;
+
+      // Random rotation for more natural effect
+      const rotationDirection = Math.random() > 0.5 ? 1 : -1;
+      const rotationDegrees = 5 + Math.random() * 15;
+      el.style.transform = `rotateZ(${rotationDegrees * rotationDirection}deg)`;
+    });
+
+    // Show notification and reload after animation
+    setTimeout(() => {
+      Swal.fire({
+        title: "New Text",
+        text: "New Text",
+        icon: "warning",
+        confirmButtonText: "New Text",
+      }).then(() => {
+        location.reload();
+      });
+    }, 3000);
+  });
+
+  // Prevent right-click to make it more secret
+  document.addEventListener("contextmenu", function (e) {
+    e.preventDefault();
+  });
+
   document.addEventListener("mousemove", (e) => {
     if (window.innerWidth > 768) {
       // Hanya aktif di desktop
@@ -242,53 +336,91 @@ document.addEventListener("DOMContentLoaded", function () {
   window.addEventListener("resize", handleScroll);
 
   // Intersection Observer for section animations
-  const sections = document.querySelectorAll(".section-entry");
+  const sections = document.querySelectorAll(
+    ".section-entry, .scroll-fade, .scroll-scale"
+  );
 
   const observerOptions = {
     threshold: 0.1,
-    rootMargin: "0px 0px -50px 0px",
+    rootMargin: "0px 0px -100px 0px",
   };
 
   const sectionObserver = new IntersectionObserver((entries, observer) => {
     entries.forEach((entry) => {
       if (entry.isIntersecting) {
         entry.target.classList.add("visible");
+
+        const delay = entry.target.dataset.delay || 0;
+        setTimeout(() => {
+          entry.target.style.transitionDelay = `${delay}ms`;
+        }, 100);
+
         observer.unobserve(entry.target);
       }
     });
   }, observerOptions);
 
-  sections.forEach((section) => {
+  sections.forEach((section, index) => {
+    section.dataset.delay = index * 100;
     sectionObserver.observe(section);
   });
 
+  // Efek parallax saat scroll
+  function handleParallax() {
+    const parallaxElements = document.querySelectorAll(".parallax-element");
+    const scrollPosition = window.pageYOffset;
+
+    parallaxElements.forEach((element) => {
+      const speed = parseFloat(element.dataset.speed) || 0.3;
+      const offset = scrollPosition * speed;
+      element.style.transform = `translateY(${offset}px)`;
+    });
+  }
+
+  window.addEventListener("scroll", handleParallax);
+  window.addEventListener("resize", handleParallax);
+
   // Navbar scroll effect
-  const navbar = document.getElementById("navbar");
   let lastScroll = 0;
+  const navbar = document.getElementById("navbar");
+  const navbarHeight = navbar.offsetHeight;
 
   window.addEventListener("scroll", () => {
     const currentScroll = window.pageYOffset;
 
-    if (currentScroll <= 0) {
+    if (currentScroll <= 10) {
       navbar.classList.remove("nav-scroll");
+      navbar.style.transform = "translateY(0)";
       return;
     }
 
-    if (
-      currentScroll > lastScroll &&
-      !navbar.classList.contains("nav-scroll")
-    ) {
+    // Smooth show/hide navbar saat scroll
+    if (currentScroll > lastScroll && currentScroll > navbarHeight) {
       // Scrolling down
+      navbar.style.transform = `translateY(-${navbarHeight}px)`;
       navbar.classList.add("nav-scroll");
-    } else if (
-      currentScroll < lastScroll &&
-      navbar.classList.contains("nav-scroll")
-    ) {
+    } else {
       // Scrolling up
-      navbar.classList.remove("nav-scroll");
+      navbar.style.transform = "translateY(0)";
+      navbar.classList.add("nav-scroll");
     }
 
     lastScroll = currentScroll;
+  });
+
+  // Tambahkan efek scroll progress indicator
+  const progressBar = document.createElement("div");
+  progressBar.className =
+    "fixed top-0 left-0 h-1 bg-primary z-50 transition-all duration-300";
+  progressBar.style.width = "0%";
+  document.body.prepend(progressBar);
+
+  window.addEventListener("scroll", () => {
+    const scrollHeight =
+      document.documentElement.scrollHeight - window.innerHeight;
+    const scrollPosition = window.pageYOffset;
+    const scrollPercentage = (scrollPosition / scrollHeight) * 100;
+    progressBar.style.width = `${scrollPercentage}%`;
   });
 
   // Custom Cursor

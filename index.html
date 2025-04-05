@@ -76,6 +76,51 @@
     />
 
     <style type="text/tailwindcss">
+      .text-reveal {
+        animation: textReveal 1s ease-out forwards;
+      }
+
+      @keyframes textReveal {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      .scroll-transition {
+        transition: all 0.5s cubic-bezier(0.645, 0.045, 0.355, 1);
+      }
+
+      /* Efek parallax untuk beberapa elemen */
+      .parallax-element {
+        transition: transform 0.3s ease-out;
+        will-change: transform;
+      }
+
+      /* Efek fade saat scroll */
+      .scroll-fade {
+        opacity: 0;
+        transform: translateY(20px);
+        transition: opacity 0.6s ease, transform 0.6s ease;
+      }
+
+      .scroll-fade.visible {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      /* Efek scaling saat scroll */
+      .scroll-scale {
+        transform: scale(0.95);
+        transition: transform 0.6s ease;
+      }
+
+      .scroll-scale.visible {
+        transform: scale(1);
+      }
       /* Improved cursor styles with performance considerations */
       input[type="text"],
       input[type="email"],
@@ -515,6 +560,26 @@
       .highlight:hover::after {
         height: 100%;
       }
+
+      /* Easter Egg Falling Animation */
+      .falling-element {
+        position: fixed !important;
+        animation: fall 1ms cubic-bezier(0.55, 0.085, 0.68, 0.53) forwards;
+        transform-origin: top center;
+        z-index: 1000;
+        pointer-events: none;
+      }
+
+      @keyframes fall {
+        0% {
+          transform: translateY(0) rotateX(0) rotateZ(0);
+          opacity: 1;
+        }
+        100% {
+          transform: translateY(100vh) rotateX(70deg) rotateZ(10deg);
+          opacity: 0;
+        }
+      }
     </style>
 
     <script>
@@ -635,7 +700,7 @@
             <button
               id="theme-toggle"
               type="button"
-              class="p-2 border-transparent bg-white dark:bg-dark dark:text-gray-300 rounded-lg focus:outline-none transition-colors hover:bg-gray-100 dark:hover:bg-gray-700 transform hover:rotate-12"
+              class="p-2 border-transparent bg-white dark:bg-dark dark:text-gray-300 rounded-lg focus:outline-none transition-colors transform hover:rotate-12"
               aria-label="Toggle dark mode"
             >
               <svg
@@ -667,7 +732,7 @@
             <!-- Mobile menu button -->
             <button
               id="mobile-menu-button"
-              class="md:hidden border-transparent text-gray-700 bg-white dark:bg-dark dark:text-gray-300 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 focus:outline-none transition-colors transform hover:scale-110"
+              class="md:hidden border-transparent text-gray-700 bg-white dark:bg-dark dark:text-gray-300 p-2 rounded-lg focus:outline-none transition-colors transform hover:scale-110"
               aria-label="Open menu"
             >
               <svg
@@ -792,9 +857,23 @@
     <!-- Hero Section -->
     <section
       id="home"
-      class="py-20 section bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-gray-800 dark:to-gray-900 transition-colors"
+      class="py-20 section bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-gray-800 dark:to-gray-900 transition-colors relative overflow-hidden"
     >
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="absolute inset-0 overflow-hidden">
+      <div class="absolute inset-0 parallax-element" 
+        style="
+          background: 
+            linear-gradient(45deg, rgba(59,130,246,0.05) 25%, transparent 25%) -10px 0,
+            linear-gradient(-45deg, rgba(59,130,246,0.05) 25%, transparent 25%) -10px 0,
+            linear-gradient(45deg, transparent 75%, rgba(59,130,246,0.05) 75%),
+            linear-gradient(-45deg, transparent 75%, rgba(59,130,246,0.05) 75%);
+          background-size: 20px 20px;
+          opacity: 0.3;
+        "
+      ></div>
+    </div>
+
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
         <div class="flex flex-col md:flex-row items-center justify-between">
           <div class="md:w-1/2 mb-10 md:mb-0 md:pr-8 section-entry">
             <h1
@@ -989,6 +1068,21 @@
       id="projects"
       class="py-20 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-gray-800 dark:to-gray-900 transition-colors"
     >
+
+    <div class="absolute inset-0 overflow-hidden -z-10">
+      <div class="absolute inset-0 parallax-element" 
+        style="
+          background: 
+            linear-gradient(45deg, rgba(59,130,246,0.05) 25%, transparent 25%) -10px 0,
+            linear-gradient(-45deg, rgba(59,130,246,0.05) 25%, transparent 25%) -10px 0,
+            linear-gradient(45deg, transparent 75%, rgba(59,130,246,0.05) 75%),
+            linear-gradient(-45deg, transparent 75%, rgba(59,130,246,0.05) 75%);
+          background-size: 20px 20px;
+          opacity: 0.3;
+        "
+      ></div>
+    </div>
+    
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="text-center mb-16 section-entry">
           <h2 class="text-3xl font-bold text-dark dark:text-white mb-4">
@@ -1028,28 +1122,30 @@
                   HTML
                 </span>
               </div>
-              <a
-                href="https://github.com/LEFarcao07/valentine-annoying-button-html"
-                target="_blank"
-                class="inline-flex items-center text-primary hover:text-blue-600 dark:hover:text-blue-400 font-medium transition-colors group"
-              >
-                View Project
-                <span
-                  class="ml-1 group-hover:translate-x-1 transition-transform"
-                  >→</span
+              <div class="flex flex-col space-y-2">
+                <a
+                  href="https://github.com/LEFarcao07/valentine-annoying-button-html"
+                  target="_blank"
+                  class="inline-flex items-center text-primary hover:text-blue-600 dark:hover:text-blue-400 font-medium transition-colors group"
                 >
-              </a>
-              <a
-                href="https://lefarcao07.github.io/valentine-annoying-button-html"
-                target="_blank"
-                class="inline-flex px-11 items-center text-primary hover:text-blue-600 dark:hover:text-blue-400 font-medium transition-colors group"
-              >
-                Demo Web
-                <span
-                  class="ml-1 group-hover:translate-x-1 transition-transform"
-                  >→</span
+                  View Project
+                  <span
+                    class="ml-1 group-hover:translate-x-1 transition-transform"
+                    >→</span
+                  >
+                </a>
+                <a
+                  href="https://lefarcao07.github.io/valentine-annoying-button-html"
+                  target="_blank"
+                  class="inline-flex items-center text-primary hover:text-blue-600 dark:hover:text-blue-400 font-medium transition-colors group"
                 >
-              </a>
+                  Demo Web
+                  <span
+                    class="ml-1 group-hover:translate-x-1 transition-transform"
+                    >→</span
+                  >
+                </a>
+              </div>
             </div>
           </div>
 
@@ -1085,17 +1181,30 @@
                   Python
                 </span>
               </div>
-              <a
-                href="https://github.com/LEFarcao07/web-proposal-generate-docx-sederhana"
-                target="_blank"
-                class="inline-flex items-center text-primary hover:text-blue-600 dark:hover:text-blue-400 font-medium transition-colors group"
-              >
-                View Project
-                <span
-                  class="ml-1 group-hover:translate-x-1 transition-transform"
-                  >→</span
+              <div class="flex flex-col space-y-2">
+                <a
+                  href="https://github.com/LEFarcao07/web-proposal-generate-docx-sederhana"
+                  target="_blank"
+                  class="inline-flex items-center text-primary hover:text-blue-600 dark:hover:text-blue-400 font-medium transition-colors group"
                 >
-              </a>
+                  View Project
+                  <span
+                    class="ml-1 group-hover:translate-x-1 transition-transform"
+                    >→</span
+                  >
+                </a>
+                <a
+                  href="https://replit.com/@muhammadandrea4/Proposal-Generate-Sederhana"
+                  target="_blank"
+                  class="inline-flex items-center text-primary hover:text-blue-600 dark:hover:text-blue-400 font-medium transition-colors group"
+                >
+                  Demo Web
+                  <span
+                    class="ml-1 group-hover:translate-x-1 transition-transform"
+                    >→</span
+                  >
+                </a>
+              </div>
             </div>
           </div>
 
@@ -1464,6 +1573,7 @@
           <div class="mb-4 md:mb-0 text-center md:text-left">
             <a
               href="#home"
+              id="portfolio-title"
               class="text-xl font-bold text-primary hover:text-blue-400 transition-colors inline-block transform hover:scale-105"
               >PORTFOLIO</a
             >
