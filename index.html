@@ -635,19 +635,21 @@
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between h-16 items-center">
           <div class="flex items-center">
-            <div class="block sm:hidden flex gap-2">
-              <div
-                class="w-3 h-3 rounded-full bg-linux-merah-error animate-pulse"
-              ></div>
-              <div
-                class="w-3 h-3 rounded-full bg-linux-kuning-awas animate-pulse"
-                style="animation-delay: 0.2s"
-              ></div>
-              <div
-                class="w-3 h-3 rounded-full bg-linux-ijo-sukses animate-pulse"
-                style="animation-delay: 0.4s"
-              ></div>
-            </div>
+            <a href="#home">
+              <div class="block sm:hidden flex gap-2">
+                <div
+                  class="w-3 h-3 rounded-full bg-linux-merah-error animate-pulse"
+                ></div>
+                <div
+                  class="w-3 h-3 rounded-full bg-linux-kuning-awas animate-pulse"
+                  style="animation-delay: 0.2s"
+                ></div>
+                <div
+                  class="w-3 h-3 rounded-full bg-linux-ijo-sukses animate-pulse"
+                  style="animation-delay: 0.4s"
+                ></div>
+              </div>
+            </a>
             <a
               href="#home"
               class="hidden sm:block text-xl font-bold text-primary dark:text-white hover:text-blue-600 dark:hover:text-blue-400 transition-colors transform hover:scale-105"
@@ -732,7 +734,7 @@
             <!-- Mobile menu button -->
             <button
               id="mobile-menu-button"
-              class="md:hidden border-transparent text-gray-700 bg-white dark:bg-dark dark:text-gray-300 p-2 rounded-lg focus:outline-none transition-colors transform hover:scale-110"
+              class="md:hidden border-transparent text-gray-700 bg-white dark:bg-dark dark:text-gray-300 rounded-lg focus:outline-none transition-colors transform hover:scale-110"
               aria-label="Open menu"
             >
               <svg
@@ -1301,17 +1303,76 @@
                   CSS
                 </span>
               </div>
-              <a
-                href="https://github.com/LEFarcao07/discord-theme_-"
-                target="_blank"
-                class="inline-flex items-center text-primary hover:text-blue-600 dark:hover:text-blue-400 font-medium transition-colors group"
-              >
-                View Project
-                <span
-                  class="ml-1 group-hover:translate-x-1 transition-transform"
-                  >→</span
+              <div class="flex flex-col space-y-2">
+                <a
+                  href="https://github.com/LEFarcao07/discord-theme_-"
+                  target="_blank"
+                  class="inline-flex items-center text-primary hover:text-blue-600 dark:hover:text-blue-400 font-medium transition-colors group"
                 >
-              </a>
+                  View Project
+                  <span
+                    class="ml-1 group-hover:translate-x-1 transition-transform"
+                    >→</span
+                  >
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <!-- Project 4 -->
+          <div
+            class="project-card bg-white dark:bg-gray-800 rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-colors section-entry"
+            style="transition-delay: 0.2s"
+          >
+            <div
+              class="h-48 bg-gray-300 dark:bg-gray-700 flex items-center justify-center text-gray-500 dark:text-gray-300"
+              style="
+                background: url('../img/p4.jpg') no-repeat center center;
+                background-size: cover;
+              "
+            ></div>
+            <div class="p-6">
+              <h3 class="text-xl font-semibold text-dark dark:text-white mb-2">
+                Math in Progress
+              </h3>
+              <p class="text-gray-600 dark:text-gray-300 mb-4">
+                A collection of automatic math calculators designed to make
+                solving problems faster and easier.
+              </p>
+              <div class="flex flex-wrap gap-2 mb-4">
+                <span
+                  class="text-xs bg-blue-100 dark:bg-gray-700 text-yellow-500 dark:text-yellow-500 px-3 py-1 rounded-full transform hover:scale-110 transition-transform"
+                >
+                  WIP
+                </span>
+                <span
+                  class="text-xs bg-blue-100 dark:bg-gray-700 text-primary dark:text-blue-400 px-3 py-1 rounded-full transform hover:scale-110 transition-transform"
+                >
+                  HTML
+                </span>
+                <span
+                  class="text-xs bg-blue-100 dark:bg-gray-700 text-primary dark:text-blue-400 px-3 py-1 rounded-full transform hover:scale-110 transition-transform"
+                >
+                  JavaScript
+                </span>
+                <span
+                  class="text-xs bg-blue-100 dark:bg-gray-700 text-primary dark:text-blue-400 px-3 py-1 rounded-full transform hover:scale-110 transition-transform"
+                >
+                  CSS
+                </span>
+              </div>
+              <div class="flex flex-col space-y-2">
+                <a
+                  href="math/index.html"
+                  class="inline-flex items-center text-primary hover:text-blue-600 dark:hover:text-blue-400 font-medium transition-colors group"
+                >
+                  Demo Web
+                  <span
+                    class="ml-1 group-hover:translate-x-1 transition-transform"
+                    >→</span
+                  >
+                </a>
+              </div>
             </div>
           </div>
         </div>
@@ -1631,7 +1692,7 @@
 
     <!-- Footer -->
     <footer
-      class="bg-indigo-50 dark:bg-gray-900 text-white py-8 transition-colors"
+      class="shadow-[0_0px_3px_0px_rgba(0,0,0,0.1)] bg-indigo-50 dark:bg-gray-900 text-white py-8 transition-colors"
     >
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex flex-col md:flex-row justify-between items-center">

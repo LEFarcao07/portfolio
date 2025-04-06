@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Modul Pembelajaran Matematika</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/11.6.0/math.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      // Initialize theme before loading Tailwind
+      (function () {
+        const savedTheme =
+          localStorage.getItem("theme") ||
+          (window.matchMedia("(prefers-color-scheme: dark)").matches
+            ? "dark"
+            : "light");
+        document.documentElement.classList.toggle(
+          "dark",
+          savedTheme === "dark"
+        );
+      })();
+
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: [
+                "Inter",
+                "Segoe UI",
+                "Tahoma",
+                "Geneva",
+                "Verdana",
+                "sans-serif",
+              ],
+            },
+            colors: {
+              primary: {
+                light: "#3B82F6",
+                dark: "#60A5FA",
+              },
+              dark: {
+                light: "#1F2937",
+                dark: "#111827",
+              },
+              light: {
+                light: "#F8F9FA",
+                dark: "#1F2937",
+              },
+              customGray: "#3E3E3E",
+              linux: {
+                "merah-error": "#CC0000",
+                "ijo-sukses": "#4E9A06",
+                "kuning-awas": "#C4A000",
+                "biru-info": "#3465A4",
+                "ungu-ajaib": "#75507B",
+                "cyan-keren": "#06989A",
+                "putih-biasa": "#D3D7CF",
+                "merah-terang": "#EF2929",
+                "ijo-neon": "#8AE234",
+                "kuning-sinar-x": "#FCE94F",
+                "biru-langit": "#729FCF",
+                "ungu-mistik": "#AD7FA8",
+                "cyan-glow": "#34E2E2",
+                "putih-terang": "#EEEEEC",
+                "bg-gelap": "#2E3436",
+                "bg-terang": "#EEEEEC",
+              },
+            },
+          },
+        },
+        corePlugins: {
+          preflight: false,
+        },
+      };
+    </script>
+    <style type="text/css">
+      /* Custom styles that need higher specificity */
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        line-height: 1.6;
+        color: rgb(31 41 55); /* dark */
+        background-color: rgb(248 249 250); /* light */
+      }
+
+      a {
+        text-decoration: none;
+      }
+
+      .dark body {
+        color: #f3f4f6;
+        background-color: rgb(17 24 39);
+      }
+
+      .card h3 {
+        color: rgb(59 130 246); /* primary */
+      }
+
+      .dark .card h3 {
+        color: rgb(96 165 250); /* primary-dark */
+      }
+
+      section h2 {
+        color: rgb(59 130 246); /* primary */
+        border-bottom: 2px solid rgb(59 130 246); /* primary */
+      }
+
+      .dark section h2 {
+        color: rgb(96 165 250); /* primary-dark */
+        border-bottom: 2px solid rgb(96 165 250); /* primary-dark */
+      }
+
+      .card {
+        background-color: white;
+      }
+
+      .dark .card {
+        background-color: rgb(31 41 55);
+      }
+    </style>
+  </head>
+  <body class="min-h-screen flex flex-col transition-colors duration-300">
+    <!-- Navigation -->
+    <nav
+      id="navbar"
+      class="bg-white dark:bg-dark-light shadow-sm sticky top-0 z-10"
+    >
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between h-16 items-center">
+          <div class="flex items-center">
+            <a href="../index.html">
+              <div class="block sm:hidden flex gap-2">
+                <div
+                  class="w-3 h-3 rounded-full bg-linux-merah-error animate-pulse"
+                ></div>
+                <div
+                  class="w-3 h-3 rounded-full bg-linux-kuning-awas animate-pulse"
+                  style="animation-delay: 0.2s"
+                ></div>
+                <div
+                  class="w-3 h-3 rounded-full bg-linux-ijo-sukses animate-pulse"
+                  style="animation-delay: 0.4s"
+                ></div>
+              </div>
+            </a>
+            <a
+              href="../index.html"
+              class="hidden sm:block text-xl font-sans font-bold text-blue-600 dark:text-white hover:text-blue-600 dark:hover:text-blue-400 transition-colors transform hover:scale-105"
+              >ANDREAN | PORTFOLIO</a
+            >
+          </div>
+
+          <div class="flex items-center space-x-4">
+            <!-- Desktop Navigation -->
+            <div class="hidden md:flex items-center space-x-8">
+              <a
+                href="#calculators"
+                class="font-sans text-gray-700 dark:text-gray-300 hover:text-primary dark:hover:text-blue-400 transition-colors relative group"
+              >
+                Kalkulator
+                <span
+                  class="absolute bottom-0 left-0 w-0 h-0.5 bg-primary group-hover:w-full transition-all duration-300"
+                ></span>
+              </a>
+              <a
+                href="#visualizations"
+                class="font-sans text-gray-700 dark:text-gray-300 hover:text-primary dark:hover:text-blue-400 transition-colors relative group"
+              >
+                Visualisasi
+                <span
+                  class="absolute bottom-0 left-0 w-0 h-0.5 bg-primary group-hover:w-full transition-all duration-300"
+                ></span>
+              </a>
+              <a
+                href="#modules"
+                class="font-sans text-gray-700 dark:text-gray-300 hover:text-primary dark:hover:text-blue-400 transition-colors relative group"
+              >
+                Modul Pembelajaran
+                <span
+                  class="absolute bottom-0 left-0 w-0 h-0.5 bg-primary group-hover:w-full transition-all duration-300"
+                ></span>
+              </a>
+            </div>
+
+            <!-- Theme Toggle -->
+            <button
+              id="theme-toggle"
+              type="button"
+              class="p-2 border-transparent bg-white dark:bg-dark-light text-dark dark:text-gray-300 rounded-lg focus:outline-none transform hover:rotate-12"
+              aria-label="Toggle dark mode"
+            >
+              <svg
+                id="theme-toggle-dark-icon"
+                class="w-5 h-5"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"
+                ></path>
+              </svg>
+              <svg
+                id="theme-toggle-light-icon"
+                class="w-5 h-5 hidden"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z"
+                  fill-rule="evenodd"
+                  clip-rule="evenodd"
+                ></path>
+              </svg>
+            </button>
+
+            <!-- Mobile menu button -->
+            <button
+              id="mobile-menu-button"
+              class="md:hidden border-transparent bg-white dark:bg-dark-light text-dark dark:text-gray-300 rounded-lg focus:outline-non transform hover:scale-110"
+              aria-label="Open menu"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="h-5 w-5"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M4 6h16M4 12h16M4 18h16"
+                />
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- Mobile Menu -->
+        <div
+          id="mobile-menu"
+          class="hidden md:hidden pb-4 transition-all duration-300 ease-in-out"
+        >
+          <div class="flex flex-col space-y-2 mt-2">
+            <a
+              href="#calculators"
+              class="block px-3 py-2 font-sans text-gray-700 dark:text-gray-300 hover:text-primary dark:hover:text-blue-400 transition-colors transform hover:translate-x-2"
+              >Kalkulator</a
+            >
+            <a
+              href="#visualizations"
+              class="block px-3 py-2 font-sans text-gray-700 dark:text-gray-300 hover:text-primary dark:hover:text-blue-400 transition-colors transform hover:translate-x-2"
+              >Visualisasi</a
+            >
+            <a
+              href="#Modules"
+              class="block px-3 py-2 font-sans text-gray-700 dark:text-gray-300 hover:text-primary dark:hover:text-blue-400 transition-colors transform hover:translate-x-2"
+              >Modul Pembelajaran</a
+            >
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <main class="flex-grow container mx-auto px-4 py-8 max-w-6xl">
+      <section id="calculators" class="mb-12">
+        <h2 class="text-2xl font-semibold mb-6 pb-2">Kalkulator</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <a
+            href="calculators/basic.html"
+            class="card rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow hover:-translate-y-1 block"
+          >
+            <h3 class="text-xl font-semibold mb-2">Kalkulator Dasar</h3>
+            <p class="text-gray-600 dark:text-gray-300">
+              Operasi aritmetika dasar
+            </p>
+          </a>
+          <a
+            href="calculators/scientific.html"
+            class="card rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow hover:-translate-y-1 block"
+          >
+            <h3 class="text-xl font-semibold mb-2">Kalkulator Ilmiah</h3>
+            <p class="text-gray-600 dark:text-gray-300">
+              Fungsi trigonometri, logaritma, dll.
+            </p>
+          </a>
+        </div>
+      </section>
+
+      <section id="visualizations" class="mb-12">
+        <h2 class="text-2xl font-semibold mb-6 pb-2">Visualisasi Data</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <a
+            href="visualizations/scatter-plot.html"
+            class="card rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow hover:-translate-y-1 block"
+          >
+            <h3 class="text-xl font-semibold mb-2">Diagram Pencar</h3>
+            <p class="text-gray-600 dark:text-gray-300">
+              Visualisasi hubungan antara dua variabel
+            </p>
+          </a>
+          <a
+            href="visualizations/linear-regression.html"
+            class="card rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow hover:-translate-y-1 block"
+          >
+            <h3 class="text-xl font-semibold mb-2">Regresi Linear</h3>
+            <p class="text-gray-600 dark:text-gray-300">
+              Analisis hubungan linear dan prediksi
+            </p>
+          </a>
+        </div>
+      </section>
+
+      <section id="modules" class="mb-12">
+        <h2 class="text-2xl font-semibold mb-6 pb-2">Modul Pembelajaran</h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <a
+            href="modules/algebra.html"
+            class="card rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow hover:-translate-y-1 block"
+          >
+            <h3 class="text-xl font-semibold mb-2">Aljabar</h3>
+            <p class="text-gray-600 dark:text-gray-300">
+              Persamaan, fungsi, dan matriks
+            </p>
+          </a>
+          <a
+            href="modules/geometry.html"
+            class="card rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow hover:-translate-y-1 block"
+          >
+            <h3 class="text-xl font-semibold mb-2">Geometri</h3>
+            <p class="text-gray-600 dark:text-gray-300">
+              Bentuk, sudut, dan transformasi
+            </p>
+          </a>
+          <a
+            href="modules/statistics.html"
+            class="card rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow hover:-translate-y-1 block"
+          >
+            <h3 class="text-xl font-semibold mb-2">Statistika</h3>
+            <p class="text-gray-600 dark:text-gray-300">
+              Distribusi, probabilitas, analisis data
+            </p>
+          </a>
+        </div>
+      </section>
+    </main>
+
+    <footer class="shadow-[0_0px_3px_0px_rgba(0,0,0,0.1)] bg-white dark:bg-dark-light text-center py-4">
+      <p>© 2025 Modul Pembelajaran Matematika</p>
+    </footer>
+    <script src="../script.js"></script>
+  </body>
+</html>

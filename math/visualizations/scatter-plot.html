@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diagram Pencar</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="bg-gray-100 dark:bg-gray-900 min-h-screen">
+    <nav class="bg-white dark:bg-gray-800 shadow-sm">
+        <div class="max-w-6xl mx-auto px-4 py-3">
+            <a href="../index.html" class="text-blue-600 dark:text-blue-400 font-semibold">← Kembali</a>
+        </div>
+    </nav>
+
+    <main class="container mx-auto px-4 py-8">
+        <h1 class="text-2xl font-bold text-center mb-8 text-gray-800 dark:text-white">Diagram Pencar</h1>
+        
+        <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg mb-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                <div>
+                    <label class="block text-gray-700 dark:text-gray-300 mb-2" for="x-values">Nilai X (pisahkan dengan koma):</label>
+                    <input type="text" id="x-values" class="w-full p-2 border rounded dark:bg-gray-700 dark:text-white dark:border-gray-600" value="1,2,3,4,5,6,7,8,9,10">
+                </div>
+                <div>
+                    <label class="block text-gray-700 dark:text-gray-300 mb-2" for="y-values">Nilai Y (pisahkan dengan koma):</label>
+                    <input type="text" id="y-values" class="w-full p-2 border rounded dark:bg-gray-700 dark:text-white dark:border-gray-600" value="2,3,5,7,11,13,17,19,23,29">
+                </div>
+            </div>
+            <div class="flex justify-center">
+                <button onclick="updateChart()" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded dark:bg-blue-700 dark:hover:bg-blue-800">
+                    Gambar Diagram
+                </button>
+            </div>
+        </div>
+        
+        <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg">
+            <canvas id="scatterChart"></canvas>
+        </div>
+    </main>
+
+    <script src="scatter-plot.js"></script>
+</body>
+</html>

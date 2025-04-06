@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modul Aljabar</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/11.6.0/math.js"></script>
+</head>
+<body class="bg-gray-100 dark:bg-gray-900 min-h-screen">
+    <nav class="bg-white dark:bg-gray-800 shadow-sm">
+        <div class="max-w-6xl mx-auto px-4 py-3">
+            <a href="../index.html" class="text-blue-600 dark:text-blue-400 font-semibold">← Kembali</a>
+        </div>
+    </nav>
+
+    <main class="container mx-auto px-4 py-8 max-w-4xl">
+        <h1 class="text-2xl font-bold text-center mb-8 text-gray-800 dark:text-white">Modul Pembelajaran Aljabar</h1>
+        
+        <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg mb-6">
+            <h2 class="text-xl font-semibold mb-4 text-blue-600 dark:text-blue-400">Persamaan Linear</h2>
+            <p class="mb-4 text-gray-700 dark:text-gray-300">
+                Persamaan linear adalah persamaan yang melibatkan variabel dengan pangkat tertinggi 1. 
+                Bentuk umum: ax + b = 0, dimana a dan b adalah konstanta.
+            </p>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                <div>
+                    <label class="block text-gray-700 dark:text-gray-300 mb-2" for="linear-a">Koefisien a:</label>
+                    <input type="number" id="linear-a" class="w-full p-2 border rounded dark:bg-gray-700 dark:text-white dark:border-gray-600" value="2">
+                </div>
+                <div>
+                    <label class="block text-gray-700 dark:text-gray-300 mb-2" for="linear-b">Konstanta b:</label>
+                    <input type="number" id="linear-b" class="w-full p-2 border rounded dark:bg-gray-700 dark:text-white dark:border-gray-600" value="5">
+                </div>
+            </div>
+            
+            <button onclick="solveLinearEquation()" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded dark:bg-blue-700 dark:hover:bg-blue-800 mb-4">
+                Hitung Solusi
+            </button>
+            
+            <div id="linear-result" class="text-gray-700 dark:text-gray-300 p-3 bg-gray-100 dark:bg-gray-700 rounded"></div>
+        </div>
+        
+        <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg mb-6">
+            <h2 class="text-xl font-semibold mb-4 text-blue-600 dark:text-blue-400">Persamaan Kuadrat</h2>
+            <p class="mb-4 text-gray-700 dark:text-gray-300">
+                Persamaan kuadrat adalah persamaan yang melibatkan variabel dengan pangkat tertinggi 2. 
+                Bentuk umum: ax² + bx + c = 0, dimana a, b, dan c adalah konstanta.
+            </p>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                <div>
+                    <label class="block text-gray-700 dark:text-gray-300 mb-2" for="quadratic-a">Koefisien a:</label>
+                    <input type="number" id="quadratic-a" class="w-full p-2 border rounded dark:bg-gray-700 dark:text-white dark:border-gray-600" value="1">
+                </div>
+                <div>
+                    <label class="block text-gray-700 dark:text-gray-300 mb-2" for="quadratic-b">Koefisien b:</label>
+                    <input type="number" id="quadratic-b" class="w-full p-2 border rounded dark:bg-gray-700 dark:text-white dark:border-gray-600" value="-5">
+                </div>
+                <div>
+                    <label class="block text-gray-700 dark:text-gray-300 mb-2" for="quadratic-c">Konstanta c:</label>
+                    <input type="number" id="quadratic-c" class="w-full p-2 border rounded dark:bg-gray-700 dark:text-white dark:border-gray-600" value="6">
+                </div>
+            </div>
+            
+            <button onclick="solveQuadraticEquation()" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded dark:bg-blue-700 dark:hover:bg-blue-800 mb-4">
+                Hitung Solusi
+            </button>
+            
+            <div id="quadratic-result" class="text-gray-700 dark:text-gray-300 p-3 bg-gray-100 dark:bg-gray-700 rounded"></div>
+        </div>
+        
+        <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg">
+            <h2 class="text-xl font-semibold mb-4 text-blue-600 dark:text-blue-400">Evaluasi Ekspresi Aljabar</h2>
+            <p class="mb-4 text-gray-700 dark:text-gray-300">
+                Masukkan ekspresi aljabar untuk dievaluasi. Contoh: 2x + 3y, dimana x=5 dan y=2.
+            </p>
+            
+            <div class="mb-4">
+                <label class="block text-gray-700 dark:text-gray-300 mb-2" for="expression">Ekspresi:</label>
+                <input type="text" id="expression" class="w-full p-2 border rounded dark:bg-gray-700 dark:text-white dark:border-gray-600" value="2x + 3y">
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                <div>
+                    <label class="block text-gray-700 dark:text-gray-300 mb-2" for="variable-x">Nilai x:</label>
+                    <input type="number" id="variable-x" class="w-full p-2 border rounded dark:bg-gray-700 dark:text-white dark:border-gray-600" value="5">
+                </div>
+                <div>
+                    <label class="block text-gray-700 dark:text-gray-300 mb-2" for="variable-y">Nilai y:</label>
+                    <input type="number" id="variable-y" class="w-full p-2 border rounded dark:bg-gray-700 dark:text-white dark:border-gray-600" value="2">
+                </div>
+            </div>
+            
+            <button onclick="evaluateExpression()" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded dark:bg-blue-700 dark:hover:bg-blue-800 mb-4">
+                Evaluasi
+            </button>
+            
+            <div id="expression-result" class="text-gray-700 dark:text-gray-300 p-3 bg-gray-100 dark:bg-gray-700 rounded"></div>
+        </div>
+    </main>
+
+    <script>
+        function solveLinearEquation() {
+            const a = parseFloat(document.getElementById('linear-a').value);
+            const b = parseFloat(document.getElementById('linear-b').value);
+            
+            if (a === 0) {
+                document.getElementById('linear-result').innerHTML = "Koefisien a tidak boleh 0";
+                return;
+            }
+            
+            const solution = -b / a;
+            document.getElementById('linear-result').innerHTML = `
+                <p>Persamaan: ${a}x + ${b} = 0</p>
+                <p>Solusi: x = ${solution.toFixed(2)}</p>
+            `;
+        }
+        
+        function solveQuadraticEquation() {
+            const a = parseFloat(document.getElementById('quadratic-a').value);
+            const b = parseFloat(document.getElementById('quadratic-b').value);
+            const c = parseFloat(document.getElementById('quadratic-c').value);
+            
+            if (a === 0) {
+                document.getElementById('quadratic-result').innerHTML = "Koefisien a tidak boleh 0";
+                return;
+            }
+            
+            const discriminant = b * b - 4 * a * c;
+            let resultHTML = `<p>Persamaan: ${a}x² + ${b}x + ${c} = 0</p>`;
+            
+            if (discriminant > 0) {
+                const x1 = (-b + Math.sqrt(discriminant)) / (2 * a);
+                const x2 = (-b - Math.sqrt(discriminant)) / (2 * a);
+                resultHTML += `
+                    <p>Dua solusi real:</p>
+                    <p>x₁ = ${x1.toFixed(2)}</p>
+                    <p>x₂ = ${x2.toFixed(2)}</p>
+                `;
+            } else if (discriminant === 0) {
+                const x = -b / (2 * a);
+                resultHTML += `
+                    <p>Satu solusi real (akar ganda):</p>
+                    <p>x = ${x.toFixed(2)}</p>
+                `;
+            } else {
+                const realPart = -b / (2 * a);
+                const imaginaryPart = Math.sqrt(-discriminant) / (2 * a);
+                resultHTML += `
+                    <p>Dua solusi kompleks:</p>
+                    <p>x₁ = ${realPart.toFixed(2)} + ${imaginaryPart.toFixed(2)}i</p>
+                    <p>x₂ = ${realPart.toFixed(2)} - ${imaginaryPart.toFixed(2)}i</p>
+                `;
+            }
+            
+            document.getElementById('quadratic-result').innerHTML = resultHTML;
+        }
+        
+        function evaluateExpression() {
+            const expression = document.getElementById('expression').value;
+            const x = parseFloat(document.getElementById('variable-x').value);
+            const y = parseFloat(document.getElementById('variable-y').value);
+            
+            try {
+                // Create a scope with the variables
+                const scope = {x, y};
+                const result = math.evaluate(expression, scope);
+                
+                document.getElementById('expression-result').innerHTML = `
+                    <p>Ekspresi: ${expression}</p>
+                    <p>Dengan x = ${x}, y = ${y}</p>
+                    <p>Hasil: ${result.toFixed(2)}</p>
+                `;
+            } catch (error) {
+                document.getElementById('expression-result').innerHTML = "Error: Ekspresi tidak valid";
+            }
+        }
+    </script>
+</body>
+</html>

@@ -34,91 +34,97 @@ document.addEventListener("DOMContentLoaded", function () {
   const portfolioTitle = document.getElementById("portfolio-title");
   let easterEggTriggered = false;
 
-  portfolioTitle.addEventListener("click", function (e) {
-    // Prevent default only if it's not the first click
-    if (easterEggTriggered) {
-      e.preventDefault();
-      return;
-    }
+  if (portfolioTitle) {
+    portfolioTitle.addEventListener("click", function (e) {
+      // Prevent default only if it's not the first click
+      if (easterEggTriggered) {
+        e.preventDefault();
+        return;
+      }
 
-    easterEggTriggered = true;
+      easterEggTriggered = true;
 
-    // Get all elements except script, style, and cursor elements
-    const allElements = document.querySelectorAll(
-      "body *:not(script):not(style):not(.cursor-outer):not(.cursor-inner)"
-    );
+      // Get all elements except script, style, and cursor elements
+      const allElements = document.querySelectorAll(
+        "body *:not(script):not(style):not(.cursor-outer):not(.cursor-inner)"
+      );
 
-    // Make all elements fall simultaneously
-    allElements.forEach((el) => {
-      if (el.classList.contains("falling-element")) return;
+      // Make all elements fall simultaneously
+      allElements.forEach((el) => {
+        if (el.classList.contains("falling-element")) return;
 
-      // Save original position and styles
-      const rect = el.getBoundingClientRect();
-      // Save original styles
-      el.dataset.originalPosition = window.getComputedStyle(el).position;
-      el.dataset.originalTop = rect.top;
-      el.dataset.originalLeft = rect.left;
+        // Save original position and styles
+        const rect = el.getBoundingClientRect();
+        // Save original styles
+        el.dataset.originalPosition = window.getComputedStyle(el).position;
+        el.dataset.originalTop = rect.top;
+        el.dataset.originalLeft = rect.left;
 
-      // Apply falling animation
-      el.classList.add("falling-element");
+        // Apply falling animation
+        el.classList.add("falling-element");
 
-      // Set fixed position at original location
-      el.style.position = "fixed";
-      el.style.top = `${rect.top}px`;
-      el.style.left = `${rect.left}px`;
-      el.style.width = `${rect.width}px`;
-      el.style.height = `${rect.height}px`;
+        // Set fixed position at original location
+        el.style.position = "fixed";
+        el.style.top = `${rect.top}px`;
+        el.style.left = `${rect.left}px`;
+        el.style.width = `${rect.width}px`;
+        el.style.height = `${rect.height}px`;
 
-      // Random rotation for more natural effect
-      const rotationDirection = Math.random() > 0.5 ? 1 : -1;
-      const rotationDegrees = 5 + Math.random() * 15;
-      el.style.transform = `rotateZ(${rotationDegrees * rotationDirection}deg)`;
-    });
-
-    // Show notification and reload after animation
-    setTimeout(() => {
-      Swal.fire({
-        title: "New Text",
-        text: "New Text",
-        icon: "warning",
-        confirmButtonText: "New Text",
-      }).then(() => {
-        location.reload();
+        // Random rotation for more natural effect
+        const rotationDirection = Math.random() > 0.5 ? 1 : -1;
+        const rotationDegrees = 5 + Math.random() * 15;
+        el.style.transform = `rotateZ(${rotationDegrees * rotationDirection}deg)`;
       });
-    }, 3000);
-  });
+
+      // Show notification and reload after animation
+      setTimeout(() => {
+        Swal.fire({
+          title: "New Text",
+          text: "New Text",
+          icon: "warning",
+          confirmButtonText: "New Text",
+        }).then(() => {
+          location.reload();
+        });
+      }, 3000);
+    });
+  }
 
   // Prevent right-click to make it more secret
   document.addEventListener("contextmenu", function (e) {
     e.preventDefault();
   });
 
+  // Eye tracking for chatbot
   document.addEventListener("mousemove", (e) => {
     if (window.innerWidth > 768) {
       // Hanya aktif di desktop
       const eyes = document.querySelectorAll(".pupil");
       const eyesContainer = document.querySelector("#chatbotIcon");
-      const rect = eyesContainer.getBoundingClientRect();
+      if (eyes.length && eyesContainer) {
+        const rect = eyesContainer.getBoundingClientRect();
 
-      // Posisi tengah ikon
-      const iconCenterX = rect.left + rect.width / 2 + window.scrollX;
-      const iconCenterY = rect.top + rect.height / 2 + window.scrollY;
+        // Posisi tengah ikon
+        const iconCenterX = rect.left + rect.width / 2 + window.scrollX;
+        const iconCenterY = rect.top + rect.height / 2 + window.scrollY;
 
-      // Hitung sudut antara kursor dan tengah ikon
-      const angle = Math.atan2(e.pageY - iconCenterY, e.pageX - iconCenterX);
+        // Hitung sudut antara kursor dan tengah ikon
+        const angle = Math.atan2(e.pageY - iconCenterY, e.pageX - iconCenterX);
 
-      // Jarak maksimal pupil bergerak (dalam px)
-      const distance = 2;
+        // Jarak maksimal pupil bergerak (dalam px)
+        const distance = 2;
 
-      // Posisi pupil
-      const pupilX = Math.cos(angle) * distance;
-      const pupilY = Math.sin(angle) * distance;
+        // Posisi pupil
+        const pupilX = Math.cos(angle) * distance;
+        const pupilY = Math.sin(angle) * distance;
 
-      eyes.forEach((eye) => {
-        eye.style.transform = `translate(${pupilX}px, ${pupilY}px)`;
-      });
+        eyes.forEach((eye) => {
+          eye.style.transform = `translate(${pupilX}px, ${pupilY}px)`;
+        });
+      }
     }
   });
+
   // Data Q&A
   const qaPairs = [
     {
@@ -143,197 +149,313 @@ document.addEventListener("DOMContentLoaded", function () {
     },
   ];
 
-  // Elemen DOM
+  // Chatbot functionality
   const chatbotIcon = document.getElementById("chatbotIcon");
   const chatbotBox = document.getElementById("chatbotBox");
   const closeBtn = document.getElementById("closeBtn");
   const chatbotMessages = document.getElementById("chatbotMessages");
   const buttonOptions = document.getElementById("buttonOptions");
 
-  // Tampilkan tombol pilihan
-  function renderButtons() {
-    buttonOptions.innerHTML = qaPairs
-      .map(
-        (qa) => `
-          <button 
-            class="option-btn border-transparent bg-indigo-100 hover:bg-indigo-200 text-indigo-700 py-2 px-3 rounded-lg text-sm transition-colors"
-            data-question="${qa.question}"
-            data-answer="${qa.answer.replace(/"/g, "&quot;")}"
-          >
-            ${qa.question}
-          </button>
-        `
-      )
-      .join("");
+  if (chatbotIcon && chatbotBox) {
+    // Tampilkan tombol pilihan
+    function renderButtons() {
+      if (buttonOptions) {
+        buttonOptions.innerHTML = qaPairs
+          .map(
+            (qa) => `
+              <button 
+                class="option-btn border-transparent bg-indigo-100 hover:bg-indigo-200 text-indigo-700 py-2 px-3 rounded-lg text-sm transition-colors"
+                data-question="${qa.question}"
+                data-answer="${qa.answer.replace(/"/g, "&quot;")}"
+              >
+                ${qa.question}
+              </button>
+            `
+          )
+          .join("");
+      }
+    }
+
+    // Tambahkan pesan ke chat
+    function addMessage(message, isBot = true, isHTML = false) {
+      if (!chatbotMessages) return;
+
+      const messageDiv = document.createElement("div");
+      messageDiv.className = `mb-3 ${isBot ? "" : "text-right"}`;
+
+      const bubble = document.createElement("div");
+      bubble.className = `inline-block rounded-lg px-4 py-2 max-w-[85%] ${
+        isBot
+          ? "bg-gray-200 rounded-tl-none"
+          : "bg-primary text-white rounded-tr-none"
+      }`;
+
+      if (isHTML) {
+        bubble.innerHTML = message;
+      } else {
+        bubble.textContent = message;
+      }
+
+      messageDiv.appendChild(bubble);
+      chatbotMessages.appendChild(messageDiv);
+      chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
+    }
+
+    // Handle tombol option
+    function handleOptionClick(e) {
+      if (e.target.classList.contains("option-btn")) {
+        const question = e.target.getAttribute("data-question");
+        const answer = e.target.getAttribute("data-answer");
+
+        // Tampilkan pertanyaan user
+        addMessage(question, false);
+
+        // Delay lalu tampilkan jawaban bot
+        setTimeout(() => {
+          addMessage(answer, true, true);
+        }, 500);
+      }
+    }
+
+    // Event Listeners
+    chatbotIcon.addEventListener("click", () => {
+      chatbotBox.classList.toggle("hidden");
+      chatbotBox.classList.toggle("flex");
+      chatbotIcon.classList.toggle("hidden");
+      renderButtons();
+    });
+
+    if (closeBtn) {
+      closeBtn.addEventListener("click", () => {
+        chatbotBox.classList.add("hidden");
+        chatbotBox.classList.remove("flex");
+        chatbotIcon.classList.remove("hidden");
+      });
+    }
+
+    if (buttonOptions) {
+      buttonOptions.addEventListener("click", handleOptionClick);
+    }
+
+    // Pesan pembuka otomatis
+    setTimeout(() => {
+      addMessage(
+        "Pilih pertanyaan di bawah atau klik ikon x jika ingin menutup ini",
+        true
+      );
+    }, 1500);
   }
 
-  // Tambahkan pesan ke chat
-  function addMessage(message, isBot = true, isHTML = false) {
-    const messageDiv = document.createElement("div");
-    messageDiv.className = `mb-3 ${isBot ? "" : "text-right"}`;
+  // Theme Management System (Bagian Penting untuk Menyimpan Tema)
+  const themeToggle = document.getElementById("theme-toggle");
+  const themeToggleDarkIcon = document.getElementById("theme-toggle-dark-icon");
+  const themeToggleLightIcon = document.getElementById("theme-toggle-light-icon");
 
-    const bubble = document.createElement("div");
-    bubble.className = `inline-block rounded-lg px-4 py-2 max-w-[85%] ${
-      isBot
-        ? "bg-gray-200 rounded-tl-none"
-        : "bg-primary text-white rounded-tr-none"
-    }`;
+  // Fungsi untuk mengatur tema awal
+  function setInitialTheme() {
+    const savedTheme = localStorage.getItem("theme");
+    const systemPrefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
 
-    if (isHTML) {
-      bubble.innerHTML = message;
+    if (savedTheme === "dark" || (!savedTheme && systemPrefersDark)) {
+      document.documentElement.classList.add("dark");
+      if (themeToggleDarkIcon) themeToggleDarkIcon.classList.add("hidden");
+      if (themeToggleLightIcon) themeToggleLightIcon.classList.remove("hidden");
     } else {
-      bubble.textContent = message;
-    }
-
-    messageDiv.appendChild(bubble);
-    chatbotMessages.appendChild(messageDiv);
-    chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
-  }
-
-  // Handle tombol option
-  function handleOptionClick(e) {
-    if (e.target.classList.contains("option-btn")) {
-      const question = e.target.getAttribute("data-question");
-      const answer = e.target.getAttribute("data-answer");
-
-      // Tampilkan pertanyaan user
-      addMessage(question, false);
-
-      // Delay lalu tampilkan jawaban bot
-      setTimeout(() => {
-        addMessage(answer, true, true);
-      }, 500);
+      document.documentElement.classList.remove("dark");
+      if (themeToggleDarkIcon) themeToggleDarkIcon.classList.remove("hidden");
+      if (themeToggleLightIcon) themeToggleLightIcon.classList.add("hidden");
     }
   }
 
-  // Event Listeners
-  chatbotIcon.addEventListener("click", () => {
-    chatbotBox.classList.toggle("hidden");
-    chatbotBox.classList.toggle("flex");
-    chatbotIcon.classList.toggle("hidden");
-    renderButtons();
-  });
+  // Fungsi untuk toggle tema
+  function toggleTheme() {
+    const html = document.documentElement;
+    const isDark = html.classList.contains("dark");
+    
+    // Toggle class dark pada html
+    html.classList.toggle("dark");
+    
+    // Simpan preferensi tema
+    localStorage.setItem("theme", isDark ? "light" : "dark");
+    
+    // Update icon toggle
+    if (themeToggleDarkIcon && themeToggleLightIcon) {
+      themeToggleDarkIcon.classList.toggle("hidden");
+      themeToggleLightIcon.classList.toggle("hidden");
+    }
+  }
 
-  closeBtn.addEventListener("click", () => {
-    chatbotBox.classList.add("hidden");
-    chatbotBox.classList.remove("flex");
-    chatbotIcon.classList.remove("hidden");
-  });
+  // Sinkronisasi tema antar tab
+  function syncTheme(event) {
+    if (event.key === "theme") {
+      const newTheme = event.newValue;
+      const html = document.documentElement;
+      
+      if (newTheme === "dark") {
+        html.classList.add("dark");
+        if (themeToggleDarkIcon) themeToggleDarkIcon.classList.add("hidden");
+        if (themeToggleLightIcon) themeToggleLightIcon.classList.remove("hidden");
+      } else {
+        html.classList.remove("dark");
+        if (themeToggleDarkIcon) themeToggleDarkIcon.classList.remove("hidden");
+        if (themeToggleLightIcon) themeToggleLightIcon.classList.add("hidden");
+      }
+    }
+  }
 
-  buttonOptions.addEventListener("click", handleOptionClick);
+  // Inisialisasi tema
+  setInitialTheme();
 
-  // Pesan pembuka otomatis
-  setTimeout(() => {
-    addMessage(
-      "Pilih pertanyaan di bawah atau klik ikon x jika ingin menutup ini",
-      true
-    );
-  }, 1500);
-  const profileImgContainer = document.querySelector(
-    ".profile-image-container"
-  );
+  // Event listener untuk tombol toggle
+  if (themeToggle) {
+    themeToggle.addEventListener("click", toggleTheme);
+  }
+
+  // Event listener untuk sinkronisasi antar tab
+  window.addEventListener("storage", syncTheme);
+
+  // Form submission
+  const form = document.getElementById("form");
+  const btn = document.getElementById("button");
+
+  if (form && btn) {
+    form.addEventListener("submit", function (event) {
+      event.preventDefault();
+
+      const originalBtnValue = btn.value;
+      btn.value = "Sending...";
+
+      const serviceID = "portfolio"; // Replace with your service ID
+      const templateID = "portfolio"; // Replace with your template ID
+
+      // Show loading indicator
+      Swal.fire({
+        title: "Sending your message...",
+        html: "Please wait a moment",
+        allowOutsideClick: false,
+        didOpen: () => {
+          Swal.showLoading();
+        },
+      });
+
+      // Send email
+      emailjs.sendForm(serviceID, templateID, this).then(
+        () => {
+          // Success notification
+          btn.value = originalBtnValue;
+          Swal.fire({
+            icon: "success",
+            title: "Message Sent!",
+            text: "Thank you for your message. I will get back to you soon.",
+            confirmButtonColor: "#3085d6",
+            timer: 4000,
+            timerProgressBar: true,
+          });
+          this.reset(); // Reset form
+        },
+        (err) => {
+          // Error notification
+          btn.value = originalBtnValue;
+          Swal.fire({
+            icon: "error",
+            title: "Failed to Send",
+            text: "An error occurred: " + (err.text || "Please try again later"),
+            confirmButtonColor: "#d33",
+          });
+          console.error("EmailJS Error:", err);
+        }
+      );
+    });
+  }
+
+  // Image handling
+  const profileImgContainer = document.querySelector(".profile-image-container");
   const aboutImgContainer = document.querySelector(".about-image-container");
   const profileImg = document.querySelector(".profile-image");
   const aboutImg = document.querySelector(".about-image");
-  const btn = document.getElementById("button");
 
-  document.getElementById("form").addEventListener("submit", function (event) {
-    event.preventDefault();
+  if (profileImgContainer && aboutImgContainer) {
+    const profileImageUrl = "./img/my1.png";
+    const aboutImageUrl = "./img/my2.png";
 
-    const originalBtnValue = btn.value;
-    btn.value = "Sending...";
+    // Preload gambar
+    const profileImgEl = new Image();
+    profileImgEl.src = profileImageUrl;
 
-    const serviceID = "portfolio"; // Replace with your service ID
-    const templateID = "portfolio"; // Replace with your template ID
+    const aboutImgEl = new Image();
+    aboutImgEl.src = aboutImageUrl;
 
-    // Show loading indicator
-    Swal.fire({
-      title: "Sending your message...",
-      html: "Please wait a moment",
-      allowOutsideClick: false,
-      didOpen: () => {
-        Swal.showLoading();
-      },
-    });
+    // Animasi saat scroll
+    function handleScroll() {
+      const aboutSection = document.getElementById("about");
+      if (!aboutSection) return;
 
-    // Send email
-    emailjs.sendForm(serviceID, templateID, this).then(
-      () => {
-        // Success notification
-        btn.value = originalBtnValue;
-        Swal.fire({
-          icon: "success",
-          title: "Message Sent!",
-          text: "Thank you for your message. I will get back to you soon.",
-          confirmButtonColor: "#3085d6",
-          timer: 4000,
-          timerProgressBar: true,
-        });
-        this.reset(); // Reset form
-      },
-      (err) => {
-        // Error notification
-        btn.value = originalBtnValue;
-        Swal.fire({
-          icon: "error",
-          title: "Failed to Send",
-          text: "An error occurred: " + (err.text || "Please try again later"),
-          confirmButtonColor: "#d33",
-        });
-        console.error("EmailJS Error:", err);
+      const aboutRect = aboutSection.getBoundingClientRect();
+      const windowHeight = window.innerHeight;
+
+      // Jika about section masuk ke viewport
+      if (aboutRect.top < windowHeight * 0.7) {
+        // Animasi keluar profile image
+        if (profileImgContainer) {
+          profileImgContainer.style.transform = "translateY(20px) scale(0.9)";
+        }
+        if (profileImg) {
+          profileImg.style.opacity = "0.5";
+        }
+
+        // Animasi masuk about image
+        if (aboutImgContainer) {
+          aboutImgContainer.style.transform = "translateY(0)";
+        }
+        if (aboutImg) {
+          aboutImg.style.opacity = "1";
+        }
+
+        // Set background image dengan efek fade
+        setTimeout(() => {
+          if (profileImg) {
+            profileImg.style.backgroundImage = `url(${profileImageUrl})`;
+          }
+          if (aboutImg) {
+            aboutImg.style.backgroundImage = `url(${aboutImageUrl})`;
+          }
+        }, 300);
+      } else {
+        // Kembalikan ke state awal
+        if (profileImgContainer) {
+          profileImgContainer.style.transform = "none";
+        }
+        if (profileImg) {
+          profileImg.style.opacity = "1";
+        }
+        if (aboutImgContainer) {
+          aboutImgContainer.style.transform = "translateY(20px)";
+        }
+        if (aboutImg) {
+          aboutImg.style.opacity = "0.5";
+        }
       }
-    );
-  });
-  const profileImageUrl = "./img/my1.png";
-  const aboutImageUrl = "./img/my2.png";
+    }
 
-  // Preload gambar
-  const profileImgEl = new Image();
-  profileImgEl.src = profileImageUrl;
-
-  const aboutImgEl = new Image();
-  aboutImgEl.src = aboutImageUrl;
-
-  // Animasi saat scroll
-  function handleScroll() {
-    const aboutSection = document.getElementById("about");
-    const aboutRect = aboutSection.getBoundingClientRect();
-    const windowHeight = window.innerHeight;
-
-    // Jika about section masuk ke viewport
-    if (aboutRect.top < windowHeight * 0.7) {
-      // Animasi keluar profile image
-      profileImgContainer.style.transform = "translateY(20px) scale(0.9)";
-      profileImg.style.opacity = "0.5";
-
-      // Animasi masuk about image
-      aboutImgContainer.style.transform = "translateY(0)";
-      aboutImg.style.opacity = "1";
-
-      // Set background image dengan efek fade
-      setTimeout(() => {
-        profileImg.style.backgroundImage = `url(${profileImageUrl})`;
-        aboutImg.style.backgroundImage = `url(${aboutImageUrl})`;
-      }, 300);
-    } else {
-      // Kembalikan ke state awal
-      profileImgContainer.style.transform = "none";
-      profileImg.style.opacity = "1";
+    // Inisialisasi
+    if (aboutImgContainer) {
       aboutImgContainer.style.transform = "translateY(20px)";
+    }
+    if (aboutImg) {
       aboutImg.style.opacity = "0.5";
     }
+
+    // Set background image awal
+    if (profileImg) {
+      profileImg.style.backgroundImage = `url(${profileImageUrl})`;
+    }
+    if (aboutImg) {
+      aboutImg.style.backgroundImage = `url(${aboutImageUrl})`;
+    }
+
+    window.addEventListener("scroll", handleScroll);
+    window.addEventListener("resize", handleScroll);
   }
-
-  // Inisialisasi
-  aboutImgContainer.style.transform = "translateY(20px)";
-  aboutImg.style.opacity = "0.5";
-
-  // Set background image awal
-  profileImg.style.backgroundImage = `url(${profileImageUrl})`;
-  aboutImg.style.backgroundImage = `url(${aboutImageUrl})`;
-
-  window.addEventListener("scroll", handleScroll);
-  window.addEventListener("resize", handleScroll);
 
   // Intersection Observer for section animations
   const sections = document.querySelectorAll(
@@ -368,11 +490,10 @@ document.addEventListener("DOMContentLoaded", function () {
   // Efek parallax saat scroll
   function handleParallax() {
     const parallaxElements = document.querySelectorAll(".parallax-element");
-    const scrollPosition = window.pageYOffset;
 
     parallaxElements.forEach((element) => {
       const speed = parseFloat(element.dataset.speed) || 0.3;
-      const offset = scrollPosition * speed;
+      const offset = window.pageYOffset * speed;
       element.style.transform = `translateY(${offset}px)`;
     });
   }
@@ -383,30 +504,32 @@ document.addEventListener("DOMContentLoaded", function () {
   // Navbar scroll effect
   let lastScroll = 0;
   const navbar = document.getElementById("navbar");
-  const navbarHeight = navbar.offsetHeight;
+  if (navbar) {
+    const navbarHeight = navbar.offsetHeight;
 
-  window.addEventListener("scroll", () => {
-    const currentScroll = window.pageYOffset;
+    window.addEventListener("scroll", () => {
+      const currentScroll = window.pageYOffset;
 
-    if (currentScroll <= 10) {
-      navbar.classList.remove("nav-scroll");
-      navbar.style.transform = "translateY(0)";
-      return;
-    }
+      if (currentScroll <= 10) {
+        navbar.classList.remove("nav-scroll");
+        navbar.style.transform = "translateY(0)";
+        return;
+      }
 
-    // Smooth show/hide navbar saat scroll
-    if (currentScroll > lastScroll && currentScroll > navbarHeight) {
-      // Scrolling down
-      navbar.style.transform = `translateY(-${navbarHeight}px)`;
-      navbar.classList.add("nav-scroll");
-    } else {
-      // Scrolling up
-      navbar.style.transform = "translateY(0)";
-      navbar.classList.add("nav-scroll");
-    }
+      // Smooth show/hide navbar saat scroll
+      if (currentScroll > lastScroll && currentScroll > navbarHeight) {
+        // Scrolling down
+        navbar.style.transform = `translateY(-${navbarHeight}px)`;
+        navbar.classList.add("nav-scroll");
+      } else {
+        // Scrolling up
+        navbar.style.transform = "translateY(0)";
+        navbar.classList.add("nav-scroll");
+      }
 
-    lastScroll = currentScroll;
-  });
+      lastScroll = currentScroll;
+    });
+  }
 
   // Tambahkan efek scroll progress indicator
   const progressBar = document.createElement("div");
@@ -430,131 +553,97 @@ document.addEventListener("DOMContentLoaded", function () {
     "a, button, .link, .btn, input, textarea"
   );
 
-  let mouseX = 0;
-  let mouseY = 0;
-  let innerX = 0;
-  let innerY = 0;
-  let outerX = 0;
-  let outerY = 0;
+  if (cursorOuter && cursorInner) {
+    let mouseX = 0;
+    let mouseY = 0;
+    let innerX = 0;
+    let innerY = 0;
+    let outerX = 0;
+    let outerY = 0;
 
-  const innerSpeed = 0.15;
-  const outerSpeed = 0.1;
+    const innerSpeed = 0.15;
+    const outerSpeed = 0.1;
 
-  function updateCursor() {
-    const dx = mouseX - outerX;
-    const dy = mouseY - outerY;
-    const angle = (Math.atan2(dy, dx) * 180) / Math.PI;
+    function updateCursor() {
+      const dx = mouseX - outerX;
+      const dy = mouseY - outerY;
+      const angle = (Math.atan2(dy, dx) * 180) / Math.PI;
 
-    innerX = mouseX;
-    innerY = mouseY;
-    cursorInner.style.left = innerX + "px";
-    cursorInner.style.top = innerY + "px";
+      innerX = mouseX;
+      innerY = mouseY;
+      cursorInner.style.left = innerX + "px";
+      cursorInner.style.top = innerY + "px";
 
-    outerX += dx * outerSpeed;
-    outerY += dy * outerSpeed;
-    cursorOuter.style.left = outerX + "px";
-    cursorOuter.style.top = outerY + "px";
+      outerX += dx * outerSpeed;
+      outerY += dy * outerSpeed;
+      cursorOuter.style.left = outerX + "px";
+      cursorOuter.style.top = outerY + "px";
 
-    cursorOuter.style.transform = `translate(-50%, -50%) rotate(${
-      angle + 90
-    }deg)`;
+      cursorOuter.style.transform = `translate(-50%, -50%) rotate(${
+        angle + 90
+      }deg)`;
 
-    requestAnimationFrame(updateCursor);
-  }
-
-  document.addEventListener("mousemove", function (e) {
-    mouseX = e.clientX;
-    mouseY = e.clientY;
-  });
-
-  links.forEach((link) => {
-    link.addEventListener("mouseenter", function () {
-      document.body.classList.add("link-hover");
-      cursorOuter.style.transform = "translate(-50%, -50%) scale(1.5)";
-    });
-
-    link.addEventListener("mouseleave", function () {
-      document.body.classList.remove("link-hover");
-      cursorOuter.style.transform = "translate(-50%, -50%) scale(1)";
-    });
-  });
-
-  // Initialize cursor animation
-  updateCursor();
-
-  // Theme Toggle
-  const themeToggle = document.getElementById("theme-toggle");
-  const themeToggleDarkIcon = document.getElementById("theme-toggle-dark-icon");
-  const themeToggleLightIcon = document.getElementById(
-    "theme-toggle-light-icon"
-  );
-
-  if (
-    localStorage.getItem("color-theme") === "dark" ||
-    (!localStorage.getItem("color-theme") &&
-      window.matchMedia("(prefers-color-scheme: dark)").matches)
-  ) {
-    document.documentElement.classList.add("dark");
-    themeToggleDarkIcon.classList.add("hidden");
-    themeToggleLightIcon.classList.remove("hidden");
-  } else {
-    document.documentElement.classList.remove("dark");
-    themeToggleDarkIcon.classList.remove("hidden");
-    themeToggleLightIcon.classList.add("hidden");
-  }
-
-  themeToggle.addEventListener("click", function () {
-    themeToggleDarkIcon.classList.toggle("hidden");
-    themeToggleLightIcon.classList.toggle("hidden");
-
-    document.documentElement.classList.add("transition-colors");
-    document.documentElement.classList.add("duration-300");
-
-    if (document.documentElement.classList.contains("dark")) {
-      document.documentElement.classList.remove("dark");
-      localStorage.setItem("color-theme", "light");
-    } else {
-      document.documentElement.classList.add("dark");
-      localStorage.setItem("color-theme", "dark");
+      requestAnimationFrame(updateCursor);
     }
 
-    setTimeout(() => {
-      document.documentElement.classList.remove("transition-colors");
-      document.documentElement.classList.remove("duration-300");
-    }, 300);
-  });
+    document.addEventListener("mousemove", function (e) {
+      mouseX = e.clientX;
+      mouseY = e.clientY;
+    });
+
+    links.forEach((link) => {
+      link.addEventListener("mouseenter", function () {
+        document.body.classList.add("link-hover");
+        cursorOuter.style.transform = "translate(-50%, -50%) scale(1.5)";
+      });
+
+      link.addEventListener("mouseleave", function () {
+        document.body.classList.remove("link-hover");
+        cursorOuter.style.transform = "translate(-50%, -50%) scale(1)";
+      });
+    });
+
+    // Initialize cursor animation
+    updateCursor();
+  }
 
   // Mobile Menu Toggle
   const mobileMenuButton = document.getElementById("mobile-menu-button");
   const mobileMenu = document.getElementById("mobile-menu");
 
-  mobileMenuButton.addEventListener("click", function () {
-    mobileMenu.classList.toggle("hidden");
-    const isExpanded =
-      mobileMenuButton.getAttribute("aria-expanded") === "true";
-    mobileMenuButton.setAttribute("aria-expanded", !isExpanded);
-  });
-
-  // Close mobile menu when clicking on a link
-  document.querySelectorAll("#mobile-menu a").forEach((link) => {
-    link.addEventListener("click", () => {
-      mobileMenu.classList.add("hidden");
-      mobileMenuButton.setAttribute("aria-expanded", "false");
+  if (mobileMenuButton && mobileMenu) {
+    mobileMenuButton.addEventListener("click", function () {
+      mobileMenu.classList.toggle("hidden");
+      const isExpanded =
+        mobileMenuButton.getAttribute("aria-expanded") === "true";
+      mobileMenuButton.setAttribute("aria-expanded", !isExpanded);
     });
-  });
+
+    // Close mobile menu when clicking on a link
+    document.querySelectorAll("#mobile-menu a").forEach((link) => {
+      link.addEventListener("click", () => {
+        mobileMenu.classList.add("hidden");
+        mobileMenuButton.setAttribute("aria-expanded", "false");
+      });
+    });
+  }
 
   // Add wave animation to profile title
   const title = document.querySelector("h1");
-  title.addEventListener("mouseenter", () => {
-    title.classList.add("wave");
-  });
-  title.addEventListener("animationend", () => {
-    title.classList.remove("wave");
-  });
+  if (title) {
+    title.addEventListener("mouseenter", () => {
+      title.classList.add("wave");
+    });
+    title.addEventListener("animationend", () => {
+      title.classList.remove("wave");
+    });
+  }
 
   // Add pulse animation to contact button
   const contactBtn = document.querySelector('a[href="#contact"]');
-  setInterval(() => {
-    contactBtn.classList.toggle("pulse");
-  }, 4000);
+  if (contactBtn) {
+    setInterval(() => {
+      contactBtn.classList.toggle("pulse");
+    }, 4000);
+  }
 });

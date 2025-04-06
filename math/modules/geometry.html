@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modul Geometri</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .calculator {
+            max-width: 400px;
+            margin: 0 auto;
+        }
+        .display {
+            height: 60px;
+            font-size: 1.5rem;
+            text-align: right;
+            padding: 10px;
+            background-color: #f3f4f6;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+        .dark .display {
+            background-color: #374151;
+        }
+        .btn {
+            height: 50px;
+            font-size: 1.1rem;
+        }
+        .btn-operator {
+            background-color: #3B82F6;
+            color: white;
+        }
+        .dark .btn-operator {
+            background-color: #2563EB;
+        }
+        .btn-function {
+            background-color: #F59E0B;
+            color: white;
+        }
+        .dark .btn-function {
+            background-color: #D97706;
+        }
+        .btn-equals {
+            background-color: #10B981;
+            color: white;
+        }
+        .dark .btn-equals {
+            background-color: #059669;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 dark:bg-gray-900 min-h-screen">
+    <nav class="bg-white dark:bg-gray-800 shadow-sm">
+        <div class="max-w-6xl mx-auto px-4 py-3">
+            <a href="../index.html" class="text-blue-600 dark:text-blue-400 font-semibold">← Kembali</a>
+        </div>
+    </nav>
+
+    <main class="container mx-auto px-4 py-8 max-w-4xl">
+        <h1 class="text-2xl font-bold text-center mb-8 text-gray-800 dark:text-white">Modul Pembelajaran Geometri</h1>
+        
+        <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg mb-6">
+            <h2 class="text-xl font-semibold mb-4 text-blue-600 dark:text-blue-400">Bangun Datar</h2>
+            
+            <div class="mb-4">
+                <label class="block text-gray-700 dark:text-gray-300 mb-2" for="shape">Pilih Bangun Datar:</label>
+                <select id="shape" class="w-full p-2 border rounded dark:bg-gray-700 dark:text-white dark:border-gray-600" onchange="updateShapeForm()">
+                    <option value="square">Persegi</option>
+                    <option value="rectangle">Persegi Panjang</option>
+                    <option value="triangle">Segitiga</option>
+                    <option value="circle">Lingkaran</option>
+                </select>
+            </div>
+            
+            <div id="shape-form" class="mb-4">
+                <!-- Form will be dynamically updated based on shape selection -->
+            </div>
+            
+            <button onclick="calculateShape()" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded dark:bg-blue-700 dark:hover:bg-blue-800 mb-4">
+                Hitung
+            </button>
+            
+            <div id="shape-result" class="text-gray-700 dark:text-gray-300 p-3 bg-gray-100 dark:bg-gray-700 rounded"></div>
+        </div>
+        
+        <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg">
+            <h2 class="text-xl font-semibold mb-4 text-blue-600 dark:text-blue-400">Bangun Ruang</h2>
+            
+            <div class="mb-4">
+                <label class="block text-gray-700 dark:text-gray-300 mb-2" for="solid">Pilih Bangun Ruang:</label>
+                <select id="solid" class="w-full p-2 border rounded dark:bg-gray-700 dark:text-white dark:border-gray-600" onchange="updateSolidForm()">
+                    <option value="cube">Kubus</option>
+                    <option value="cuboid">Balok</option>
+                    <option value="sphere">Bola</option>
+                    <option value="cylinder">Tabung</option>
+                </select>
+            </div>
+            
+            <div id="solid-form" class="mb-4">
+                <!-- Form will be dynamically updated based on solid selection -->
+            </div>
+            
+            <button onclick="calculateSolid()" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded dark:bg-blue-700 dark:hover:bg-blue-800 mb-4">
+                Hitung
+            </button>
+            
+            <div id="solid-result" class="text-gray-700 dark:text-gray-300 p-3 bg-gray-100 dark:bg-gray-700 rounded"></div>
+        </div>
+    </main>
+
+    <script>
+        function updateShapeForm() {
+            const shape = document.getElementById('shape').value;
+            let formHTML = '';
+            
+            switch (shape) {
+                case 'square':
+                    formHTML = `
+                        <label class="block text-gray-700 dark:text-gray-300 mb-2" for="side">Panjang Sisi:</label>
+                        <input type="number" id="side" class="w-full p-2 border rounded dark:bg-gray-700 dark:text-white dark:border-gray-600" placeholder="Masukkan panjang sisi" step="any">
+                    `;
+                    break;
+                case 'rectangle':
+                    formHTML = `
+                        <label class="block text-gray-700 dark:text-gray-300 mb-2" for="length">Panjang:</label>
+                        <input type="number" id="length" class="w-full p-2 border rounded dark:bg-gray-700 dark:text-white dark:border-gray-600" placeholder="Masukkan panjang" step="any">
+                        <label class="block text-gray-700 dark:text-gray-300 mb-2 mt-2" for="width">Lebar:</label>
+                        <input type="number" id="width" class="w-full p-2 border rounded dark:bg-gray-700 dark:text-white dark:border-gray-600" placeholder="Masukkan lebar" step="any">
+                    `;
+                    break;
+                case 'triangle':
+                    formHTML = `
+                        <label class="block text-gray-700 dark:text-gray-300 mb-2" for="base">Alas:</label>
+                        <input type="number" id="base" class="w-full p-2 border rounded dark:bg-gray-700 dark:text-white dark:border-gray-600" placeholder="Masukkan alas" step="any">
+                        <label class="block text-gray-700 dark:text-gray-300 mb-2 mt-2" for="height">Tinggi:</label>
+                        <input type="number" id="height" class="w-full p-2 border rounded dark:bg-gray-700 dark:text-white dark:border-gray-600" placeholder="Masukkan tinggi" step="any">
+                    `;
+                    break;
+                case 'circle':
+                    formHTML = `
+                        <label class="block text-gray-700 dark:text-gray-300 mb-2" for="radius">Jari-jari:</label>
+                        <input type="number" id="radius" class="w-full p-2 border rounded dark:bg-gray-700 dark:text-white dark:border-gray-600" placeholder="Masukkan jari-jari" step="any">
+                    `;
+                    break;
+            }
+            
+            document.getElementById('shape-form').innerHTML = formHTML;
+        }
+        
+        function updateSolidForm() {
+            const solid = document.getElementById('solid').value;
+            let formHTML = '';
+            
+            switch (solid) {
+                case 'cube':
+                    formHTML = `
+                        <label class="block text-gray-700 dark:text-gray-300 mb-2" for="cube-side">Panjang Sisi:</label>
+                        <input type="number" id="cube-side" class="w-full p-2 border rounded dark:bg-gray-700 dark:text-white dark:border-gray-600" placeholder="Masukkan panjang sisi" step="any">
+                    `;
+                    break;
+                case 'cuboid':
+                    formHTML = `
+                        <label class="block text-gray-700 dark:text-gray-300 mb-2" for="cuboid-length">Panjang:</label>
+                        <input type="number" id="cuboid-length" class="w-full p-2 border rounded dark:bg-gray-700 dark:text-white dark:border-gray-600" placeholder="Masukkan panjang" step="any">
+                        <label class="block text-gray-700 dark:text-gray-300 mb-2 mt-2" for="cuboid-width">Lebar:</label>
+                        <input type="number" id="cuboid-width" class="w-full p-2 border rounded dark:bg-gray-700 dark:text-white dark:border-gray-600" placeholder="Masukkan lebar" step="any">
+                        <label class="block text-gray-700 dark:text-gray-300 mb-2 mt-2" for="cuboid-height">Tinggi:</label>
+                        <input type="number" id="cuboid-height" class="w-full p-2 border rounded dark:bg-gray-700 dark:text-white dark:border-gray-600" placeholder="Masukkan tinggi" step="any">
+                    `;
+                    break;
+                case 'sphere':
+                    formHTML = `
+                        <label class="block text-gray-700 dark:text-gray-300 mb-2" for="sphere-radius">Jari-jari:</label>
+                        <input type="number" id="sphere-radius" class="w-full p-2 border rounded dark:bg-gray-700 dark:text-white dark:border-gray-600" placeholder="Masukkan jari-jari" step="any">
+                    `;
+                    break;
+                case 'cylinder':
+                    formHTML = `
+                        <label class="block text-gray-700 dark:text-gray-300 mb-2" for="cylinder-radius">Jari-jari:</label>
+                        <input type="number" id="cylinder-radius" class="w-full p-2 border rounded dark:bg-gray-700 dark:text-white dark:border-gray-600" placeholder="Masukkan jari-jari" step="any">
+                        <label class="block text-gray-700 dark:text-gray-300 mb-2 mt-2" for="cylinder-height">Tinggi:</label>
+                        <input type="number" id="cylinder-height" class="w-full p-2 border rounded dark:bg-gray-700 dark:text-white dark:border-gray-600" placeholder="Masukkan tinggi" step="any">
+                    `;
+                    break;
+            }
+            
+            document.getElementById('solid-form').innerHTML = formHTML;
+        }
+        
+        function calculateShape() {
+            const shape = document.getElementById('shape').value;
+            let resultHTML = '';
+            
+            try {
+                switch (shape) {
+                    case 'square':
+                        const side = parseFloat(document.getElementById('side').value);
+                        if (isNaN(side)) throw new Error("Masukkan nilai yang valid");
+                        const squareArea = side * side;
+                        const squarePerimeter = 4 * side;
+                        resultHTML = `
+                            <p>Persegi dengan sisi ${side}</p>
+                            <p>Luas: ${squareArea.toFixed(2)}</p>
+                            <p>Keliling: ${squarePerimeter.toFixed(2)}</p>
+                        `;
+                        break;
+                    case 'rectangle':
+                        const length = parseFloat(document.getElementById('length').value);
+                        const width = parseFloat(document.getElementById('width').value);
+                        if (isNaN(length) || isNaN(width)) throw new Error("Masukkan nilai yang valid");
+                        const rectangleArea = length * width;
+                        const rectanglePerimeter = 2 * (length + width);
+                        resultHTML = `
+                            <p>Persegi panjang dengan panjang ${length} dan lebar ${width}</p>
+                            <p>Luas: ${rectangleArea.toFixed(2)}</p>
+                            <p>Keliling: ${rectanglePerimeter.toFixed(2)}</p>
+                        `;
+                        break;
+                    case 'triangle':
+                        const base = parseFloat(document.getElementById('base').value);
+                        const height = parseFloat(document.getElementById('height').value);
+                        if (isNaN(base) || isNaN(height)) throw new Error("Masukkan nilai yang valid");
+                        const triangleArea = 0.5 * base * height;
+                        resultHTML = `
+                            <p>Segitiga dengan alas ${base} dan tinggi ${height}</p>
+                            <p>Luas: ${triangleArea.toFixed(2)}</p>
+                            <p class="text-sm text-gray-500 dark:text-gray-400">*Keliling membutuhkan panjang semua sisi</p>
+                        `;
+                        break;
+                    case 'circle':
+                        const radius = parseFloat(document.getElementById('radius').value);
+                        if (isNaN(radius)) throw new Error("Masukkan nilai yang valid");
+                        const circleArea = Math.PI * radius * radius;
+                        const circleCircumference = 2 * Math.PI * radius;
+                        resultHTML = `
+                            <p>Lingkaran dengan jari-jari ${radius}</p>
+                            <p>Luas: ${circleArea.toFixed(2)}</p>
+                            <p>Keliling: ${circleCircumference.toFixed(2)}</p>
+                        `;
+                        break;
+                }
+            } catch (error) {
+                resultHTML = `<p class="text-red-500">${error.message}</p>`;
+            }
+            
+            document.getElementById('shape-result').innerHTML = resultHTML;
+        }
+        
+        function calculateSolid() {
+            const solid = document.getElementById('solid').value;
+            let resultHTML = '';
+            
+            try {
+                switch (solid) {
+                    case 'cube':
+                        const cubeSide = parseFloat(document.getElementById('cube-side').value);
+                        if (isNaN(cubeSide)) throw new Error("Masukkan nilai yang valid");
+                        const cubeVolume = Math.pow(cubeSide, 3);
+                        const cubeSurfaceArea = 6 * Math.pow(cubeSide, 2);
+                        resultHTML = `
+                            <p>Kubus dengan sisi ${cubeSide}</p>
+                            <p>Volume: ${cubeVolume.toFixed(2)}</p>
+                            <p>Luas Permukaan: ${cubeSurfaceArea.toFixed(2)}</p>
+                        `;
+                        break;
+                    case 'cuboid':
+                        const cuboidLength = parseFloat(document.getElementById('cuboid-length').value);
+                        const cuboidWidth = parseFloat(document.getElementById('cuboid-width').value);
+                        const cuboidHeight = parseFloat(document.getElementById('cuboid-height').value);
+                        if (isNaN(cuboidLength) || isNaN(cuboidWidth) || isNaN(cuboidHeight)) throw new Error("Masukkan nilai yang valid");
+                        const cuboidVolume = cuboidLength * cuboidWidth * cuboidHeight;
+                        const cuboidSurfaceArea = 2 * (cuboidLength*cuboidWidth + cuboidLength*cuboidHeight + cuboidWidth*cuboidHeight);
+                        resultHTML = `
+                            <p>Balok dengan panjang ${cuboidLength}, lebar ${cuboidWidth}, dan tinggi ${cuboidHeight}</p>
+                            <p>Volume: ${cuboidVolume.toFixed(2)}</p>
+                            <p>Luas Permukaan: ${cuboidSurfaceArea.toFixed(2)}</p>
+                        `;
+                        break;
+                    case 'sphere':
+                        const sphereRadius = parseFloat(document.getElementById('sphere-radius').value);
+                        if (isNaN(sphereRadius)) throw new Error("Masukkan nilai yang valid");
+                        const sphereVolume = (4/3) * Math.PI * Math.pow(sphereRadius, 3);
+                        const sphereSurfaceArea = 4 * Math.PI * Math.pow(sphereRadius, 2);
+                        resultHTML = `
+                            <p>Bola dengan jari-jari ${sphereRadius}</p>
+                            <p>Volume: ${sphereVolume.toFixed(2)}</p>
+                            <p>Luas Permukaan: ${sphereSurfaceArea.toFixed(2)}</p>
+                        `;
+                        break;
+                    case 'cylinder':
+                        const cylinderRadius = parseFloat(document.getElementById('cylinder-radius').value);
+                        const cylinderHeight = parseFloat(document.getElementById('cylinder-height').value);
+                        if (isNaN(cylinderRadius) || isNaN(cylinderHeight)) throw new Error("Masukkan nilai yang valid");
+                        const cylinderVolume = Math.PI * Math.pow(cylinderRadius, 2) * cylinderHeight;
+                        const cylinderSurfaceArea = 2 * Math.PI * cylinderRadius * (cylinderRadius + cylinderHeight);
+                        resultHTML = `
+                            <p>Tabung dengan jari-jari ${cylinderRadius} dan tinggi ${cylinderHeight}</p>
+                            <p>Volume: ${cylinderVolume.toFixed(2)}</p>
+                            <p>Luas Permukaan: ${cylinderSurfaceArea.toFixed(2)}</p>
+                        `;
+                        break;
+                }
+            } catch (error) {
+                resultHTML = `<p class="text-red-500">${error.message}</p>`;
+            }
+            
+            document.getElementById('solid-result').innerHTML = resultHTML;
+        }
+        
+        // Initialize forms on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            updateShapeForm();
+            updateSolidForm();
+        });
+    </script>
+</body>
+</html>
