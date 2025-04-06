@@ -1,16 +1,10 @@
 {
+  "rewrites": [
+    { "source": "/game", "destination": "/game.html" },
+    { "source": "/page_not_found", "destination": "/404.html" }
+  ],
   "routes": [
     { "handle": "filesystem" },
-    { "src": "/(.*)", "status": 404, "dest": "/404.html" }
-  ],
-  "rewrites": [
-    {
-      "source": "/page_not_found",
-      "destination": "/404.html"
-    },
-    {
-      "source": "/game",
-      "destination": "/game.html"
-    }
+    { "src": "/(.*)", "dest": "/404.html", "status": 404 }
   ]
 }
