@@ -859,19 +859,35 @@
       id="home"
       class="py-20 section bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-gray-800 dark:to-gray-900 transition-colors relative overflow-hidden"
     >
-    <div class="absolute inset-0 overflow-hidden">
-      <div class="absolute inset-0 parallax-element" 
-        style="
-          background: 
-            linear-gradient(45deg, rgba(59,130,246,0.05) 25%, transparent 25%) -10px 0,
-            linear-gradient(-45deg, rgba(59,130,246,0.05) 25%, transparent 25%) -10px 0,
-            linear-gradient(45deg, transparent 75%, rgba(59,130,246,0.05) 75%),
-            linear-gradient(-45deg, transparent 75%, rgba(59,130,246,0.05) 75%);
-          background-size: 20px 20px;
-          opacity: 0.3;
-        "
-      ></div>
-    </div>
+      <div class="absolute inset-0 overflow-hidden">
+        <div
+          class="absolute inset-0 parallax-element"
+          style="
+            background: linear-gradient(
+                  45deg,
+                  rgba(59, 130, 246, 0.05) 25%,
+                  transparent 25%
+                ) -10px 0,
+              linear-gradient(
+                  -45deg,
+                  rgba(59, 130, 246, 0.05) 25%,
+                  transparent 25%
+                ) -10px 0,
+              linear-gradient(
+                45deg,
+                transparent 75%,
+                rgba(59, 130, 246, 0.05) 75%
+              ),
+              linear-gradient(
+                -45deg,
+                transparent 75%,
+                rgba(59, 130, 246, 0.05) 75%
+              );
+            background-size: 20px 20px;
+            opacity: 0.3;
+          "
+        ></div>
+      </div>
 
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
         <div class="flex flex-col md:flex-row items-center justify-between">
@@ -1051,12 +1067,26 @@
                 </span>
               </div>
             </div>
-
             <a
               href="404.html"
-              class="inline-block bg-primary hover:bg-blue-600 text-white px-6 py-3 rounded-lg transition-colors shadow-md hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 btn-hover transform hover:-translate-y-1"
+              class="flex items-start w-40 inline-block bg-primary hover:bg-blue-600 text-white px-6 py-3 rounded-lg transition-colors shadow-md hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 btn-hover transform hover:-translate-y-1"
             >
-              Download CV
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="20"
+                height="20"
+                fill="currentColor"
+                viewBox="0 0 16 16"
+                class="mr-3"
+              >
+                <path
+                  d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z"
+                />
+                <path
+                  d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3z"
+                />
+              </svg>
+              Curriculum Vitae
             </a>
           </div>
         </div>
@@ -1068,21 +1098,36 @@
       id="projects"
       class="py-20 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-gray-800 dark:to-gray-900 transition-colors"
     >
+      <div class="absolute inset-0 overflow-hidden -z-10">
+        <div
+          class="absolute inset-0 parallax-element"
+          style="
+            background: linear-gradient(
+                  45deg,
+                  rgba(59, 130, 246, 0.05) 25%,
+                  transparent 25%
+                ) -10px 0,
+              linear-gradient(
+                  -45deg,
+                  rgba(59, 130, 246, 0.05) 25%,
+                  transparent 25%
+                ) -10px 0,
+              linear-gradient(
+                45deg,
+                transparent 75%,
+                rgba(59, 130, 246, 0.05) 75%
+              ),
+              linear-gradient(
+                -45deg,
+                transparent 75%,
+                rgba(59, 130, 246, 0.05) 75%
+              );
+            background-size: 20px 20px;
+            opacity: 0.3;
+          "
+        ></div>
+      </div>
 
-    <div class="absolute inset-0 overflow-hidden -z-10">
-      <div class="absolute inset-0 parallax-element" 
-        style="
-          background: 
-            linear-gradient(45deg, rgba(59,130,246,0.05) 25%, transparent 25%) -10px 0,
-            linear-gradient(-45deg, rgba(59,130,246,0.05) 25%, transparent 25%) -10px 0,
-            linear-gradient(45deg, transparent 75%, rgba(59,130,246,0.05) 75%),
-            linear-gradient(-45deg, transparent 75%, rgba(59,130,246,0.05) 75%);
-          background-size: 20px 20px;
-          opacity: 0.3;
-        "
-      ></div>
-    </div>
-    
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="text-center mb-16 section-entry">
           <h2 class="text-3xl font-bold text-dark dark:text-white mb-4">
@@ -1120,6 +1165,16 @@
                   class="text-xs bg-blue-100 dark:bg-gray-700 text-primary dark:text-blue-400 px-3 py-1 rounded-full transform hover:scale-110 transition-transform"
                 >
                   HTML
+                </span>
+                <span
+                  class="text-xs bg-blue-100 dark:bg-gray-700 text-primary dark:text-blue-400 px-3 py-1 rounded-full transform hover:scale-110 transition-transform"
+                >
+                  CSS
+                </span>
+                <span
+                  class="text-xs bg-blue-100 dark:bg-gray-700 text-primary dark:text-blue-400 px-3 py-1 rounded-full transform hover:scale-110 transition-transform"
+                >
+                  JavaScript
                 </span>
               </div>
               <div class="flex flex-col space-y-2">
@@ -1179,6 +1234,16 @@
                   class="text-xs bg-blue-100 dark:bg-gray-700 text-primary dark:text-blue-400 px-3 py-1 rounded-full transform hover:scale-110 transition-transform"
                 >
                   Python
+                </span>
+                <span
+                  class="text-xs bg-blue-100 dark:bg-gray-700 text-primary dark:text-blue-400 px-3 py-1 rounded-full transform hover:scale-110 transition-transform"
+                >
+                  CSS
+                </span>
+                <span
+                  class="text-xs bg-blue-100 dark:bg-gray-700 text-primary dark:text-blue-400 px-3 py-1 rounded-full transform hover:scale-110 transition-transform"
+                >
+                  JavaScript
                 </span>
               </div>
               <div class="flex flex-col space-y-2">
