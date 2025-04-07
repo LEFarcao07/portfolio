@@ -1,3 +1,29 @@
+// Theme toggle
+const themeToggleBtn = document.getElementById('theme-toggle');
+const themeToggleDarkIcon = document.getElementById('theme-toggle-dark-icon');
+const themeToggleLightIcon = document.getElementById('theme-toggle-light-icon');
+
+if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+  themeToggleLightIcon.classList.remove('hidden');
+  themeToggleDarkIcon.classList.add('hidden');
+} else {
+  themeToggleLightIcon.classList.add('hidden');
+  themeToggleDarkIcon.classList.remove('hidden');
+}
+
+themeToggleBtn.addEventListener('click', function() {
+  themeToggleDarkIcon.classList.toggle('hidden');
+  themeToggleLightIcon.classList.toggle('hidden');
+
+  if (localStorage.getItem('theme') === 'dark') {
+    localStorage.setItem('theme', 'light');
+    document.documentElement.classList.remove('dark');
+  } else {
+    localStorage.setItem('theme', 'dark');
+    document.documentElement.classList.add('dark');
+  }
+});
+
 let scatterChart;
 
 function parseInput(input) {

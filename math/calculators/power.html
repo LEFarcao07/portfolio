@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Kalkulator Daya</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      (function () {
+        const savedTheme =
+          localStorage.getItem("theme") ||
+          (window.matchMedia("(prefers-color-scheme: dark)").matches
+            ? "dark"
+            : "light");
+        document.documentElement.classList.toggle(
+          "dark",
+          savedTheme === "dark"
+        );
+      })();
+
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: [
+                "Inter",
+                "Segoe UI",
+                "Tahoma",
+                "Geneva",
+                "Verdana",
+                "sans-serif",
+              ],
+            },
+            colors: {
+              primary: { light: "#3B82F6", dark: "#60A5FA" },
+              dark: { light: "#1F2937", dark: "#111827" },
+              light: { light: "#F8F9FA", dark: "#1F2937" },
+              customGray: "#3E3E3E",
+              linux: {
+                "merah-error": "#CC0000",
+                "ijo-sukses": "#4E9A06",
+                "kuning-awas": "#C4A000",
+                "biru-info": "#3465A4",
+                "ungu-ajaib": "#75507B",
+                "cyan-keren": "#06989A",
+              },
+            },
+          },
+        },
+        corePlugins: { preflight: false },
+      };
+    </script>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      a {
+        text-decoration: none;
+      }
+      .calculator {
+        max-width: 500px;
+        margin: 0 auto;
+      }
+      .input-group {
+        margin-bottom: 15px;
+      }
+      .input-label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: 500;
+      }
+      .number-input {
+        width: 100%;
+        padding: 10px;
+        border-radius: 5px;
+        border: 1px solid #d1d5db;
+        background-color: #f9fafb;
+        color: #111827;
+      }
+      .dark .number-input {
+        background-color: #374151;
+        border-color: #4b5563;
+        color: #f9fafb;
+      }
+      .select-input {
+        width: 100%;
+        padding: 10px;
+        border-radius: 5px;
+        border: 1px solid #d1d5db;
+        background-color: #f9fafb;
+        color: #111827;
+      }
+      .dark .select-input {
+        background-color: #374151;
+        border-color: #4b5563;
+        color: #f9fafb;
+      }
+      .btn {
+        height: 50px;
+        font-size: 1.2rem;
+      }
+      .btn-primary {
+        background-color: #3b82f6;
+        color: white;
+      }
+      .dark .btn-primary {
+        background-color: #2563eb;
+      }
+      .btn-reset {
+        background-color: #ef4444;
+        color: white;
+      }
+      .dark .btn-reset {
+        background-color: #dc2626;
+      }
+      .result-box {
+        padding: 15px;
+        border-radius: 5px;
+        margin-top: 20px;
+        background-color: #f3f4f6;
+      }
+      .dark .result-box {
+        background-color: #374151;
+      }
+      .result-title {
+        font-weight: 600;
+        margin-bottom: 10px;
+      }
+      .result-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+      }
+      .result-item {
+        padding: 8px;
+        border-radius: 4px;
+        background-color: #e5e7eb;
+      }
+      .dark .result-item {
+        background-color: #4b5563;
+      }
+      .result-value {
+        font-weight: 500;
+      }
+      .result-unit {
+        font-size: 0.8rem;
+        color: #6b7280;
+      }
+      .dark .result-unit {
+        color: #9ca3af;
+      }
+    </style>
+  </head>
+  <body class="bg-gray-100 dark:bg-gray-900 min-h-screen">
+    <nav class="bg-white dark:bg-gray-800 shadow-sm">
+      <div class="px-4 py-3 flex justify-between items-center">
+        <a
+          href="../index.html"
+          class="text-blue-600 dark:text-blue-400 font-semibold"
+          >← Kembali</a
+        >
+        <button
+          id="theme-toggle"
+          type="button"
+          class="p-2 border-transparent bg-white dark:bg-dark-light text-dark dark:text-gray-300 rounded-lg focus:outline-none transform hover:rotate-12"
+        >
+          <svg
+            id="theme-toggle-dark-icon"
+            class="w-5 h-5"
+            fill="currentColor"
+            viewBox="0 0 20 20"
+          >
+            <path
+              d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"
+            ></path>
+          </svg>
+          <svg
+            id="theme-toggle-light-icon"
+            class="w-5 h-5 hidden"
+            fill="currentColor"
+            viewBox="0 0 20 20"
+          >
+            <path
+              d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z"
+              fill-rule="evenodd"
+              clip-rule="evenodd"
+            ></path>
+          </svg>
+        </button>
+      </div>
+    </nav>
+
+    <main class="container mx-auto px-4 py-8">
+      <h1
+        class="text-2xl font-bold text-center mb-8 text-gray-800 dark:text-white"
+      >
+        Kalkulator Daya
+      </h1>
+
+      <div
+        class="calculator bg-white dark:bg-gray-800 p-4 rounded-lg shadow-md"
+      >
+        <div class="input-group">
+          <label class="input-label text-gray-700 dark:text-gray-300"
+            >Dari Satuan</label
+          >
+          <select id="fromUnit" class="select-input">
+            <option value="W">Watt (W)</option>
+            <option value="kW">Kilowatt (kW)</option>
+            <option value="mW">Milliwatt (mW)</option>
+            <option value="hp">Horsepower (hp)</option>
+            <option value="ps">Pferdestärke (PS)</option>
+            <option value="BTU/h">BTU per hour (BTU/h)</option>
+            <option value="ft-lb/s">Foot-pound per second (ft-lb/s)</option>
+            <option value="cal/s">Kalori per second (cal/s)</option>
+          </select>
+        </div>
+
+        <div class="input-group">
+          <label class="input-label text-gray-700 dark:text-gray-300"
+            >Nilai</label
+          >
+          <input
+            type="number"
+            id="powerInput"
+            class="number-input"
+            placeholder="Masukkan nilai"
+            oninput="convertPower()"
+          />
+        </div>
+
+        <div class="grid grid-cols-2 gap-4 mt-4">
+          <button
+            class="btn btn-primary hover:bg-blue-600 rounded"
+            onclick="convertPower()"
+          >
+            Konversi
+          </button>
+          <button
+            class="btn btn-reset hover:bg-red-600 rounded"
+            onclick="resetPower()"
+          >
+            Reset
+          </button>
+        </div>
+
+        <div class="result-box mt-6">
+          <div class="result-title text-gray-800 dark:text-white">
+            Hasil Konversi:
+          </div>
+          <div class="result-grid">
+            <div class="result-item">
+              <div class="font-medium text-dark dark:text-white">Watt</div>
+              <div id="WResult" class="result-value text-dark dark:text-white">
+                -
+              </div>
+              <div class="result-unit">W</div>
+            </div>
+            <div class="result-item">
+              <div class="font-medium text-dark dark:text-white">Kilowatt</div>
+              <div id="kWResult" class="result-value text-dark dark:text-white">
+                -
+              </div>
+              <div class="result-unit">kW</div>
+            </div>
+            <div class="result-item">
+              <div class="font-medium text-dark dark:text-white">Milliwatt</div>
+              <div id="mWResult" class="result-value text-dark dark:text-white">
+                -
+              </div>
+              <div class="result-unit">mW</div>
+            </div>
+            <div class="result-item">
+              <div class="font-medium text-dark dark:text-white">Horsepower</div>
+              <div id="hpResult" class="result-value text-dark dark:text-white">
+                -
+              </div>
+              <div class="result-unit">hp</div>
+            </div>
+            <div class="result-item">
+              <div class="font-medium text-dark dark:text-white">Pferdestärke</div>
+              <div id="psResult" class="result-value text-dark dark:text-white">
+                -
+              </div>
+              <div class="result-unit">PS</div>
+            </div>
+            <div class="result-item">
+              <div class="font-medium text-dark dark:text-white">BTU per hour</div>
+              <div id="BTU_hResult" class="result-value text-dark dark:text-white">
+                -
+              </div>
+              <div class="result-unit">BTU/h</div>
+            </div>
+            <div class="result-item">
+              <div class="font-medium text-dark dark:text-white">Foot-pound per second</div>
+              <div id="ft_lb_sResult" class="result-value text-dark dark:text-white">
+                -
+              </div>
+              <div class="result-unit">ft-lb/s</div>
+            </div>
+            <div class="result-item">
+              <div class="font-medium text-dark dark:text-white">Kalori per second</div>
+              <div id="cal_sResult" class="result-value text-dark dark:text-white">
+                -
+              </div>
+              <div class="result-unit">cal/s</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <script>
+      // Theme toggle
+      const themeToggleBtn = document.getElementById("theme-toggle");
+      const themeToggleDarkIcon = document.getElementById(
+        "theme-toggle-dark-icon"
+      );
+      const themeToggleLightIcon = document.getElementById(
+        "theme-toggle-light-icon"
+      );
+
+      if (
+        localStorage.getItem("theme") === "dark" ||
+        (!("theme" in localStorage) &&
+          window.matchMedia("(prefers-color-scheme: dark)").matches)
+      ) {
+        themeToggleLightIcon.classList.remove("hidden");
+        themeToggleDarkIcon.classList.add("hidden");
+      } else {
+        themeToggleLightIcon.classList.add("hidden");
+        themeToggleDarkIcon.classList.remove("hidden");
+      }
+
+      themeToggleBtn.addEventListener("click", function () {
+        themeToggleDarkIcon.classList.toggle("hidden");
+        themeToggleLightIcon.classList.toggle("hidden");
+        if (localStorage.getItem("theme") === "dark") {
+          localStorage.setItem("theme", "light");
+          document.documentElement.classList.remove("dark");
+        } else {
+          localStorage.setItem("theme", "dark");
+          document.documentElement.classList.add("dark");
+        }
+      });
+
+      // Power conversion
+      function convertPower() {
+        const fromUnit = document.getElementById("fromUnit").value;
+        const value = parseFloat(document.getElementById("powerInput").value);
+
+        if (isNaN(value)) {
+          resetResults();
+          return;
+        }
+
+        // Convert to watts first
+        let watts;
+        switch (fromUnit) {
+          case "W":
+            watts = value;
+            break;
+          case "kW":
+            watts = value * 1000;
+            break;
+          case "mW":
+            watts = value / 1000;
+            break;
+          case "hp":
+            watts = value * 745.7;
+            break;
+          case "ps":
+            watts = value * 735.499;
+            break;
+          case "BTU/h":
+            watts = value * 0.293071;
+            break;
+          case "ft-lb/s":
+            watts = value * 1.355818;
+            break;
+          case "cal/s":
+            watts = value * 4.1868;
+            break;
+        }
+
+        // Convert to all other units
+        document.getElementById("WResult").textContent = formatNumber(watts);
+        document.getElementById("kWResult").textContent = formatNumber(
+          watts / 1000
+        );
+        document.getElementById("mWResult").textContent = formatNumber(
+          watts * 1000
+        );
+        document.getElementById("hpResult").textContent = formatNumber(
+          watts / 745.7
+        );
+        document.getElementById("psResult").textContent = formatNumber(
+          watts / 735.499
+        );
+        document.getElementById("BTU_hResult").textContent = formatNumber(
+          watts / 0.293071
+        );
+        document.getElementById("ft_lb_sResult").textContent = formatNumber(
+          watts / 1.355818
+        );
+        document.getElementById("cal_sResult").textContent = formatNumber(
+          watts / 4.1868
+        );
+      }
+
+      function formatNumber(num) {
+        // Format angka dengan maksimal 6 digit desimal dan hapus trailing zero
+        return parseFloat(num.toFixed(6)).toString();
+      }
+
+      function resetResults() {
+        const units = ["W", "kW", "mW", "hp", "ps", "BTU_h", "ft_lb_s", "cal_s"];
+        units.forEach((unit) => {
+          document.getElementById(`${unit}Result`).textContent = "-";
+        });
+      }
+
+      function resetPower() {
+        document.getElementById("powerInput").value = "";
+        resetResults();
+      }
+    </script>
+  </body>
+</html>

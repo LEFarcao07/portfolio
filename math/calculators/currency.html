@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kalkulator Mata Uang</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      (function () {
+        const savedTheme =
+          localStorage.getItem("theme") ||
+          (window.matchMedia("(prefers-color-scheme: dark)").matches
+            ? "dark"
+            : "light");
+        document.documentElement.classList.toggle(
+          "dark",
+          savedTheme === "dark"
+        );
+      })();
+
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: [
+                "Inter",
+                "Segoe UI",
+                "Tahoma",
+                "Geneva",
+                "Verdana",
+                "sans-serif",
+              ],
+            },
+            colors: {
+              primary: {
+                light: "#3B82F6",
+                dark: "#60A5FA",
+              },
+              dark: {
+                light: "#1F2937",
+                dark: "#111827",
+              },
+              light: {
+                light: "#F8F9FA",
+                dark: "#1F2937",
+              },
+              customGray: "#3E3E3E",
+              linux: {
+                "merah-error": "#CC0000",
+                "ijo-sukses": "#4E9A06",
+                "kuning-awas": "#C4A000",
+                "biru-info": "#3465A4",
+                "ungu-ajaib": "#75507B",
+                "cyan-keren": "#06989A",
+                "putih-biasa": "#D3D7CF",
+                "merah-terang": "#EF2929",
+                "ijo-neon": "#8AE234",
+                "kuning-sinar-x": "#FCE94F",
+                "biru-langit": "#729FCF",
+                "ungu-mistik": "#AD7FA8",
+                "cyan-glow": "#34E2E2",
+                "putih-terang": "#EEEEEC",
+                "bg-gelap": "#2E3436",
+                "bg-terang": "#EEEEEC",
+              },
+            },
+          },
+        },
+        corePlugins: {
+          preflight: false,
+        },
+      };
+    </script>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      a {
+        text-decoration: none;
+      }
+      .calculator {
+        max-width: 500px;
+        margin: 0 auto;
+      }
+      .input-group {
+        margin-bottom: 15px;
+      }
+      .input-label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: 500;
+      }
+      .number-input {
+        width: 100%;
+        padding: 10px;
+        border-radius: 5px;
+        border: 1px solid #d1d5db;
+        background-color: #f9fafb;
+        color: #111827;
+      }
+      .dark .number-input {
+        background-color: #374151;
+        border-color: #4b5563;
+        color: #f9fafb;
+      }
+      .select-input {
+        width: 100%;
+        padding: 10px;
+        border-radius: 5px;
+        border: 1px solid #d1d5db;
+        background-color: #f9fafb;
+        color: #111827;
+      }
+      .dark .select-input {
+        background-color: #374151;
+        border-color: #4b5563;
+        color: #f9fafb;
+      }
+      .btn {
+        height: 50px;
+        font-size: 1.2rem;
+      }
+      .btn-primary {
+        background-color: #3b82f6;
+        color: white;
+      }
+      .dark .btn-primary {
+        background-color: #2563eb;
+      }
+      .btn-reset {
+        background-color: #ef4444;
+        color: white;
+      }
+      .dark .btn-reset {
+        background-color: #dc2626;
+      }
+      .result-box {
+        padding: 15px;
+        border-radius: 5px;
+        margin-top: 20px;
+        background-color: #f3f4f6;
+      }
+      .dark .result-box {
+        background-color: #374151;
+      }
+      .result-title {
+        font-weight: 600;
+        margin-bottom: 10px;
+      }
+      .result-value {
+        font-size: 1.2rem;
+        font-weight: 500;
+      }
+      .border-red-500 {
+        border-color: #ef4444;
+      }
+      .dark .border-red-500 {
+        border-color: #f87171;
+      }
+      .loading-spinner {
+        display: inline-block;
+        width: 20px;
+        height: 20px;
+        border: 3px solid rgba(255,255,255,.3);
+        border-radius: 50%;
+        border-top-color: #fff;
+        animation: spin 1s ease-in-out infinite;
+        margin-left: 8px;
+      }
+      @keyframes spin {
+        to { transform: rotate(360deg); }
+      }
+    </style>
+</head>
+<body class="bg-gray-100 dark:bg-gray-900 min-h-screen">
+    <nav class="bg-white dark:bg-gray-800 shadow-sm">
+      <div class="px-4 py-3 flex justify-between items-center">
+        <a href="../index.html" class="text-blue-600 dark:text-blue-400 font-semibold">← Kembali</a>
+        <button id="theme-toggle" type="button" class="p-2 border-transparent bg-white dark:bg-dark-light text-dark dark:text-gray-300 rounded-lg focus:outline-none transform hover:rotate-12" aria-label="Toggle dark mode">
+          <svg id="theme-toggle-dark-icon" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+            <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path>
+          </svg>
+          <svg id="theme-toggle-light-icon" class="w-5 h-5 hidden" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+            <path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" fill-rule="evenodd" clip-rule="evenodd"></path>
+          </svg>
+        </button>
+      </div>
+    </nav>
+
+    <main class="container mx-auto px-4 py-8">
+      <h1 class="text-2xl font-bold text-center mb-8 text-gray-800 dark:text-white">
+        Kalkulator Mata Uang
+      </h1>
+
+      <div class="calculator bg-white dark:bg-gray-800 p-4 rounded-lg shadow-md">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div class="input-group">
+            <label class="input-label text-gray-700 dark:text-gray-300">Dari</label>
+            <select id="fromCurrency" class="select-input">
+              <option value="IDR">Rupiah (IDR)</option>
+              <option value="USD">Dolar AS (USD)</option>
+              <option value="EUR">Euro (EUR)</option>
+              <option value="GBP">Poundsterling (GBP)</option>
+              <option value="JPY">Yen Jepang (JPY)</option>
+              <option value="AUD">Dolar Australia (AUD)</option>
+              <option value="CAD">Dolar Kanada (CAD)</option>
+              <option value="CHF">Franc Swiss (CHF)</option>
+              <option value="CNY">Yuan China (CNY)</option>
+              <option value="HKD">Dolar Hong Kong (HKD)</option>
+              <option value="NZD">Dolar Selandia Baru (NZD)</option>
+              <option value="SGD">Dolar Singapura (SGD)</option>
+              <option value="MYR">Ringgit Malaysia (MYR)</option>
+              <option value="THB">Baht Thailand (THB)</option>
+              <option value="KRW">Won Korea Selatan (KRW)</option>
+              <option value="INR">Rupee India (INR)</option>
+              <option value="BRL">Real Brasil (BRL)</option>
+              <option value="RUB">Rubel Rusia (RUB)</option>
+              <option value="ZAR">Rand Afrika Selatan (ZAR)</option>
+              <option value="MXN">Peso Meksiko (MXN)</option>
+            </select>
+          </div>
+          <div class="input-group">
+            <label class="input-label text-gray-700 dark:text-gray-300">Ke</label>
+            <select id="toCurrency" class="select-input">
+              <option value="USD">Dolar AS (USD)</option>
+              <option value="IDR" selected>Rupiah (IDR)</option>
+              <option value="EUR">Euro (EUR)</option>
+              <option value="GBP">Poundsterling (GBP)</option>
+              <option value="JPY">Yen Jepang (JPY)</option>
+              <option value="AUD">Dolar Australia (AUD)</option>
+              <option value="CAD">Dolar Kanada (CAD)</option>
+              <option value="CHF">Franc Swiss (CHF)</option>
+              <option value="CNY">Yuan China (CNY)</option>
+              <option value="HKD">Dolar Hong Kong (HKD)</option>
+              <option value="NZD">Dolar Selandia Baru (NZD)</option>
+              <option value="SGD">Dolar Singapura (SGD)</option>
+              <option value="MYR">Ringgit Malaysia (MYR)</option>
+              <option value="THB">Baht Thailand (THB)</option>
+              <option value="KRW">Won Korea Selatan (KRW)</option>
+              <option value="INR">Rupee India (INR)</option>
+              <option value="BRL">Real Brasil (BRL)</option>
+              <option value="RUB">Rubel Rusia (RUB)</option>
+              <option value="ZAR">Rand Afrika Selatan (ZAR)</option>
+              <option value="MXN">Peso Meksiko (MXN)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="input-group">
+          <label class="input-label text-gray-700 dark:text-gray-300">Jumlah</label>
+          <input
+            type="number"
+            id="amountInput"
+            class="number-input"
+            placeholder="Masukkan jumlah"
+            min="0"
+            step="0.01"
+            oninput="convertCurrency()"
+          />
+        </div>
+
+        <div class="grid grid-cols-2 gap-4 mt-4">
+          <button
+            id="convertBtn"
+            class="btn btn-primary hover:bg-blue-600 rounded flex items-center justify-center"
+            onclick="convertCurrency()"
+          >
+            <span id="convertText">Konversi</span>
+            <span id="convertSpinner" class="loading-spinner hidden"></span>
+          </button>
+          <button
+            class="btn btn-reset hover:bg-red-600 rounded"
+            onclick="resetCurrency()"
+          >
+            Reset
+          </button>
+        </div>
+
+        <div class="result-box mt-6">
+          <div class="result-title text-gray-800 dark:text-white">Hasil Konversi:</div>
+          <div id="currencyResult" class="result-value text-dark dark:text-white">-</div>
+          <div id="rateInfo" class="text-sm text-gray-600 dark:text-gray-400 mt-2"></div>
+          <div id="lastUpdated" class="text-xs text-gray-500 dark:text-gray-400 mt-2"></div>
+          <div id="errorMessage" class="text-red-500 dark:text-red-400 text-sm mt-2 hidden"></div>
+        </div>
+      </div>
+    </main>
+
+    <script>
+      // Theme toggle
+      const themeToggleBtn = document.getElementById('theme-toggle');
+      const themeToggleDarkIcon = document.getElementById('theme-toggle-dark-icon');
+      const themeToggleLightIcon = document.getElementById('theme-toggle-light-icon');
+
+      if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+        themeToggleLightIcon.classList.remove('hidden');
+        themeToggleDarkIcon.classList.add('hidden');
+      } else {
+        themeToggleLightIcon.classList.add('hidden');
+        themeToggleDarkIcon.classList.remove('hidden');
+      }
+
+      themeToggleBtn.addEventListener('click', function() {
+        themeToggleDarkIcon.classList.toggle('hidden');
+        themeToggleLightIcon.classList.toggle('hidden');
+
+        if (localStorage.getItem('theme') === 'dark') {
+          localStorage.setItem('theme', 'light');
+          document.documentElement.classList.remove('dark');
+        } else {
+          localStorage.setItem('theme', 'dark');
+          document.documentElement.classList.add('dark');
+        }
+      });
+
+      // Currency conversion
+      let exchangeRates = {};
+      let lastUpdated = null;
+
+      function showError(message) {
+        const errorElement = document.getElementById('errorMessage');
+        errorElement.textContent = message;
+        errorElement.classList.remove('hidden');
+      }
+
+      function hideError() {
+        document.getElementById('errorMessage').classList.add('hidden');
+      }
+
+      async function fetchExchangeRates() {
+        try {
+          toggleLoading(true);
+          hideError();
+          
+          // First try to fetch from ExchangeRate.host
+          let response = await fetch('https://api.exchangerate.host/latest?base=USD');
+          let data = await response.json();
+          
+          if (!data.success) {
+            // Fallback to a different API if the first one fails
+            response = await fetch('https://open.er-api.com/v6/latest/USD');
+            data = await response.json();
+            
+            if (data.result !== 'success') {
+              throw new Error('Failed to fetch from both APIs');
+            }
+          }
+          
+          exchangeRates = data.rates;
+          lastUpdated = new Date();
+          return true;
+          
+        } catch (error) {
+          console.error('Error fetching exchange rates:', error);
+          showError('Gagal memuat data kurs. Silakan coba lagi nanti.');
+          return false;
+        } finally {
+          toggleLoading(false);
+        }
+      }
+
+      function toggleLoading(isLoading) {
+        const convertBtn = document.getElementById('convertBtn');
+        const convertText = document.getElementById('convertText');
+        const convertSpinner = document.getElementById('convertSpinner');
+        
+        if (isLoading) {
+          convertBtn.disabled = true;
+          convertText.textContent = 'Memproses...';
+          convertSpinner.classList.remove('hidden');
+        } else {
+          convertBtn.disabled = false;
+          convertText.textContent = 'Konversi';
+          convertSpinner.classList.add('hidden');
+        }
+      }
+
+      function formatNumber(num, currency) {
+        // Format khusus untuk IDR (tanpa desimal)
+        if (currency === 'IDR') {
+          return new Intl.NumberFormat('id-ID', {
+            style: 'currency',
+            currency: currency,
+            minimumFractionDigits: 0,
+            maximumFractionDigits: 0
+          }).format(num);
+        }
+        
+        // Format standar untuk mata uang lainnya (2 desimal)
+        return new Intl.NumberFormat(undefined, {
+          style: 'currency',
+          currency: currency,
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2
+        }).format(num);
+      }
+
+      async function convertCurrency() {
+        const fromCurrency = document.getElementById('fromCurrency').value;
+        const toCurrency = document.getElementById('toCurrency').value;
+        const amount = parseFloat(document.getElementById('amountInput').value);
+        
+        if (isNaN(amount)) {
+          document.getElementById('currencyResult').textContent = '-';
+          document.getElementById('rateInfo').textContent = '';
+          document.getElementById('lastUpdated').textContent = '';
+          return;
+        }
+
+        // If rates not loaded or USD not in rates (base currency), fetch fresh rates
+        if (!exchangeRates.USD || !exchangeRates[fromCurrency] || !exchangeRates[toCurrency]) {
+          const success = await fetchExchangeRates();
+          if (!success) {
+            document.getElementById('currencyResult').textContent = '-';
+            return;
+          }
+        }
+
+        try {
+          // Convert to USD first
+          const amountInUSD = amount / exchangeRates[fromCurrency];
+          // Convert from USD to target currency
+          const result = amountInUSD * exchangeRates[toCurrency];
+
+          document.getElementById('currencyResult').textContent = 
+            formatNumber(result, toCurrency);
+
+          // Show exchange rate info
+          const rate = exchangeRates[toCurrency] / exchangeRates[fromCurrency];
+          let rateStr = rate.toString();
+          
+          // Hapus trailing zeros jika lebih dari 6 digit
+          if (rateStr.includes('.')) {
+            const parts = rateStr.split('.');
+            if (parts[1].length > 6) {
+              rateStr = rate.toFixed(6).replace(/\.?0+$/, '');
+            }
+          }
+          
+          document.getElementById('rateInfo').textContent = 
+            `1 ${fromCurrency} = ${rateStr} ${toCurrency}`;
+          
+          // Show last updated time
+          if (lastUpdated) {
+            document.getElementById('lastUpdated').textContent = 
+              `Terakhir diperbarui: ${lastUpdated.toLocaleTimeString()}`;
+          }
+          
+          hideError();
+          
+        } catch (error) {
+          console.error('Conversion error:', error);
+          showError('Terjadi kesalahan dalam konversi. Silakan coba lagi.');
+          document.getElementById('currencyResult').textContent = '-';
+        }
+      }
+
+      function resetCurrency() {
+        document.getElementById('amountInput').value = '';
+        document.getElementById('currencyResult').textContent = '-';
+        document.getElementById('rateInfo').textContent = '';
+        document.getElementById('lastUpdated').textContent = '';
+        hideError();
+      }
+
+      // Initialize by fetching rates
+      document.addEventListener('DOMContentLoaded', function() {
+        fetchExchangeRates();
+        
+        // Refresh rates every 30 minutes
+        setInterval(fetchExchangeRates, 30 * 60 * 1000);
+      });
+    </script>
+</body>
+</html>

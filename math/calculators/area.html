@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Kalkulator Luas</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      (function () {
+        const savedTheme =
+          localStorage.getItem("theme") ||
+          (window.matchMedia("(prefers-color-scheme: dark)").matches
+            ? "dark"
+            : "light");
+        document.documentElement.classList.toggle(
+          "dark",
+          savedTheme === "dark"
+        );
+      })();
+
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: [
+                "Inter",
+                "Segoe UI",
+                "Tahoma",
+                "Geneva",
+                "Verdana",
+                "sans-serif",
+              ],
+            },
+            colors: {
+              primary: { light: "#3B82F6", dark: "#60A5FA" },
+              dark: { light: "#1F2937", dark: "#111827" },
+              light: { light: "#F8F9FA", dark: "#1F2937" },
+              customGray: "#3E3E3E",
+              linux: {
+                "merah-error": "#CC0000",
+                "ijo-sukses": "#4E9A06",
+                "kuning-awas": "#C4A000",
+                "biru-info": "#3465A4",
+                "ungu-ajaib": "#75507B",
+                "cyan-keren": "#06989A",
+              },
+            },
+          },
+        },
+        corePlugins: { preflight: false },
+      };
+    </script>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      a {
+        text-decoration: none;
+      }
+      .calculator {
+        max-width: 500px;
+        margin: 0 auto;
+      }
+      .input-group {
+        margin-bottom: 15px;
+      }
+      .input-label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: 500;
+      }
+      .number-input {
+        width: 100%;
+        padding: 10px;
+        border-radius: 5px;
+        border: 1px solid #d1d5db;
+        background-color: #f9fafb;
+        color: #111827;
+      }
+      .dark .number-input {
+        background-color: #374151;
+        border-color: #4b5563;
+        color: #f9fafb;
+      }
+      .select-input {
+        width: 100%;
+        padding: 10px;
+        border-radius: 5px;
+        border: 1px solid #d1d5db;
+        background-color: #f9fafb;
+        color: #111827;
+      }
+      .dark .select-input {
+        background-color: #374151;
+        border-color: #4b5563;
+        color: #f9fafb;
+      }
+      .btn {
+        height: 50px;
+        font-size: 1.2rem;
+      }
+      .btn-primary {
+        background-color: #3b82f6;
+        color: white;
+      }
+      .dark .btn-primary {
+        background-color: #2563eb;
+      }
+      .btn-reset {
+        background-color: #ef4444;
+        color: white;
+      }
+      .dark .btn-reset {
+        background-color: #dc2626;
+      }
+      .result-box {
+        padding: 15px;
+        border-radius: 5px;
+        margin-top: 20px;
+        background-color: #f3f4f6;
+      }
+      .dark .result-box {
+        background-color: #374151;
+      }
+      .result-title {
+        font-weight: 600;
+        margin-bottom: 10px;
+      }
+      .result-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+      }
+      .result-item {
+        padding: 8px;
+        border-radius: 4px;
+        background-color: #e5e7eb;
+      }
+      .dark .result-item {
+        background-color: #4b5563;
+      }
+      .result-value {
+        font-weight: 500;
+      }
+      .result-unit {
+        font-size: 0.8rem;
+        color: #6b7280;
+      }
+      .dark .result-unit {
+        color: #9ca3af;
+      }
+    </style>
+  </head>
+  <body class="bg-gray-100 dark:bg-gray-900 min-h-screen">
+    <nav class="bg-white dark:bg-gray-800 shadow-sm">
+      <div class="px-4 py-3 flex justify-between items-center">
+        <a
+          href="../index.html"
+          class="text-blue-600 dark:text-blue-400 font-semibold"
+          >← Kembali</a
+        >
+        <button
+          id="theme-toggle"
+          type="button"
+          class="p-2 border-transparent bg-white dark:bg-dark-light text-dark dark:text-gray-300 rounded-lg focus:outline-none transform hover:rotate-12"
+        >
+          <svg
+            id="theme-toggle-dark-icon"
+            class="w-5 h-5"
+            fill="currentColor"
+            viewBox="0 0 20 20"
+          >
+            <path
+              d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"
+            ></path>
+          </svg>
+          <svg
+            id="theme-toggle-light-icon"
+            class="w-5 h-5 hidden"
+            fill="currentColor"
+            viewBox="0 0 20 20"
+          >
+            <path
+              d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z"
+              fill-rule="evenodd"
+              clip-rule="evenodd"
+            ></path>
+          </svg>
+        </button>
+      </div>
+    </nav>
+
+    <main class="container mx-auto px-4 py-8">
+      <h1
+        class="text-2xl font-bold text-center mb-8 text-gray-800 dark:text-white"
+      >
+        Kalkulator Luas
+      </h1>
+
+      <div
+        class="calculator bg-white dark:bg-gray-800 p-4 rounded-lg shadow-md"
+      >
+        <div class="input-group">
+          <label class="input-label text-gray-700 dark:text-gray-300"
+            >Dari Satuan</label
+          >
+          <select id="fromUnit" class="select-input">
+            <option value="m2">Meter Persegi (m²)</option>
+            <option value="km2">Kilometer Persegi (km²)</option>
+            <option value="cm2">Centimeter Persegi (cm²)</option>
+            <option value="mm2">Milimeter Persegi (mm²)</option>
+            <option value="ha">Hektar (ha)</option>
+            <option value="acre">Acre</option>
+            <option value="ft2">Kaki Persegi (ft²)</option>
+            <option value="in2">Inci Persegi (in²)</option>
+          </select>
+        </div>
+
+        <div class="input-group">
+          <label class="input-label text-gray-700 dark:text-gray-300"
+            >Nilai</label
+          >
+          <input
+            type="number"
+            id="areaInput"
+            class="number-input"
+            placeholder="Masukkan nilai"
+            oninput="convertArea()"
+          />
+        </div>
+
+        <div class="grid grid-cols-2 gap-4 mt-4">
+          <button
+            class="btn btn-primary hover:bg-blue-600 rounded"
+            onclick="convertArea()"
+          >
+            Konversi
+          </button>
+          <button
+            class="btn btn-reset hover:bg-red-600 rounded"
+            onclick="resetArea()"
+          >
+            Reset
+          </button>
+        </div>
+
+        <div class="result-box mt-6">
+          <div class="result-title text-gray-800 dark:text-white">
+            Hasil Konversi:
+          </div>
+          <div class="result-grid">
+            <div class="result-item">
+              <div class="font-medium text-dark dark:text-white">
+                Meter Persegi
+              </div>
+              <div id="m2Result" class="result-value text-dark dark:text-white">
+                -
+              </div>
+              <div class="result-unit">m²</div>
+            </div>
+            <div class="result-item">
+              <div class="font-medium text-dark dark:text-white">
+                Kilometer Persegi
+              </div>
+              <div
+                id="km2Result"
+                class="result-value text-dark dark:text-white"
+              >
+                -
+              </div>
+              <div class="result-unit">km²</div>
+            </div>
+            <div class="result-item">
+              <div class="font-medium text-dark dark:text-white">
+                Centimeter Persegi
+              </div>
+              <div
+                id="cm2Result"
+                class="result-value text-dark dark:text-white"
+              >
+                -
+              </div>
+              <div class="result-unit">cm²</div>
+            </div>
+            <div class="result-item">
+              <div class="font-medium text-dark dark:text-white">
+                Milimeter Persegi
+              </div>
+              <div
+                id="mm2Result"
+                class="result-value text-dark dark:text-white"
+              >
+                -
+              </div>
+              <div class="result-unit">mm²</div>
+            </div>
+            <div class="result-item">
+              <div class="font-medium text-dark dark:text-white">Hektar</div>
+              <div id="haResult" class="result-value text-dark dark:text-white">
+                -
+              </div>
+              <div class="result-unit">ha</div>
+            </div>
+            <div class="result-item">
+              <div class="font-medium text-dark dark:text-white">Acre</div>
+              <div
+                id="acreResult"
+                class="result-value text-dark dark:text-white"
+              >
+                -
+              </div>
+              <div class="result-unit">acre</div>
+            </div>
+            <div class="result-item">
+              <div class="font-medium text-dark dark:text-white">
+                Kaki Persegi
+              </div>
+              <div
+                id="ft2Result"
+                class="result-value text-dark dark:text-white"
+              >
+                -
+              </div>
+              <div class="result-unit">ft²</div>
+            </div>
+            <div class="result-item">
+              <div class="font-medium text-dark dark:text-white">
+                Inci Persegi
+              </div>
+              <div
+                id="in2Result"
+                class="result-value text-dark dark:text-white"
+              >
+                -
+              </div>
+              <div class="result-unit">in²</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <script>
+      // Theme toggle
+      const themeToggleBtn = document.getElementById("theme-toggle");
+      const themeToggleDarkIcon = document.getElementById(
+        "theme-toggle-dark-icon"
+      );
+      const themeToggleLightIcon = document.getElementById(
+        "theme-toggle-light-icon"
+      );
+
+      if (
+        localStorage.getItem("theme") === "dark" ||
+        (!("theme" in localStorage) &&
+          window.matchMedia("(prefers-color-scheme: dark)").matches)
+      ) {
+        themeToggleLightIcon.classList.remove("hidden");
+        themeToggleDarkIcon.classList.add("hidden");
+      } else {
+        themeToggleLightIcon.classList.add("hidden");
+        themeToggleDarkIcon.classList.remove("hidden");
+      }
+
+      themeToggleBtn.addEventListener("click", function () {
+        themeToggleDarkIcon.classList.toggle("hidden");
+        themeToggleLightIcon.classList.toggle("hidden");
+        if (localStorage.getItem("theme") === "dark") {
+          localStorage.setItem("theme", "light");
+          document.documentElement.classList.remove("dark");
+        } else {
+          localStorage.setItem("theme", "dark");
+          document.documentElement.classList.add("dark");
+        }
+      });
+
+      // Area conversion
+      function convertArea() {
+        const fromUnit = document.getElementById("fromUnit").value;
+        const value = parseFloat(document.getElementById("areaInput").value);
+
+        if (isNaN(value)) {
+          resetResults();
+          return;
+        }
+
+        // Convert to square meters first
+        let squareMeters;
+        switch (fromUnit) {
+          case "m2":
+            squareMeters = value;
+            break;
+          case "km2":
+            squareMeters = value * 1000000;
+            break;
+          case "cm2":
+            squareMeters = value / 10000;
+            break;
+          case "mm2":
+            squareMeters = value / 1000000;
+            break;
+          case "ha":
+            squareMeters = value * 10000;
+            break;
+          case "acre":
+            squareMeters = value * 4046.8564224;
+            break;
+          case "ft2":
+            squareMeters = value * 0.09290304;
+            break;
+          case "in2":
+            squareMeters = value * 0.00064516;
+            break;
+        }
+
+        // Convert to all other units
+        document.getElementById("m2Result").textContent =
+          formatNumber(squareMeters);
+        document.getElementById("km2Result").textContent = formatNumber(
+          squareMeters / 1000000
+        );
+        document.getElementById("cm2Result").textContent = formatNumber(
+          squareMeters * 10000
+        );
+        document.getElementById("mm2Result").textContent = formatNumber(
+          squareMeters * 1000000
+        );
+        document.getElementById("haResult").textContent = formatNumber(
+          squareMeters / 10000
+        );
+        document.getElementById("acreResult").textContent = formatNumber(
+          squareMeters / 4046.8564224
+        );
+        document.getElementById("ft2Result").textContent = formatNumber(
+          squareMeters / 0.09290304
+        );
+        document.getElementById("in2Result").textContent = formatNumber(
+          squareMeters / 0.00064516
+        );
+      }
+
+      function formatNumber(num) {
+        return parseFloat(num.toFixed(6)).toString();
+      }
+
+      function resetResults() {
+        const units = ["m2", "km2", "cm2", "mm2", "ha", "acre", "ft2", "in2"];
+        units.forEach((unit) => {
+          document.getElementById(`${unit}Result`).textContent = "-";
+        });
+      }
+
+      function resetArea() {
+        document.getElementById("areaInput").value = "";
+        resetResults();
+      }
+    </script>
+  </body>
+</html>

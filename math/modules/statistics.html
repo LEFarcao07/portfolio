@@ -1,100 +1,258 @@
 <!DOCTYPE html>
 <html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Modul Statistika</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-</head>
-<body class="bg-gray-100 dark:bg-gray-900 min-h-screen">
+    <script src="../../script.js"></script>
+    <script>
+      (function () {
+        const savedTheme =
+          localStorage.getItem("theme") ||
+          (window.matchMedia("(prefers-color-scheme: dark)").matches
+            ? "dark"
+            : "light");
+        document.documentElement.classList.toggle(
+          "dark",
+          savedTheme === "dark"
+        );
+      })();
+
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: [
+                "Inter",
+                "Segoe UI",
+                "Tahoma",
+                "Geneva",
+                "Verdana",
+                "sans-serif",
+              ],
+            },
+            colors: {
+              primary: {
+                light: "#3B82F6",
+                dark: "#60A5FA",
+              },
+              dark: {
+                light: "#1F2937",
+                dark: "#111827",
+              },
+              light: {
+                light: "#F8F9FA",
+                dark: "#1F2937",
+              },
+              customGray: "#3E3E3E",
+              linux: {
+                "merah-error": "#CC0000",
+                "ijo-sukses": "#4E9A06",
+                "kuning-awas": "#C4A000",
+                "biru-info": "#3465A4",
+                "ungu-ajaib": "#75507B",
+                "cyan-keren": "#06989A",
+                "putih-biasa": "#D3D7CF",
+                "merah-terang": "#EF2929",
+                "ijo-neon": "#8AE234",
+                "kuning-sinar-x": "#FCE94F",
+                "biru-langit": "#729FCF",
+                "ungu-mistik": "#AD7FA8",
+                "cyan-glow": "#34E2E2",
+                "putih-terang": "#EEEEEC",
+                "bg-gelap": "#2E3436",
+                "bg-terang": "#EEEEEC",
+              },
+            },
+          },
+        },
+        corePlugins: {
+          preflight: false,
+        },
+      };
+    </script>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      a {
+        text-decoration: none;
+      }
+    </style>
+  </head>
+  <body class="bg-gray-100 dark:bg-gray-900 min-h-screen">
     <nav class="bg-white dark:bg-gray-800 shadow-sm">
-        <div class="max-w-6xl mx-auto px-4 py-3">
-            <a href="../index.html" class="text-blue-600 dark:text-blue-400 font-semibold">← Kembali</a>
-        </div>
+      <div class="px-4 py-3 flex justify-between items-center">
+        <a
+          href="../index.html"
+          class="text-blue-600 dark:text-blue-400 font-semibold"
+          >← Kembali</a
+        >
+        <button
+          id="theme-toggle"
+          type="button"
+          class="p-2 border-transparent bg-white dark:bg-dark-light text-dark dark:text-gray-300 rounded-lg focus:outline-none transform hover:rotate-12"
+          aria-label="Toggle dark mode"
+        >
+          <svg
+            id="theme-toggle-dark-icon"
+            class="w-5 h-5"
+            fill="currentColor"
+            viewBox="0 0 20 20"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"
+            ></path>
+          </svg>
+          <svg
+            id="theme-toggle-light-icon"
+            class="w-5 h-5 hidden"
+            fill="currentColor"
+            viewBox="0 0 20 20"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z"
+              fill-rule="evenodd"
+              clip-rule="evenodd"
+            ></path>
+          </svg>
+        </button>
+      </div>
     </nav>
 
     <main class="container mx-auto px-4 py-8 max-w-4xl">
-        <h1 class="text-2xl font-bold text-center mb-8 text-gray-800 dark:text-white">Modul Pembelajaran Statistika</h1>
-        
-        <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg mb-6">
-            <h2 class="text-xl font-semibold mb-4 text-blue-600 dark:text-blue-400">Statistika Dasar</h2>
-            
-            <div class="mb-4">
-                <label class="block text-gray-700 dark:text-gray-300 mb-2" for="data-input">Masukkan data (pisahkan dengan koma):</label>
-                <input type="text" id="data-input" class="w-full p-2 border rounded dark:bg-gray-700 dark:text-white dark:border-gray-600" value="5,7,8,4,6,9,3,5,7,8">
-            </div>
-            
-            <button onclick="calculateStatistics()" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded dark:bg-blue-700 dark:hover:bg-blue-800 mb-4">
-                Hitung Statistik
-            </button>
-            
-            <div id="statistics-result" class="text-gray-700 dark:text-gray-300 p-3 bg-gray-100 dark:bg-gray-700 rounded mb-4"></div>
-            
-            <div class="bg-white dark:bg-gray-700 p-4 rounded">
-                <canvas id="statistics-chart"></canvas>
-            </div>
+      <h1
+        class="text-2xl font-bold text-center mb-8 text-gray-800 dark:text-white"
+      >
+        Modul Pembelajaran Statistika
+      </h1>
+
+      <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg mb-6">
+        <h2 class="text-xl font-semibold mb-4 text-blue-600 dark:text-blue-400">
+          Statistika Dasar
+        </h2>
+
+        <div class="mb-4">
+          <label
+            class="block text-gray-700 dark:text-gray-300 mb-2"
+            for="data-input"
+            >Masukkan data (pisahkan dengan koma):</label
+          >
+          <input
+            type="text"
+            id="data-input"
+            class="w-full p-2 border rounded dark:bg-gray-700 dark:text-white dark:border-gray-600"
+            value="5,7,8,4,6,9,3,5,7,8"
+          />
         </div>
-        
-        <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg">
-            <h2 class="text-xl font-semibold mb-4 text-blue-600 dark:text-blue-400">Distribusi Probabilitas</h2>
-            
-            <div class="mb-4">
-                <label class="block text-gray-700 dark:text-gray-300 mb-2" for="distribution">Pilih Distribusi:</label>
-                <select id="distribution" class="w-full p-2 border rounded dark:bg-gray-700 dark:text-white dark:border-gray-600" onchange="updateDistributionForm()">
-                    <option value="binomial">Binomial</option>
-                    <option value="normal">Normal</option>
-                    <option value="poisson">Poisson</option>
-                </select>
-            </div>
-            
-            <div id="distribution-form" class="mb-4">
-                <!-- Form will be dynamically updated based on distribution selection -->
-            </div>
-            
-            <button onclick="calculateProbability()" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded dark:bg-blue-700 dark:hover:bg-blue-800 mb-4">
-                Hitung Probabilitas
-            </button>
-            
-            <div id="probability-result" class="text-gray-700 dark:text-gray-300 p-3 bg-gray-100 dark:bg-gray-700 rounded"></div>
+
+        <button
+          onclick="calculateStatistics()"
+          class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded dark:bg-blue-700 dark:hover:bg-blue-800 mb-4"
+        >
+          Hitung Statistik
+        </button>
+
+        <div
+          id="statistics-result"
+          class="text-gray-700 dark:text-gray-300 p-3 bg-gray-100 dark:bg-gray-700 rounded mb-4"
+        ></div>
+
+        <div class="bg-white dark:bg-gray-700 p-4 rounded">
+          <canvas id="statistics-chart"></canvas>
         </div>
+      </div>
+
+      <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg">
+        <h2 class="text-xl font-semibold mb-4 text-blue-600 dark:text-blue-400">
+          Distribusi Probabilitas
+        </h2>
+
+        <div class="mb-4">
+          <label
+            class="block text-gray-700 dark:text-gray-300 mb-2"
+            for="distribution"
+            >Pilih Distribusi:</label
+          >
+          <select
+            id="distribution"
+            class="w-full p-2 border rounded dark:bg-gray-700 dark:text-white dark:border-gray-600"
+            onchange="updateDistributionForm()"
+          >
+            <option value="binomial">Binomial</option>
+            <option value="normal">Normal</option>
+            <option value="poisson">Poisson</option>
+          </select>
+        </div>
+
+        <div id="distribution-form" class="mb-4">
+          <!-- Form will be dynamically updated based on distribution selection -->
+        </div>
+
+        <button
+          onclick="calculateProbability()"
+          class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded dark:bg-blue-700 dark:hover:bg-blue-800 mb-4"
+        >
+          Hitung Probabilitas
+        </button>
+
+        <div
+          id="probability-result"
+          class="text-gray-700 dark:text-gray-300 p-3 bg-gray-100 dark:bg-gray-700 rounded"
+        ></div>
+      </div>
     </main>
 
     <script>
-        let statisticsChart;
-        
-        function parseData(input) {
-            return input.split(',').map(item => parseFloat(item.trim())).filter(item => !isNaN(item));
+      let statisticsChart;
+
+      function parseData(input) {
+        return input
+          .split(",")
+          .map((item) => parseFloat(item.trim()))
+          .filter((item) => !isNaN(item));
+      }
+
+      function calculateStatistics() {
+        const input = document.getElementById("data-input").value;
+        const data = parseData(input);
+
+        if (data.length === 0) {
+          document.getElementById("statistics-result").innerHTML =
+            "Masukkan data yang valid";
+          return;
         }
-        
-        function calculateStatistics() {
-            const input = document.getElementById('data-input').value;
-            const data = parseData(input);
-            
-            if (data.length === 0) {
-                document.getElementById('statistics-result').innerHTML = "Masukkan data yang valid";
-                return;
-            }
-            
-            // Calculate basic statistics
-            const sum = data.reduce((a, b) => a + b, 0);
-            const mean = sum / data.length;
-            const sortedData = [...data].sort((a, b) => a - b);
-            const median = sortedData.length % 2 === 0 
-                ? (sortedData[sortedData.length/2 - 1] + sortedData[sortedData.length/2]) / 2 
-                : sortedData[Math.floor(sortedData.length/2)];
-            
-            // Calculate variance and standard deviation
-            const variance = data.reduce((sum, x) => sum + Math.pow(x - mean, 2), 0) / data.length;
-            const stdDev = Math.sqrt(variance);
-            
-            // Calculate min and max
-            const min = Math.min(...data);
-            const max = Math.max(...data);
-            
-            // Display results
-            document.getElementById('statistics-result').innerHTML = `
-                <p><strong>Data:</strong> [${data.join(', ')}]</p>
+
+        // Calculate basic statistics
+        const sum = data.reduce((a, b) => a + b, 0);
+        const mean = sum / data.length;
+        const sortedData = [...data].sort((a, b) => a - b);
+        const median =
+          sortedData.length % 2 === 0
+            ? (sortedData[sortedData.length / 2 - 1] +
+                sortedData[sortedData.length / 2]) /
+              2
+            : sortedData[Math.floor(sortedData.length / 2)];
+
+        // Calculate variance and standard deviation
+        const variance =
+          data.reduce((sum, x) => sum + Math.pow(x - mean, 2), 0) / data.length;
+        const stdDev = Math.sqrt(variance);
+
+        // Calculate min and max
+        const min = Math.min(...data);
+        const max = Math.max(...data);
+
+        // Display results
+        document.getElementById("statistics-result").innerHTML = `
+                <p><strong>Data:</strong> [${data.join(", ")}]</p>
                 <p><strong>Jumlah Data:</strong> ${data.length}</p>
                 <p><strong>Total:</strong> ${sum.toFixed(2)}</p>
                 <p><strong>Rata-rata:</strong> ${mean.toFixed(2)}</p>
@@ -104,80 +262,84 @@
                 <p><strong>Minimum:</strong> ${min.toFixed(2)}</p>
                 <p><strong>Maksimum:</strong> ${max.toFixed(2)}</p>
             `;
-            
-            // Update chart
-            updateChart(data);
+
+        // Update chart
+        updateChart(data);
+      }
+
+      function updateChart(data) {
+        const ctx = document
+          .getElementById("statistics-chart")
+          .getContext("2d");
+
+        // Destroy previous chart if it exists
+        if (statisticsChart) {
+          statisticsChart.destroy();
         }
-        
-        function updateChart(data) {
-            const ctx = document.getElementById('statistics-chart').getContext('2d');
-            
-            // Destroy previous chart if it exists
-            if (statisticsChart) {
-                statisticsChart.destroy();
-            }
-            
-            statisticsChart = new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: data.map((_, i) => `Data ${i+1}`),
-                    datasets: [{
-                        label: 'Nilai Data',
-                        data: data,
-                        backgroundColor: 'rgba(59, 130, 246, 0.7)',
-                        borderColor: 'rgba(59, 130, 246, 1)',
-                        borderWidth: 1
-                    }]
+
+        statisticsChart = new Chart(ctx, {
+          type: "bar",
+          data: {
+            labels: data.map((_, i) => `Data ${i + 1}`),
+            datasets: [
+              {
+                label: "Nilai Data",
+                data: data,
+                backgroundColor: "rgba(59, 130, 246, 0.7)",
+                borderColor: "rgba(59, 130, 246, 1)",
+                borderWidth: 1,
+              },
+            ],
+          },
+          options: {
+            responsive: true,
+            scales: {
+              y: {
+                beginAtZero: true,
+                title: {
+                  display: true,
+                  text: "Nilai",
+                  color: "#6B7280",
                 },
-                options: {
-                    responsive: true,
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            title: {
-                                display: true,
-                                text: 'Nilai',
-                                color: '#6B7280'
-                            },
-                            ticks: {
-                                color: '#6B7280'
-                            },
-                            grid: {
-                                color: '#E5E7EB'
-                            }
-                        },
-                        x: {
-                            title: {
-                                display: true,
-                                text: 'Data Point',
-                                color: '#6B7280'
-                            },
-                            ticks: {
-                                color: '#6B7280'
-                            },
-                            grid: {
-                                color: '#E5E7EB'
-                            }
-                        }
-                    },
-                    plugins: {
-                        legend: {
-                            labels: {
-                                color: '#6B7280'
-                            }
-                        }
-                    }
-                }
-            });
-        }
-        
-        function updateDistributionForm() {
-            const distribution = document.getElementById('distribution').value;
-            let formHTML = '';
-            
-            switch (distribution) {
-                case 'binomial':
-                    formHTML = `
+                ticks: {
+                  color: "#6B7280",
+                },
+                grid: {
+                  color: "#E5E7EB",
+                },
+              },
+              x: {
+                title: {
+                  display: true,
+                  text: "Data Point",
+                  color: "#6B7280",
+                },
+                ticks: {
+                  color: "#6B7280",
+                },
+                grid: {
+                  color: "#E5E7EB",
+                },
+              },
+            },
+            plugins: {
+              legend: {
+                labels: {
+                  color: "#6B7280",
+                },
+              },
+            },
+          },
+        });
+      }
+
+      function updateDistributionForm() {
+        const distribution = document.getElementById("distribution").value;
+        let formHTML = "";
+
+        switch (distribution) {
+          case "binomial":
+            formHTML = `
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                             <div>
                                 <label class="block text-gray-700 dark:text-gray-300 mb-2" for="n-trials">Jumlah Percobaan (n):</label>
@@ -193,9 +355,9 @@
                             </div>
                         </div>
                     `;
-                    break;
-                case 'normal':
-                    formHTML = `
+            break;
+          case "normal":
+            formHTML = `
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                             <div>
                                 <label class="block text-gray-700 dark:text-gray-300 mb-2" for="mean">Rata-rata (μ):</label>
@@ -211,9 +373,9 @@
                             </div>
                         </div>
                     `;
-                    break;
-                case 'poisson':
-                    formHTML = `
+            break;
+          case "poisson":
+            formHTML = `
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div>
                                 <label class="block text-gray-700 dark:text-gray-300 mb-2" for="lambda">Rata-rata Kejadian (λ):</label>
@@ -225,105 +387,122 @@
                             </div>
                         </div>
                     `;
-                    break;
+            break;
+        }
+
+        document.getElementById("distribution-form").innerHTML = formHTML;
+      }
+
+      function factorial(n) {
+        if (n < 0) return NaN;
+        if (n === 0 || n === 1) return 1;
+        let result = 1;
+        for (let i = 2; i <= n; i++) {
+          result *= i;
+        }
+        return result;
+      }
+
+      function combination(n, k) {
+        return factorial(n) / (factorial(k) * factorial(n - k));
+      }
+
+      function binomialPMF(n, p, k) {
+        return combination(n, k) * Math.pow(p, k) * Math.pow(1 - p, n - k);
+      }
+
+      function normalPDF(x, mean, stddev) {
+        const exponent = -Math.pow(x - mean, 2) / (2 * Math.pow(stddev, 2));
+        return (1 / (stddev * Math.sqrt(2 * Math.PI))) * Math.exp(exponent);
+      }
+
+      function poissonPMF(lambda, k) {
+        return (Math.pow(lambda, k) * Math.exp(-lambda)) / factorial(k);
+      }
+
+      function calculateProbability() {
+        const distribution = document.getElementById("distribution").value;
+        let resultHTML = "";
+
+        switch (distribution) {
+          case "binomial":
+            const n = parseInt(document.getElementById("n-trials").value);
+            const p = parseFloat(document.getElementById("p-success").value);
+            const k = parseInt(document.getElementById("k-success").value);
+
+            if (
+              isNaN(n) ||
+              isNaN(p) ||
+              isNaN(k) ||
+              p < 0 ||
+              p > 1 ||
+              k < 0 ||
+              k > n
+            ) {
+              document.getElementById("probability-result").innerHTML =
+                "Masukkan nilai yang valid";
+              return;
             }
-            
-            document.getElementById('distribution-form').innerHTML = formHTML;
-        }
-        
-        function factorial(n) {
-            if (n < 0) return NaN;
-            if (n === 0 || n === 1) return 1;
-            let result = 1;
-            for (let i = 2; i <= n; i++) {
-                result *= i;
-            }
-            return result;
-        }
-        
-        function combination(n, k) {
-            return factorial(n) / (factorial(k) * factorial(n - k));
-        }
-        
-        function binomialPMF(n, p, k) {
-            return combination(n, k) * Math.pow(p, k) * Math.pow(1 - p, n - k);
-        }
-        
-        function normalPDF(x, mean, stddev) {
-            const exponent = -Math.pow(x - mean, 2) / (2 * Math.pow(stddev, 2));
-            return (1 / (stddev * Math.sqrt(2 * Math.PI))) * Math.exp(exponent);
-        }
-        
-        function poissonPMF(lambda, k) {
-            return (Math.pow(lambda, k) * Math.exp(-lambda)) / factorial(k);
-        }
-        
-        function calculateProbability() {
-            const distribution = document.getElementById('distribution').value;
-            let resultHTML = '';
-            
-            switch (distribution) {
-                case 'binomial':
-                    const n = parseInt(document.getElementById('n-trials').value);
-                    const p = parseFloat(document.getElementById('p-success').value);
-                    const k = parseInt(document.getElementById('k-success').value);
-                    
-                    if (isNaN(n) || isNaN(p) || isNaN(k) || p < 0 || p > 1 || k < 0 || k > n) {
-                        document.getElementById('probability-result').innerHTML = "Masukkan nilai yang valid";
-                        return;
-                    }
-                    
-                    const binomialProb = binomialPMF(n, p, k);
-                    resultHTML = `
+
+            const binomialProb = binomialPMF(n, p, k);
+            resultHTML = `
                         <p>Distribusi Binomial dengan:</p>
                         <p>n = ${n}, p = ${p.toFixed(2)}, k = ${k}</p>
-                        <p>Probabilitas P(X = ${k}) = ${binomialProb.toFixed(6)}</p>
+                        <p>Probabilitas P(X = ${k}) = ${binomialProb.toFixed(
+              6
+            )}</p>
                     `;
-                    break;
-                case 'normal':
-                    const mean = parseFloat(document.getElementById('mean').value);
-                    const stddev = parseFloat(document.getElementById('stddev').value);
-                    const x = parseFloat(document.getElementById('x-value').value);
-                    
-                    if (isNaN(mean) || isNaN(stddev) || stddev <= 0 || isNaN(x)) {
-                        document.getElementById('probability-result').innerHTML = "Masukkan nilai yang valid";
-                        return;
-                    }
-                    
-                    const normalDensity = normalPDF(x, mean, stddev);
-                    resultHTML = `
+            break;
+          case "normal":
+            const mean = parseFloat(document.getElementById("mean").value);
+            const stddev = parseFloat(document.getElementById("stddev").value);
+            const x = parseFloat(document.getElementById("x-value").value);
+
+            if (isNaN(mean) || isNaN(stddev) || stddev <= 0 || isNaN(x)) {
+              document.getElementById("probability-result").innerHTML =
+                "Masukkan nilai yang valid";
+              return;
+            }
+
+            const normalDensity = normalPDF(x, mean, stddev);
+            resultHTML = `
                         <p>Distribusi Normal dengan:</p>
                         <p>μ = ${mean.toFixed(2)}, σ = ${stddev.toFixed(2)}</p>
-                        <p>Density f(${x.toFixed(2)}) = ${normalDensity.toFixed(6)}</p>
+                        <p>Density f(${x.toFixed(2)}) = ${normalDensity.toFixed(
+              6
+            )}</p>
                         <p class="text-sm text-gray-500 dark:text-gray-400">*Untuk probabilitas kumulatif (CDF), diperlukan integrasi numerik</p>
                     `;
-                    break;
-                case 'poisson':
-                    const lambda = parseFloat(document.getElementById('lambda').value);
-                    const kEvents = parseInt(document.getElementById('k-events').value);
-                    
-                    if (isNaN(lambda) || lambda < 0 || isNaN(kEvents) || kEvents < 0) {
-                        document.getElementById('probability-result').innerHTML = "Masukkan nilai yang valid";
-                        return;
-                    }
-                    
-                    const poissonProb = poissonPMF(lambda, kEvents);
-                    resultHTML = `
+            break;
+          case "poisson":
+            const lambda = parseFloat(document.getElementById("lambda").value);
+            const kEvents = parseInt(document.getElementById("k-events").value);
+
+            if (isNaN(lambda) || lambda < 0 || isNaN(kEvents) || kEvents < 0) {
+              document.getElementById("probability-result").innerHTML =
+                "Masukkan nilai yang valid";
+              return;
+            }
+
+            const poissonProb = poissonPMF(lambda, kEvents);
+            resultHTML = `
                         <p>Distribusi Poisson dengan:</p>
                         <p>λ = ${lambda.toFixed(2)}, k = ${kEvents}</p>
-                        <p>Probabilitas P(X = ${kEvents}) = ${poissonProb.toFixed(6)}</p>
+                        <p>Probabilitas P(X = ${kEvents}) = ${poissonProb.toFixed(
+              6
+            )}</p>
                     `;
-                    break;
-            }
-            
-            document.getElementById('probability-result').innerHTML = resultHTML;
+            break;
         }
-        
-        // Initialize form on page load
-        document.addEventListener('DOMContentLoaded', () => {
-            updateDistributionForm();
-            calculateStatistics(); // Calculate with default data
-        });
+
+        document.getElementById("probability-result").innerHTML = resultHTML;
+      }
+
+      // Initialize form on page load
+      document.addEventListener("DOMContentLoaded", () => {
+        updateDistributionForm();
+        calculateStatistics(); // Calculate with default data
+      });
     </script>
-</body>
+  </body>
 </html>

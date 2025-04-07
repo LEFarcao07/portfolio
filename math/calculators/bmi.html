@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Kalkulator BMI</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      (function () {
+        const savedTheme =
+          localStorage.getItem("theme") ||
+          (window.matchMedia("(prefers-color-scheme: dark)").matches
+            ? "dark"
+            : "light");
+        document.documentElement.classList.toggle(
+          "dark",
+          savedTheme === "dark"
+        );
+      })();
+
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: [
+                "Inter",
+                "Segoe UI",
+                "Tahoma",
+                "Geneva",
+                "Verdana",
+                "sans-serif",
+              ],
+            },
+            colors: {
+              primary: {
+                light: "#3B82F6",
+                dark: "#60A5FA",
+              },
+              dark: {
+                light: "#1F2937",
+                dark: "#111827",
+              },
+              light: {
+                light: "#F8F9FA",
+                dark: "#1F2937",
+              },
+              customGray: "#3E3E3E",
+              linux: {
+                "merah-error": "#CC0000",
+                "ijo-sukses": "#4E9A06",
+                "kuning-awas": "#C4A000",
+                "biru-info": "#3465A4",
+                "ungu-ajaib": "#75507B",
+                "cyan-keren": "#06989A",
+                "putih-biasa": "#D3D7CF",
+                "merah-terang": "#EF2929",
+                "ijo-neon": "#8AE234",
+                "kuning-sinar-x": "#FCE94F",
+                "biru-langit": "#729FCF",
+                "ungu-mistik": "#AD7FA8",
+                "cyan-glow": "#34E2E2",
+                "putih-terang": "#EEEEEC",
+                "bg-gelap": "#2E3436",
+                "bg-terang": "#EEEEEC",
+              },
+            },
+          },
+        },
+        corePlugins: {
+          preflight: false,
+        },
+      };
+    </script>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      a {
+        text-decoration: none;
+      }
+      .calculator {
+        max-width: 500px;
+        margin: 0 auto;
+      }
+      .input-group {
+        margin-bottom: 15px;
+      }
+      .input-label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: 500;
+      }
+      .number-input {
+        width: 100%;
+        padding: 10px;
+        border-radius: 5px;
+        border: 1px solid #d1d5db;
+        background-color: #f9fafb;
+        color: #111827;
+      }
+      .dark .number-input {
+        background-color: #374151;
+        border-color: #4b5563;
+        color: #f9fafb;
+      }
+      .select-input {
+        width: 100%;
+        padding: 10px;
+        border-radius: 5px;
+        border: 1px solid #d1d5db;
+        background-color: #f9fafb;
+        color: #111827;
+      }
+      .dark .select-input {
+        background-color: #374151;
+        border-color: #4b5563;
+        color: #f9fafb;
+      }
+      .btn {
+        height: 50px;
+        font-size: 1.2rem;
+      }
+      .btn-primary {
+        background-color: #3b82f6;
+        color: white;
+      }
+      .dark .btn-primary {
+        background-color: #2563eb;
+      }
+      .btn-reset {
+        background-color: #ef4444;
+        color: white;
+      }
+      .dark .btn-reset {
+        background-color: #dc2626;
+      }
+      .result-box {
+        padding: 15px;
+        border-radius: 5px;
+        margin-top: 20px;
+        background-color: #f3f4f6;
+      }
+      .dark .result-box {
+        background-color: #374151;
+      }
+      .result-title {
+        font-weight: 600;
+        margin-bottom: 10px;
+      }
+      .result-value {
+        font-size: 1.2rem;
+        font-weight: 500;
+      }
+      .bmi-category {
+        padding: 5px 10px;
+        border-radius: 4px;
+        font-weight: 500;
+        margin-top: 5px;
+        display: inline-block;
+      }
+      .bmi-underweight {
+        background-color: #93c5fd;
+        color: #1e3a8a;
+      }
+      .dark .bmi-underweight {
+        background-color: #1e3a8a;
+        color: #93c5fd;
+      }
+      .bmi-normal {
+        background-color: #86efac;
+        color: #166534;
+      }
+      .dark .bmi-normal {
+        background-color: #166534;
+        color: #86efac;
+      }
+      .bmi-overweight {
+        background-color: #fcd34d;
+        color: #854d0e;
+      }
+      .dark .bmi-overweight {
+        background-color: #854d0e;
+        color: #fcd34d;
+      }
+      .bmi-obese {
+        background-color: #fca5a5;
+        color: #991b1b;
+      }
+      .dark .bmi-obese {
+        background-color: #991b1b;
+        color: #fca5a5;
+      }
+      .border-red-500 {
+        border-color: #ef4444;
+      }
+      .dark .border-red-500 {
+        border-color: #f87171;
+      }
+    </style>
+  </head>
+  <body class="bg-gray-100 dark:bg-gray-900 min-h-screen">
+    <nav class="bg-white dark:bg-gray-800 shadow-sm">
+      <div class="px-4 py-3 flex justify-between items-center">
+        <a
+          href="../index.html"
+          class="text-blue-600 dark:text-blue-400 font-semibold"
+          >← Kembali</a
+        >
+        <button
+          id="theme-toggle"
+          type="button"
+          class="p-2 border-transparent bg-white dark:bg-dark-light text-dark dark:text-gray-300 rounded-lg focus:outline-none transform hover:rotate-12"
+          aria-label="Toggle dark mode"
+        >
+          <svg
+            id="theme-toggle-dark-icon"
+            class="w-5 h-5"
+            fill="currentColor"
+            viewBox="0 0 20 20"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"
+            ></path>
+          </svg>
+          <svg
+            id="theme-toggle-light-icon"
+            class="w-5 h-5 hidden"
+            fill="currentColor"
+            viewBox="0 0 20 20"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z"
+              fill-rule="evenodd"
+              clip-rule="evenodd"
+            ></path>
+          </svg>
+        </button>
+      </div>
+    </nav>
+
+    <main class="container mx-auto px-4 py-8">
+      <h1 class="text-2xl font-bold text-center mb-8 text-gray-800 dark:text-white">
+        Kalkulator BMI (Indeks Massa Tubuh)
+      </h1>
+
+      <div class="calculator bg-white dark:bg-gray-800 p-4 rounded-lg shadow-md">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div class="input-group">
+            <label class="input-label text-gray-700 dark:text-gray-300">Tinggi Badan (cm)</label>
+            <input
+              type="number"
+              id="heightInput"
+              class="number-input"
+              placeholder="Contoh: 170"
+            />
+          </div>
+          <div class="input-group">
+            <label class="input-label text-gray-700 dark:text-gray-300">Berat Badan (kg)</label>
+            <input
+              type="number"
+              id="weightInput"
+              class="number-input"
+              placeholder="Contoh: 65"
+            />
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4 mt-4">
+          <button
+            class="btn btn-primary hover:bg-blue-600 rounded"
+            onclick="calculateBMI()"
+          >
+            Hitung BMI
+          </button>
+          <button
+            class="btn btn-reset hover:bg-red-600 rounded"
+            onclick="resetBMI()"
+          >
+            Reset
+          </button>
+        </div>
+
+        <div class="result-box mt-6">
+          <div class="result-title text-gray-800 dark:text-white">Hasil:</div>
+          <div id="bmiResult" class="result-value text-dark dark:text-white">-</div>
+          <div id="bmiCategory" class="bmi-category mt-2">-</div>
+          <div id="bmiInfo" class="text-sm text-gray-600 dark:text-gray-400 mt-2"></div>
+        </div>
+      </div>
+    </main>
+
+    <script>
+      // Theme toggle
+      const themeToggleBtn = document.getElementById('theme-toggle');
+      const themeToggleDarkIcon = document.getElementById('theme-toggle-dark-icon');
+      const themeToggleLightIcon = document.getElementById('theme-toggle-light-icon');
+
+      if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+        themeToggleLightIcon.classList.remove('hidden');
+        themeToggleDarkIcon.classList.add('hidden');
+      } else {
+        themeToggleLightIcon.classList.add('hidden');
+        themeToggleDarkIcon.classList.remove('hidden');
+      }
+
+      themeToggleBtn.addEventListener('click', function() {
+        themeToggleDarkIcon.classList.toggle('hidden');
+        themeToggleLightIcon.classList.toggle('hidden');
+
+        if (localStorage.getItem('theme') === 'dark') {
+          localStorage.setItem('theme', 'light');
+          document.documentElement.classList.remove('dark');
+        } else {
+          localStorage.setItem('theme', 'dark');
+          document.documentElement.classList.add('dark');
+        }
+      });
+
+      // BMI calculation function
+      function calculateBMI() {
+        const height = parseFloat(document.getElementById('heightInput').value);
+        const weight = parseFloat(document.getElementById('weightInput').value);
+        
+        if (isNaN(height) || isNaN(weight)) {
+          document.getElementById('bmiResult').textContent = '-';
+          document.getElementById('bmiCategory').textContent = '-';
+          document.getElementById('bmiCategory').className = 'bmi-category mt-2';
+          document.getElementById('bmiInfo').textContent = '';
+          return;
+        }
+
+        // Calculate BMI (weight in kg / (height in m)^2)
+        const heightInMeters = height / 100;
+        const bmi = weight / (heightInMeters * heightInMeters);
+
+        // Display BMI result
+        document.getElementById('bmiResult').textContent = bmi.toFixed(1);
+
+        // Determine BMI category
+        let category, categoryClass, info;
+        if (bmi < 18.5) {
+          category = 'Kurus (Underweight)';
+          categoryClass = 'bmi-underweight';
+          info = 'BMI di bawah 18.5 menunjukkan berat badan kurang. Konsultasikan dengan dokter atau ahli gizi.';
+        } else if (bmi < 25) {
+          category = 'Normal (Healthy weight)';
+          categoryClass = 'bmi-normal';
+          info = 'BMI antara 18.5 dan 25 menunjukkan berat badan sehat. Pertahankan pola makan dan aktivitas fisik.';
+        } else if (bmi < 30) {
+          category = 'Gemuk (Overweight)';
+          categoryClass = 'bmi-overweight';
+          info = 'BMI antara 25 dan 30 menunjukkan kelebihan berat badan. Pertimbangkan untuk meningkatkan aktivitas fisik dan menyesuaikan pola makan.';
+        } else {
+          category = 'Obesitas (Obese)';
+          categoryClass = 'bmi-obese';
+          info = 'BMI di atas 30 menunjukkan obesitas. Disarankan untuk berkonsultasi dengan dokter atau ahli gizi.';
+        }
+
+        document.getElementById('bmiCategory').textContent = category;
+        document.getElementById('bmiCategory').className = `bmi-category mt-2 ${categoryClass}`;
+        document.getElementById('bmiInfo').textContent = info;
+      }
+
+      function resetBMI() {
+        document.getElementById('heightInput').value = '';
+        document.getElementById('weightInput').value = '';
+        document.getElementById('bmiResult').textContent = '-';
+        document.getElementById('bmiCategory').textContent = '-';
+        document.getElementById('bmiCategory').className = 'bmi-category mt-2';
+        document.getElementById('bmiInfo').textContent = '';
+      }
+    </script>
+  </body>
+</html>

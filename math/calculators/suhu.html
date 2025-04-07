@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Kalkulator Suhu</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      (function () {
+        const savedTheme =
+          localStorage.getItem("theme") ||
+          (window.matchMedia("(prefers-color-scheme: dark)").matches
+            ? "dark"
+            : "light");
+        document.documentElement.classList.toggle(
+          "dark",
+          savedTheme === "dark"
+        );
+      })();
+
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: [
+                "Inter",
+                "Segoe UI",
+                "Tahoma",
+                "Geneva",
+                "Verdana",
+                "sans-serif",
+              ],
+            },
+            colors: {
+              primary: { light: "#3B82F6", dark: "#60A5FA" },
+              dark: { light: "#1F2937", dark: "#111827" },
+              light: { light: "#F8F9FA", dark: "#1F2937" },
+              customGray: "#3E3E3E",
+              linux: {
+                "merah-error": "#CC0000",
+                "ijo-sukses": "#4E9A06",
+                "kuning-awas": "#C4A000",
+                "biru-info": "#3465A4",
+                "ungu-ajaib": "#75507B",
+                "cyan-keren": "#06989A",
+              },
+            },
+          },
+        },
+        corePlugins: { preflight: false },
+      };
+    </script>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      a {
+        text-decoration: none;
+      }
+      .calculator {
+        max-width: 500px;
+        margin: 0 auto;
+      }
+      .input-group {
+        margin-bottom: 15px;
+      }
+      .input-label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: 500;
+      }
+      .number-input {
+        width: 100%;
+        padding: 10px;
+        border-radius: 5px;
+        border: 1px solid #d1d5db;
+        background-color: #f9fafb;
+        color: #111827;
+      }
+      .dark .number-input {
+        background-color: #374151;
+        border-color: #4b5563;
+        color: #f9fafb;
+      }
+      .select-input {
+        width: 100%;
+        padding: 10px;
+        border-radius: 5px;
+        border: 1px solid #d1d5db;
+        background-color: #f9fafb;
+        color: #111827;
+      }
+      .dark .select-input {
+        background-color: #374151;
+        border-color: #4b5563;
+        color: #f9fafb;
+      }
+      .btn {
+        height: 50px;
+        font-size: 1.2rem;
+      }
+      .btn-primary {
+        background-color: #3b82f6;
+        color: white;
+      }
+      .dark .btn-primary {
+        background-color: #2563eb;
+      }
+      .btn-reset {
+        background-color: #ef4444;
+        color: white;
+      }
+      .dark .btn-reset {
+        background-color: #dc2626;
+      }
+      .result-box {
+        padding: 15px;
+        border-radius: 5px;
+        margin-top: 20px;
+        background-color: #f3f4f6;
+      }
+      .dark .result-box {
+        background-color: #374151;
+      }
+      .result-title {
+        font-weight: 600;
+        margin-bottom: 10px;
+      }
+      .result-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+      }
+      .result-item {
+        padding: 8px;
+        border-radius: 4px;
+        background-color: #e5e7eb;
+      }
+      .dark .result-item {
+        background-color: #4b5563;
+      }
+      .result-value {
+        font-weight: 500;
+      }
+      .result-unit {
+        font-size: 0.8rem;
+        color: #6b7280;
+      }
+      .dark .result-unit {
+        color: #9ca3af;
+      }
+    </style>
+  </head>
+  <body class="bg-gray-100 dark:bg-gray-900 min-h-screen">
+    <nav class="bg-white dark:bg-gray-800 shadow-sm">
+      <div class="px-4 py-3 flex justify-between items-center">
+        <a
+          href="../index.html"
+          class="text-blue-600 dark:text-blue-400 font-semibold"
+          >← Kembali</a
+        >
+        <button
+          id="theme-toggle"
+          type="button"
+          class="p-2 border-transparent bg-white dark:bg-dark-light text-dark dark:text-gray-300 rounded-lg focus:outline-none transform hover:rotate-12"
+        >
+          <svg
+            id="theme-toggle-dark-icon"
+            class="w-5 h-5"
+            fill="currentColor"
+            viewBox="0 0 20 20"
+          >
+            <path
+              d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"
+            ></path>
+          </svg>
+          <svg
+            id="theme-toggle-light-icon"
+            class="w-5 h-5 hidden"
+            fill="currentColor"
+            viewBox="0 0 20 20"
+          >
+            <path
+              d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z"
+              fill-rule="evenodd"
+              clip-rule="evenodd"
+            ></path>
+          </svg>
+        </button>
+      </div>
+    </nav>
+
+    <main class="container mx-auto px-4 py-8">
+      <h1
+        class="text-2xl font-bold text-center mb-8 text-gray-800 dark:text-white"
+      >
+        Kalkulator Suhu
+      </h1>
+
+      <div
+        class="calculator bg-white dark:bg-gray-800 p-4 rounded-lg shadow-md"
+      >
+        <div class="input-group">
+          <label class="input-label text-gray-700 dark:text-gray-300"
+            >Dari Satuan</label
+          >
+          <select id="fromUnit" class="select-input">
+            <option value="C">Celsius (°C)</option>
+            <option value="F">Fahrenheit (°F)</option>
+            <option value="K">Kelvin (K)</option>
+            <option value="R">Rankine (°R)</option>
+            <option value="Re">Réaumur (°Ré)</option>
+          </select>
+        </div>
+
+        <div class="input-group">
+          <label class="input-label text-gray-700 dark:text-gray-300"
+            >Nilai</label
+          >
+          <input
+            type="number"
+            id="tempInput"
+            class="number-input"
+            placeholder="Masukkan nilai"
+            oninput="convertTemperature()"
+          />
+        </div>
+
+        <div class="grid grid-cols-2 gap-4 mt-4">
+          <button
+            class="btn btn-primary hover:bg-blue-600 rounded"
+            onclick="convertTemperature()"
+          >
+            Konversi
+          </button>
+          <button
+            class="btn btn-reset hover:bg-red-600 rounded"
+            onclick="resetTemperature()"
+          >
+            Reset
+          </button>
+        </div>
+
+        <div class="result-box mt-6">
+          <div class="result-title text-gray-800 dark:text-white">
+            Hasil Konversi:
+          </div>
+          <div class="result-grid">
+            <div class="result-item">
+              <div class="font-medium text-dark dark:text-white">Celsius</div>
+              <div id="CResult" class="result-value text-dark dark:text-white">
+                -
+              </div>
+              <div class="result-unit">°C</div>
+            </div>
+            <div class="result-item">
+              <div class="font-medium text-dark dark:text-white">Fahrenheit</div>
+              <div id="FResult" class="result-value text-dark dark:text-white">
+                -
+              </div>
+              <div class="result-unit">°F</div>
+            </div>
+            <div class="result-item">
+              <div class="font-medium text-dark dark:text-white">Kelvin</div>
+              <div id="KResult" class="result-value text-dark dark:text-white">
+                -
+              </div>
+              <div class="result-unit">K</div>
+            </div>
+            <div class="result-item">
+              <div class="font-medium text-dark dark:text-white">Rankine</div>
+              <div id="RResult" class="result-value text-dark dark:text-white">
+                -
+              </div>
+              <div class="result-unit">°R</div>
+            </div>
+            <div class="result-item">
+              <div class="font-medium text-dark dark:text-white">Réaumur</div>
+              <div id="ReResult" class="result-value text-dark dark:text-white">
+                -
+              </div>
+              <div class="result-unit">°Ré</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <script>
+      // Theme toggle
+      const themeToggleBtn = document.getElementById("theme-toggle");
+      const themeToggleDarkIcon = document.getElementById(
+        "theme-toggle-dark-icon"
+      );
+      const themeToggleLightIcon = document.getElementById(
+        "theme-toggle-light-icon"
+      );
+
+      if (
+        localStorage.getItem("theme") === "dark" ||
+        (!("theme" in localStorage) &&
+          window.matchMedia("(prefers-color-scheme: dark)").matches)
+      ) {
+        themeToggleLightIcon.classList.remove("hidden");
+        themeToggleDarkIcon.classList.add("hidden");
+      } else {
+        themeToggleLightIcon.classList.add("hidden");
+        themeToggleDarkIcon.classList.remove("hidden");
+      }
+
+      themeToggleBtn.addEventListener("click", function () {
+        themeToggleDarkIcon.classList.toggle("hidden");
+        themeToggleLightIcon.classList.toggle("hidden");
+        if (localStorage.getItem("theme") === "dark") {
+          localStorage.setItem("theme", "light");
+          document.documentElement.classList.remove("dark");
+        } else {
+          localStorage.setItem("theme", "dark");
+          document.documentElement.classList.add("dark");
+        }
+      });
+
+      // Temperature conversion
+      function convertTemperature() {
+        const fromUnit = document.getElementById("fromUnit").value;
+        const value = parseFloat(document.getElementById("tempInput").value);
+
+        if (isNaN(value)) {
+          resetResults();
+          return;
+        }
+
+        // Convert to Celsius first
+        let celsius;
+        switch (fromUnit) {
+          case "C":
+            celsius = value;
+            break;
+          case "F":
+            celsius = (value - 32) * 5/9;
+            break;
+          case "K":
+            celsius = value - 273.15;
+            break;
+          case "R":
+            celsius = (value - 491.67) * 5/9;
+            break;
+          case "Re":
+            celsius = value * 5/4;
+            break;
+        }
+
+        // Convert to all other units
+        document.getElementById("CResult").textContent = formatNumber(celsius);
+        document.getElementById("FResult").textContent = formatNumber(
+          (celsius * 9/5) + 32
+        );
+        document.getElementById("KResult").textContent = formatNumber(
+          celsius + 273.15
+        );
+        document.getElementById("RResult").textContent = formatNumber(
+          (celsius + 273.15) * 9/5
+        );
+        document.getElementById("ReResult").textContent = formatNumber(
+          celsius * 4/5
+        );
+      }
+
+      function formatNumber(num) {
+        // Format angka dengan maksimal 6 digit desimal dan hapus trailing zero
+        return parseFloat(num.toFixed(6)).toString();
+      }
+
+      function resetResults() {
+        const units = ["C", "F", "K", "R", "Re"];
+        units.forEach((unit) => {
+          document.getElementById(`${unit}Result`).textContent = "-";
+        });
+      }
+
+      function resetTemperature() {
+        document.getElementById("tempInput").value = "";
+        resetResults();
+      }
+    </script>
+  </body>
+</html>
