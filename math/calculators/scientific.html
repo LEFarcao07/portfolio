@@ -6,7 +6,83 @@
     <title>Kalkulator Ilmiah</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/11.6.0/math.min.js"></script>
+    <script src="../../script.js"></script>
+    <script>
+      (function () {
+        const savedTheme =
+          localStorage.getItem("theme") ||
+          (window.matchMedia("(prefers-color-scheme: dark)").matches
+            ? "dark"
+            : "light");
+        document.documentElement.classList.toggle(
+          "dark",
+          savedTheme === "dark"
+        );
+      })();
+
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: [
+                "Inter",
+                "Segoe UI",
+                "Tahoma",
+                "Geneva",
+                "Verdana",
+                "sans-serif",
+              ],
+            },
+            colors: {
+              primary: {
+                light: "#3B82F6",
+                dark: "#60A5FA",
+              },
+              dark: {
+                light: "#1F2937",
+                dark: "#111827",
+              },
+              light: {
+                light: "#F8F9FA",
+                dark: "#1F2937",
+              },
+              customGray: "#3E3E3E",
+              linux: {
+                "merah-error": "#CC0000",
+                "ijo-sukses": "#4E9A06",
+                "kuning-awas": "#C4A000",
+                "biru-info": "#3465A4",
+                "ungu-ajaib": "#75507B",
+                "cyan-keren": "#06989A",
+                "putih-biasa": "#D3D7CF",
+                "merah-terang": "#EF2929",
+                "ijo-neon": "#8AE234",
+                "kuning-sinar-x": "#FCE94F",
+                "biru-langit": "#729FCF",
+                "ungu-mistik": "#AD7FA8",
+                "cyan-glow": "#34E2E2",
+                "putih-terang": "#EEEEEC",
+                "bg-gelap": "#2E3436",
+                "bg-terang": "#EEEEEC",
+              },
+            },
+          },
+        },
+        corePlugins: {
+          preflight: false,
+        },
+      };
+    </script>
     <style>
+        * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      a {
+        text-decoration: none;
+      }
         .calculator {
             max-width: 400px;
             margin: 0 auto;
@@ -16,12 +92,12 @@
             font-size: 1.5rem;
             text-align: right;
             padding: 10px;
-            background-color: #f3f4f6;
             border-radius: 5px;
             margin-bottom: 10px;
         }
         .dark .display {
             background-color: #374151;
+            color: white;
         }
         .btn {
             height: 50px;
@@ -52,55 +128,91 @@
 </head>
 <body class="bg-gray-100 dark:bg-gray-900 min-h-screen">
     <nav class="bg-white dark:bg-gray-800 shadow-sm">
-        <div class="max-w-6xl mx-auto px-4 py-3">
-            <a href="../index.html" class="text-blue-600 dark:text-blue-400 font-semibold">← Kembali</a>
+        <div
+          class="px-4 py-3 flex justify-between items-center"
+        >
+          <a
+            href="../index.html"
+            class="text-blue-600 dark:text-blue-400 font-semibold"
+            >← Kembali</a
+          >
+          <button
+            id="theme-toggle"
+            type="button"
+            class="p-2 border-transparent bg-white dark:bg-dark-light text-dark dark:text-gray-300 rounded-lg focus:outline-none transform hover:rotate-12"
+            aria-label="Toggle dark mode"
+          >
+            <svg
+              id="theme-toggle-dark-icon"
+              class="w-5 h-5"
+              fill="currentColor"
+              viewBox="0 0 20 20"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"
+              ></path>
+            </svg>
+            <svg
+              id="theme-toggle-light-icon"
+              class="w-5 h-5 hidden"
+              fill="currentColor"
+              viewBox="0 0 20 20"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z"
+                fill-rule="evenodd"
+                clip-rule="evenodd"
+              ></path>
+            </svg>
+          </button>
         </div>
-    </nav>
+      </nav>
 
     <main class="container mx-auto px-4 py-8">
         <h1 class="text-2xl font-bold text-center mb-8 text-gray-800 dark:text-white">Kalkulator Ilmiah</h1>
         
         <div class="calculator bg-white dark:bg-gray-800 p-4 rounded-lg shadow-lg">
-            <div class="display mb-4" id="display">0</div>
+            <div class="display bg-gray-200 mb-4" id="display">0</div>
             <div class="grid grid-cols-5 gap-2">
-                <button class="btn bg-gray-200 dark:bg-gray-700 dark:text-white rounded" onclick="clearDisplay()">C</button>
-                <button class="btn bg-gray-200 dark:bg-gray-700 dark:text-white rounded" onclick="backspace()">⌫</button>
-                <button class="btn bg-gray-200 dark:bg-gray-700 dark:text-white rounded" onclick="appendToDisplay('(')">(</button>
-                <button class="btn bg-gray-200 dark:bg-gray-700 dark:text-white rounded" onclick="appendToDisplay(')')">)</button>
-                <button class="btn btn-operator rounded" onclick="appendToDisplay('^')">^</button>
+                <button class="btn bg-white dark:bg-gray-700 dark:text-white hover:bg-gray-200 rounded" onclick="clearDisplay()">C</button>
+                <button class="btn bg-white dark:bg-gray-700 dark:text-white hover:bg-gray-200 rounded" onclick="backspace()">⌫</button>
+                <button class="btn bg-white dark:bg-gray-700 dark:text-white hover:bg-gray-200 rounded" onclick="appendToDisplay('(')">(</button>
+                <button class="btn bg-white dark:bg-gray-700 dark:text-white hover:bg-gray-200 rounded" onclick="appendToDisplay(')')">)</button>
+                <button class="btn btn-operator hover:bg-blue-600 rounded" onclick="appendToDisplay('^')">^</button>
                 
-                <button class="btn btn-function rounded" onclick="appendFunction('sin')">sin</button>
-                <button class="btn btn-function rounded" onclick="appendFunction('cos')">cos</button>
-                <button class="btn btn-function rounded" onclick="appendFunction('tan')">tan</button>
-                <button class="btn btn-function rounded" onclick="appendFunction('log')">log</button>
-                <button class="btn btn-function rounded" onclick="appendFunction('sqrt')">√</button>
+                <button class="btn btn-function hover:bg-yellow-600 rounded" onclick="appendFunction('sin')">sin</button>
+                <button class="btn btn-function hover:bg-yellow-600 rounded" onclick="appendFunction('cos')">cos</button>
+                <button class="btn btn-function hover:bg-yellow-600 rounded" onclick="appendFunction('tan')">tan</button>
+                <button class="btn btn-function hover:bg-yellow-600 rounded" onclick="appendFunction('log')">log</button>
+                <button class="btn btn-function hover:bg-yellow-600 rounded" onclick="appendFunction('sqrt')">√</button>
                 
-                <button class="btn bg-gray-200 dark:bg-gray-700 dark:text-white rounded" onclick="appendToDisplay('7')">7</button>
-                <button class="btn bg-gray-200 dark:bg-gray-700 dark:text-white rounded" onclick="appendToDisplay('8')">8</button>
-                <button class="btn bg-gray-200 dark:bg-gray-700 dark:text-white rounded" onclick="appendToDisplay('9')">9</button>
-                <button class="btn btn-operator rounded" onclick="appendToDisplay('/')">/</button>
-                <button class="btn btn-function rounded" onclick="appendToDisplay('pi')">π</button>
+                <button class="btn bg-white dark:bg-gray-700 dark:text-white hover:bg-gray-200 rounded" onclick="appendToDisplay('7')">7</button>
+                <button class="btn bg-white dark:bg-gray-700 dark:text-white hover:bg-gray-200 rounded" onclick="appendToDisplay('8')">8</button>
+                <button class="btn bg-white dark:bg-gray-700 dark:text-white hover:bg-gray-200 rounded" onclick="appendToDisplay('9')">9</button>
+                <button class="btn btn-operator hover:bg-blue-600 rounded" onclick="appendToDisplay('/')">/</button>
+                <button class="btn btn-function hover:bg-yellow-600 rounded" onclick="appendToDisplay('pi')">π</button>
                 
-                <button class="btn bg-gray-200 dark:bg-gray-700 dark:text-white rounded" onclick="appendToDisplay('4')">4</button>
-                <button class="btn bg-gray-200 dark:bg-gray-700 dark:text-white rounded" onclick="appendToDisplay('5')">5</button>
-                <button class="btn bg-gray-200 dark:bg-gray-700 dark:text-white rounded" onclick="appendToDisplay('6')">6</button>
-                <button class="btn btn-operator rounded" onclick="appendToDisplay('*')">×</button>
-                <button class="btn btn-function rounded" onclick="appendToDisplay('e')">e</button>
+                <button class="btn bg-white dark:bg-gray-700 dark:text-white hover:bg-gray-200 rounded" onclick="appendToDisplay('4')">4</button>
+                <button class="btn bg-white dark:bg-gray-700 dark:text-white hover:bg-gray-200 rounded" onclick="appendToDisplay('5')">5</button>
+                <button class="btn bg-white dark:bg-gray-700 dark:text-white hover:bg-gray-200 rounded" onclick="appendToDisplay('6')">6</button>
+                <button class="btn btn-operator hover:bg-blue-600 rounded" onclick="appendToDisplay('*')">×</button>
+                <button class="btn btn-function hover:bg-yellow-600 rounded" onclick="appendToDisplay('e')">e</button>
                 
-                <button class="btn bg-gray-200 dark:bg-gray-700 dark:text-white rounded" onclick="appendToDisplay('1')">1</button>
-                <button class="btn bg-gray-200 dark:bg-gray-700 dark:text-white rounded" onclick="appendToDisplay('2')">2</button>
-                <button class="btn bg-gray-200 dark:bg-gray-700 dark:text-white rounded" onclick="appendToDisplay('3')">3</button>
-                <button class="btn btn-operator rounded" onclick="appendToDisplay('-')">-</button>
-                <button class="btn btn-function rounded" onclick="appendFunction('factorial')">n!</button>
+                <button class="btn bg-white dark:bg-gray-700 dark:text-white hover:bg-gray-200 rounded" onclick="appendToDisplay('1')">1</button>
+                <button class="btn bg-white dark:bg-gray-700 dark:text-white hover:bg-gray-200 rounded" onclick="appendToDisplay('2')">2</button>
+                <button class="btn bg-white dark:bg-gray-700 dark:text-white hover:bg-gray-200 rounded" onclick="appendToDisplay('3')">3</button>
+                <button class="btn btn-operator hover:bg-blue-600 rounded" onclick="appendToDisplay('-')">-</button>
+                <button class="btn btn-function hover:bg-yellow-600 rounded" onclick="appendFunction('factorial')">n!</button>
                 
-                <button class="btn bg-gray-200 dark:bg-gray-700 dark:text-white rounded" onclick="appendToDisplay('0')">0</button>
-                <button class="btn bg-gray-200 dark:bg-gray-700 dark:text-white rounded" onclick="appendToDisplay('.')">.</button>
-                <button class="btn btn-equals rounded col-span-2" onclick="calculate()">=</button>
-                <button class="btn btn-operator rounded" onclick="appendToDisplay('+')">+</button>
+                <button class="btn bg-white dark:bg-gray-700 dark:text-white hover:bg-gray-200 rounded" onclick="appendToDisplay('0')">0</button>
+                <button class="btn bg-white dark:bg-gray-700 dark:text-white hover:bg-gray-200 rounded" onclick="appendToDisplay('.')">.</button>
+                <button class="btn btn-equals hover:bg-green-600 rounded col-span-2" onclick="calculate()">=</button>
+                <button class="btn btn-operator hover:bg-blue-600 rounded" onclick="appendToDisplay('+')">+</button>
             </div>
         </div>
     </main>
-
     <script src="scientific.js"></script>
 </body>
 </html>

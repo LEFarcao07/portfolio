@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Kalkulator Dasar</title>
+    <title>Kalkulator Konversi Bilangan</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="../../script.js"></script>
     <script>
@@ -83,7 +83,7 @@
         text-decoration: none;
       }
       .calculator {
-        max-width: 300px;
+        max-width: 400px;
         margin: 0 auto;
       }
       .display {
@@ -116,13 +116,45 @@
       .dark .btn-equals {
         background-color: #059669;
       }
+      .input-group {
+        margin-bottom: 15px;
+      }
+      .input-label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: 500;
+      }
+      .number-input {
+        width: 100%;
+        padding: 10px;
+        border-radius: 5px;
+        border: 1px solid #d1d5db;
+        background-color: #f9fafb;
+        color: #111827;
+      }
+      .dark .number-input {
+        background-color: #374151;
+        border-color: #4b5563;
+        color: #f9fafb;
+      }
+      .result-box {
+        padding: 15px;
+        border-radius: 5px;
+        margin-top: 20px;
+        background-color: #f3f4f6;
+      }
+      .dark .result-box {
+        background-color: #374151;
+      }
+      .result-title {
+        font-weight: 600;
+        margin-bottom: 10px;
+      }
     </style>
   </head>
   <body class="bg-gray-100 dark:bg-gray-900 min-h-screen">
     <nav class="bg-white dark:bg-gray-800 shadow-sm">
-      <div
-        class="px-4 py-3 flex justify-between items-center"
-      >
+      <div class="px-4 py-3 flex justify-between items-center">
         <a
           href="../index.html"
           class="text-blue-600 dark:text-blue-400 font-semibold"
@@ -163,124 +195,71 @@
     </nav>
 
     <main class="container mx-auto px-4 py-8">
-      <h1
-        class="text-2xl font-bold text-center mb-8 text-gray-800 dark:text-white"
-      >
-        Kalkulator Dasar
+      <h1 class="text-2xl font-bold text-center mb-8 text-gray-800 dark:text-white">
+        Kalkulator Konversi Bilangan
       </h1>
 
-      <div
-        class="calculator bg-white dark:bg-gray-800 p-4 rounded-lg shadow-md"
-      >
-        <div class="display bg-gray-200 mb-4" id="display">0</div>
-        <div class="grid grid-cols-4 gap-2">
-          <button
-            class="btn bg-white dark:bg-gray-700 dark:text-white hover:bg-gray-200 rounded"
-            onclick="clearDisplay()"
-          >
-            C
-          </button>
-          <button
-            class="btn bg-white dark:bg-gray-700 dark:text-white hover:bg-gray-200 rounded"
-            onclick="backspace()"
-          >
-            ⌫
-          </button>
-          <button
-            class="btn bg-white dark:bg-gray-700 dark:text-white hover:bg-gray-200 rounded"
-            onclick="appendToDisplay('%')"
-          >
-            %
-          </button>
-          <button class="btn btn-operator hover:bg-blue-600 rounded" onclick="setOperation('/')">
-            /
-          </button>
+      <div class="calculator bg-white dark:bg-gray-800 p-4 rounded-lg shadow-md">
+        <div class="input-group">
+          <label class="input-label text-gray-700 dark:text-gray-300">Biner</label>
+          <input
+            type="text"
+            id="binaryInput"
+            class="number-input"
+            placeholder="Masukkan bilangan biner (contoh: 1010)"
+            oninput="convertFromBinary()"
+          />
+        </div>
 
-          <button
-            class="btn bg-white dark:bg-gray-700 dark:text-white hover:bg-gray-200 rounded"
-            onclick="appendToDisplay('7')"
-          >
-            7
-          </button>
-          <button
-            class="btn bg-white dark:bg-gray-700 dark:text-white hover:bg-gray-200 rounded"
-            onclick="appendToDisplay('8')"
-          >
-            8
-          </button>
-          <button
-            class="btn bg-white dark:bg-gray-700 dark:text-white hover:bg-gray-200 rounded"
-            onclick="appendToDisplay('9')"
-          >
-            9
-          </button>
-          <button class="btn btn-operator hover:bg-blue-600 rounded" onclick="setOperation('*')">
-            ×
-          </button>
+        <div class="input-group">
+          <label class="input-label text-gray-700 dark:text-gray-300">Desimal</label>
+          <input
+            type="text"
+            id="decimalInput"
+            class="number-input"
+            placeholder="Masukkan bilangan desimal (contoh: 42)"
+            oninput="convertFromDecimal()"
+          />
+        </div>
 
-          <button
-            class="btn bg-white dark:bg-gray-700 dark:text-white hover:bg-gray-200 rounded"
-            onclick="appendToDisplay('4')"
-          >
-            4
-          </button>
-          <button
-            class="btn bg-white dark:bg-gray-700 dark:text-white hover:bg-gray-200 rounded"
-            onclick="appendToDisplay('5')"
-          >
-            5
-          </button>
-          <button
-            class="btn bg-white dark:bg-gray-700 dark:text-white hover:bg-gray-200 rounded"
-            onclick="appendToDisplay('6')"
-          >
-            6
-          </button>
-          <button class="btn btn-operator hover:bg-blue-600 rounded" onclick="setOperation('-')">
-            -
-          </button>
+        <div class="input-group">
+          <label class="input-label text-gray-700 dark:text-gray-300">Hexadesimal</label>
+          <input
+            type="text"
+            id="hexInput"
+            class="number-input"
+            placeholder="Masukkan bilangan hexadesimal (contoh: 2A)"
+            oninput="convertFromHex()"
+          />
+        </div>
 
-          <button
-            class="btn bg-white dark:bg-gray-700 dark:text-white hover:bg-gray-200 rounded"
-            onclick="appendToDisplay('1')"
-          >
-            1
-          </button>
-          <button
-            class="btn bg-white dark:bg-gray-700 dark:text-white hover:bg-gray-200 rounded"
-            onclick="appendToDisplay('2')"
-          >
-            2
-          </button>
-          <button
-            class="btn bg-white dark:bg-gray-700 dark:text-white hover:bg-gray-200 rounded"
-            onclick="appendToDisplay('3')"
-          >
-            3
-          </button>
-          <button class="btn btn-operator hover:bg-blue-600 rounded" onclick="setOperation('+')">
-            +
-          </button>
+        <button
+          class="btn btn-equals hover:bg-green-600 rounded w-full mt-4"
+          onclick="clearAll()"
+        >
+          Reset
+        </button>
 
-          <button
-            class="btn bg-white dark:bg-gray-700 dark:text-white hover:bg-gray-200 rounded col-span-2"
-            onclick="appendToDisplay('0')"
-          >
-            0
-          </button>
-          <button
-            class="btn bg-white dark:bg-gray-700 dark:text-white hover:bg-gray-200 rounded"
-            onclick="appendToDisplay('.')"
-          >
-            .
-          </button>
-          <button class="btn btn-equals hover:bg-green-600 rounded" onclick="calculate()">
-            =
-          </button>
+        <div class="result-box">
+          <div class="result-title text-gray-800 dark:text-white">Hasil Konversi:</div>
+          <div class="grid grid-cols-3 gap-4">
+            <div>
+              <div class="text-sm text-gray-600 dark:text-gray-400">Biner:</div>
+              <div id="binaryResult" class="text-lg text-dark dark:text-white font-mono">-</div>
+            </div>
+            <div>
+              <div class="text-sm text-gray-600 dark:text-gray-400">Desimal:</div>
+              <div id="decimalResult" class="text-lg text-dark dark:text-white font-mono">-</div>
+            </div>
+            <div>
+              <div class="text-sm text-gray-600 dark:text-gray-400">Hexadesimal:</div>
+              <div id="hexResult" class="text-lg text-dark dark:text-white font-mono">-</div>
+            </div>
+          </div>
         </div>
       </div>
     </main>
 
-    <script src="basic.js"></script>
+    <script src="biner.js"></script>
   </body>
 </html>

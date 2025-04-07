@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Kalkulator Subnet</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+      (function () {
+        const savedTheme =
+          localStorage.getItem("theme") ||
+          (window.matchMedia("(prefers-color-scheme: dark)").matches
+            ? "dark"
+            : "light");
+        document.documentElement.classList.toggle(
+          "dark",
+          savedTheme === "dark"
+        );
+      })();
+
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: [
+                "Inter",
+                "Segoe UI",
+                "Tahoma",
+                "Geneva",
+                "Verdana",
+                "sans-serif",
+              ],
+            },
+            colors: {
+              primary: {
+                light: "#3B82F6",
+                dark: "#60A5FA",
+              },
+              dark: {
+                light: "#1F2937",
+                dark: "#111827",
+              },
+              light: {
+                light: "#F8F9FA",
+                dark: "#1F2937",
+              },
+              customGray: "#3E3E3E",
+              linux: {
+                "merah-error": "#CC0000",
+                "ijo-sukses": "#4E9A06",
+                "kuning-awas": "#C4A000",
+                "biru-info": "#3465A4",
+                "ungu-ajaib": "#75507B",
+                "cyan-keren": "#06989A",
+                "putih-biasa": "#D3D7CF",
+                "merah-terang": "#EF2929",
+                "ijo-neon": "#8AE234",
+                "kuning-sinar-x": "#FCE94F",
+                "biru-langit": "#729FCF",
+                "ungu-mistik": "#AD7FA8",
+                "cyan-glow": "#34E2E2",
+                "putih-terang": "#EEEEEC",
+                "bg-gelap": "#2E3436",
+                "bg-terang": "#EEEEEC",
+              },
+            },
+          },
+        },
+        corePlugins: {
+          preflight: false,
+        },
+      };
+    </script>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      a {
+        text-decoration: none;
+      }
+      .ip-range-visualization {
+        height: 40px;
+        position: relative;
+        background: linear-gradient(to right, #e5e7eb, #d1d5db);
+        border-radius: 5px;
+        margin: 10px 0;
+      }
+      .dark .ip-range-visualization {
+        background: linear-gradient(to right, #374151, #4b5563);
+      }
+      .ip-marker {
+        position: absolute;
+        top: -20px;
+        font-size: 0.75rem;
+        transform: translateX(-50%);
+        white-space: nowrap;
+      }
+      .ip-line {
+        position: absolute;
+        top: 0;
+        width: 1px;
+        height: 40px;
+        background-color: #ef4444;
+      }
+      .ip-label {
+        position: absolute;
+        top: 45px;
+        font-size: 0.75rem;
+        transform: translateX(-50%);
+        white-space: nowrap;
+      }
+      .network-portion {
+        position: absolute;
+        top: 0;
+        height: 40px;
+        background-color: rgba(59, 130, 246, 0.2);
+      }
+      .host-portion {
+        position: absolute;
+        top: 0;
+        height: 40px;
+        background-color: rgba(16, 185, 129, 0.2);
+      }
+    </style>
+  </head>
+  <body class="bg-gray-100 dark:bg-gray-900 min-h-screen">
+    <nav class="bg-white dark:bg-gray-800 shadow-sm">
+      <div class="px-4 py-3 flex justify-between items-center">
+        <a
+          href="../index.html"
+          class="text-blue-600 dark:text-blue-400 font-semibold"
+          >← Kembali</a
+        >
+        <button
+          id="theme-toggle"
+          type="button"
+          class="p-2 border-transparent bg-white dark:bg-dark-light text-dark dark:text-gray-300 rounded-lg focus:outline-none transform hover:rotate-12"
+          aria-label="Toggle dark mode"
+        >
+          <svg
+            id="theme-toggle-dark-icon"
+            class="w-5 h-5"
+            fill="currentColor"
+            viewBox="0 0 20 20"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"
+            ></path>
+          </svg>
+          <svg
+            id="theme-toggle-light-icon"
+            class="w-5 h-5 hidden"
+            fill="currentColor"
+            viewBox="0 0 20 20"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z"
+              fill-rule="evenodd"
+              clip-rule="evenodd"
+            ></path>
+          </svg>
+        </button>
+      </div>
+    </nav>
+
+    <main class="container mx-auto px-4 py-8 max-w-4xl">
+      <h1 class="text-2xl font-bold text-center mb-8 text-gray-800 dark:text-white">
+        Kalkulator Subnet
+      </h1>
+
+      <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md mb-8">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              Alamat IP
+            </label>
+            <input
+              type="text"
+              id="ip-address"
+              class="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 dark:text-white"
+              placeholder="192.168.1.1"
+              value="192.168.1.1"
+            />
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              Subnet Mask
+            </label>
+            <div class="flex">
+              <input
+                type="text"
+                id="subnet-mask"
+                class="flex-1 p-2 border border-gray-300 dark:border-gray-600 rounded-l-md bg-white dark:bg-gray-700 dark:text-white"
+                placeholder="255.255.255.0"
+                value="255.255.255.0"
+              />
+              <select
+                id="cidr-select"
+                class="p-2 border border-gray-300 dark:border-gray-600 rounded-r-md bg-white dark:bg-gray-700 dark:text-white border-l-0"
+              >
+                <option value="/24">/24</option>
+                <option value="/16">/16</option>
+                <option value="/8">/8</option>
+                <option value="/25">/25</option>
+                <option value="/26">/26</option>
+                <option value="/27">/27</option>
+                <option value="/28">/28</option>
+                <option value="/29">/29</option>
+                <option value="/30">/30</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-6">
+          <button
+            id="calculate-btn"
+            class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-md dark:bg-blue-700 dark:hover:bg-blue-800"
+          >
+            Hitung Subnet
+          </button>
+        </div>
+      </div>
+
+      <div id="results" class="hidden bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md">
+        <h2 class="text-xl font-semibold mb-4 text-gray-800 dark:text-white">
+          Hasil Perhitungan
+        </h2>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+          <div class="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg">
+            <h3 class="font-medium text-gray-800 dark:text-white mb-2">Informasi Dasar</h3>
+            <div class="space-y-2">
+              <div class="flex justify-between">
+                <span class="text-gray-600 dark:text-gray-300">Alamat IP:</span>
+                <span id="ip-result" class="font-mono text-gray-800 dark:text-white"></span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-gray-600 dark:text-gray-300">Subnet Mask:</span>
+                <span id="mask-result" class="font-mono text-gray-800 dark:text-white"></span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-gray-600 dark:text-gray-300">CIDR Notation:</span>
+                <span id="cidr-result" class="font-mono text-gray-800 dark:text-white"></span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-gray-600 dark:text-gray-300">Wildcard Mask:</span>
+                <span id="wildcard-result" class="font-mono text-gray-800 dark:text-white"></span>
+              </div>
+            </div>
+          </div>
+
+          <div class="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg">
+            <h3 class="font-medium text-gray-800 dark:text-white mb-2">Informasi Jaringan</h3>
+            <div class="space-y-2">
+              <div class="flex justify-between">
+                <span class="text-gray-600 dark:text-gray-300">Alamat Network:</span>
+                <span id="network-result" class="font-mono text-gray-800 dark:text-white"></span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-gray-600 dark:text-gray-300">Alamat Broadcast:</span>
+                <span id="broadcast-result" class="font-mono text-gray-800 dark:text-white"></span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-gray-600 dark:text-gray-300">Rentang Host:</span>
+                <span id="range-result" class="font-mono text-gray-800 dark:text-white"></span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+          <div class="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg">
+            <h3 class="font-medium text-gray-800 dark:text-white mb-2">Kapasitas Jaringan</h3>
+            <div class="space-y-2">
+              <div class="flex justify-between">
+                <span class="text-gray-600 dark:text-gray-300">Jumlah Host:</span>
+                <span id="hosts-result" class="font-mono text-gray-800 dark:text-white"></span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-gray-600 dark:text-gray-300">Host yang Dapat Digunakan:</span>
+                <span id="usable-hosts-result" class="font-mono text-gray-800 dark:text-white"></span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-gray-600 dark:text-gray-300">Blok Subnet:</span>
+                <span id="block-result" class="font-mono text-gray-800 dark:text-white"></span>
+              </div>
+            </div>
+          </div>
+
+          <div class="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg">
+            <h3 class="font-medium text-gray-800 dark:text-white mb-2">Informasi Binary</h3>
+            <div class="space-y-2">
+              <div class="flex justify-between">
+                <span class="text-gray-600 dark:text-gray-300">Alamat IP (Binary):</span>
+                <span id="binary-ip-result" class="font-mono text-gray-800 dark:text-white text-xs"></span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-gray-600 dark:text-gray-300">Subnet Mask (Binary):</span>
+                <span id="binary-mask-result" class="font-mono text-gray-800 dark:text-white text-xs"></span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-gray-600 dark:text-gray-300">Alamat Network (Binary):</span>
+                <span id="binary-network-result" class="font-mono text-gray-800 dark:text-white text-xs"></span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="mb-6">
+          <h3 class="font-medium text-gray-800 dark:text-white mb-2">Visualisasi Rentang IP</h3>
+          <div class="ip-range-visualization">
+            <div id="network-portion" class="network-portion"></div>
+            <div id="host-portion" class="host-portion"></div>
+            <div id="ip-markers"></div>
+          </div>
+        </div><br>
+
+        <div class="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg">
+          <h3 class="font-medium text-gray-800 dark:text-white mb-2">Kelas Jaringan</h3>
+          <div class="space-y-2">
+            <div class="flex justify-between">
+              <span class="text-gray-600 dark:text-gray-300">Kelas:</span>
+              <span id="class-result" class="font-mono text-gray-800 dark:text-white"></span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-gray-600 dark:text-gray-300">IP Publik/Privat:</span>
+              <span id="ip-type-result" class="font-mono text-gray-800 dark:text-white"></span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <script src="subnet.js"></script>
+  </body>
+</html>
