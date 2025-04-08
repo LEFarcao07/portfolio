@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Kalkulator Kriptografi</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      (function () {
+        const savedTheme =
+          localStorage.getItem("theme") ||
+          (window.matchMedia("(prefers-color-scheme: dark)").matches
+            ? "dark"
+            : "light");
+        document.documentElement.classList.toggle(
+          "dark",
+          savedTheme === "dark"
+        );
+      })();
+
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: [
+                "Inter",
+                "Segoe UI",
+                "Tahoma",
+                "Geneva",
+                "Verdana",
+                "sans-serif",
+              ],
+            },
+            colors: {
+              primary: { light: "#3B82F6", dark: "#60A5FA" },
+              dark: { light: "#1F2937", dark: "#111827" },
+              light: { light: "#F8F9FA", dark: "#1F2937" },
+            },
+          },
+        },
+        corePlugins: { preflight: false },
+      };
+    </script>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      a {
+        text-decoration: none;
+      }
+      .calculator {
+        max-width: 600px;
+        margin: 0 auto;
+      }
+      .input-group {
+        margin-bottom: 15px;
+      }
+      .input-label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: 500;
+      }
+      .number-input, .text-input {
+        width: 100%;
+        padding: 10px;
+        border-radius: 5px;
+        border: 1px solid #d1d5db;
+        background-color: #f9fafb;
+        color: #111827;
+      }
+      .dark .number-input, .dark .text-input {
+        background-color: #374151;
+        border-color: #4b5563;
+        color: #f9fafb;
+      }
+      .select-input {
+        width: 100%;
+        padding: 10px;
+        border-radius: 5px;
+        border: 1px solid #d1d5db;
+        background-color: #f9fafb;
+        color: #111827;
+      }
+      .dark .select-input {
+        background-color: #374151;
+        border-color: #4b5563;
+        color: #f9fafb;
+      }
+      .btn {
+        height: 50px;
+        font-size: 1.2rem;
+      }
+      .btn-primary {
+        background-color: #3b82f6;
+        color: white;
+      }
+      .dark .btn-primary {
+        background-color: #2563eb;
+      }
+      .btn-reset {
+        background-color: #ef4444;
+        color: white;
+      }
+      .dark .btn-reset {
+        background-color: #dc2626;
+      }
+      .result-box {
+        padding: 15px;
+        border-radius: 5px;
+        margin-top: 20px;
+        background-color: #f3f4f6;
+      }
+      .dark .result-box {
+        background-color: #374151;
+      }
+      .result-title {
+        font-weight: 600;
+        margin-bottom: 10px;
+      }
+      .result-content {
+        font-family: monospace;
+        white-space: pre-wrap;
+        background-color: #e5e7eb;
+        padding: 10px;
+        border-radius: 5px;
+        overflow-x: auto;
+      }
+      .dark .result-content {
+        background-color: #4b5563;
+      }
+      .tab-buttons {
+        display: flex;
+        margin-bottom: 15px;
+        border-bottom: 1px solid #d1d5db;
+      }
+      .dark .tab-buttons {
+        border-color: #4b5563;
+      }
+      .tab-button {
+        padding: 10px 20px;
+        cursor: pointer;
+        border: none;
+        background: none;
+        font-weight: 500;
+        color: #6b7280;
+        border-bottom: 3px solid transparent;
+      }
+      .dark .tab-button {
+        color: #9ca3af;
+      }
+      .tab-button.active {
+        color: #3b82f6;
+        border-bottom-color: #3b82f6;
+      }
+      .dark .tab-button.active {
+        color: #60A5FA;
+        border-bottom-color: #60A5FA;
+      }
+      .tab-content {
+        display: none;
+      }
+      .tab-content.active {
+        display: block;
+      }
+    </style>
+</head>
+<body class="bg-gray-100 dark:bg-gray-900 min-h-screen">
+    <nav class="bg-white dark:bg-gray-800 shadow-sm">
+      <div class="px-4 py-3 flex justify-between items-center">
+        <a href="../index.html" class="text-blue-600 dark:text-blue-400 font-semibold">← Kembali</a>
+        <button id="theme-toggle" type="button" class="p-2 border-transparent bg-white dark:bg-dark-light text-dark dark:text-gray-300 rounded-lg focus:outline-none transform hover:rotate-12">
+          <svg id="theme-toggle-dark-icon" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+            <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path>
+          </svg>
+          <svg id="theme-toggle-light-icon" class="w-5 h-5 hidden" fill="currentColor" viewBox="0 0 20 20">
+            <path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" fill-rule="evenodd" clip-rule="evenodd"></path>
+          </svg>
+        </button>
+      </div>
+    </nav>
+
+    <main class="container mx-auto px-4 py-8">
+      <h1 class="text-2xl font-bold text-center mb-8 text-gray-800 dark:text-white">
+        Kalkulator Kriptografi
+      </h1>
+
+      <div class="calculator bg-white dark:bg-gray-800 p-4 rounded-lg shadow-md">
+        <div class="tab-buttons">
+          <button class="tab-button active" onclick="openTab('caesar')">Caesar Cipher</button>
+          <button class="tab-button" onclick="openTab('xor')">XOR Cipher</button>
+          <button class="tab-button" onclick="openTab('hash')">Hash Generator</button>
+        </div>
+
+        <!-- Caesar Cipher Tab -->
+        <div id="caesar" class="tab-content active">
+          <div class="input-group">
+            <label class="input-label text-gray-700 dark:text-gray-300">Teks</label>
+            <textarea id="caesarText" class="text-input" placeholder="Masukkan teks">Hello World</textarea>
+          </div>
+          <div class="input-group">
+            <label class="input-label text-gray-700 dark:text-gray-300">Shift</label>
+            <input type="number" id="caesarShift" class="number-input" value="3" min="1" max="25">
+          </div>
+          <div class="input-group">
+            <label class="input-label text-gray-700 dark:text-gray-300">Aksi</label>
+            <select id="caesarAction" class="select-input">
+              <option value="encrypt">Enkripsi</option>
+              <option value="decrypt">Dekripsi</option>
+            </select>
+          </div>
+          <button onclick="calculateCaesar()" class="btn btn-primary hover:bg-blue-600 w-full mt-4">Proses</button>
+          <div class="result-box mt-4">
+            <div class="result-title text-gray-800 dark:text-white">Hasil:</div>
+            <div id="caesarResult" class="result-content text-dark dark:text-white">Hasil akan muncul di sini...</div>
+          </div>
+        </div>
+
+        <!-- XOR Cipher Tab -->
+        <div id="xor" class="tab-content">
+          <div class="input-group">
+            <label class="input-label text-gray-700 dark:text-gray-300">Teks</label>
+            <textarea id="xorText" class="text-input" placeholder="Masukkan teks">Secret Message</textarea>
+          </div>
+          <div class="input-group">
+            <label class="input-label text-gray-700 dark:text-gray-300">Kunci</label>
+            <input type="text" id="xorKey" class="text-input" value="key">
+          </div>
+          <button onclick="calculateXOR()" class="btn btn-primary hover:bg-blue-600 w-full mt-4">Proses</button>
+          <div class="result-box mt-4">
+            <div class="result-title text-gray-800 dark:text-white">Hasil:</div>
+            <div id="xorResult" class="result-content text-dark dark:text-white">Hasil akan muncul di sini...</div>
+            <div class="mt-2 text-dark dark:text-white" id="xorHexResult"></div>
+          </div>
+        </div>
+
+        <!-- Hash Generator Tab -->
+        <div id="hash" class="tab-content">
+          <div class="input-group">
+            <label class="input-label text-gray-700 dark:text-gray-300">Teks</label>
+            <textarea id="hashText" class="text-input" placeholder="Masukkan teks">Admin123</textarea>
+          </div>
+          <div class="input-group">
+            <label class="input-label text-gray-700 dark:text-gray-300">Algoritma Hash</label>
+            <select id="hashAlgorithm" class="select-input">
+              <option value="md5">MD5</option>
+              <option value="sha1">SHA-1</option>
+              <option value="sha256" selected>SHA-256</option>
+              <option value="sha512">SHA-512</option>
+            </select>
+          </div>
+          <button onclick="calculateHash()" class="btn btn-primary hover:bg-blue-600 w-full mt-4">Generate Hash</button>
+          <div class="result-box mt-4">
+            <div class="result-title text-gray-800 dark:text-white">Hasil Hash:</div>
+            <div id="hashResult" class="result-content text-dark dark:text-white">Hasil akan muncul di sini...</div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <script>
+      // Theme toggle
+      const themeToggleBtn = document.getElementById("theme-toggle");
+      const themeToggleDarkIcon = document.getElementById("theme-toggle-dark-icon");
+      const themeToggleLightIcon = document.getElementById("theme-toggle-light-icon");
+
+      if (localStorage.getItem("theme") === "dark" || (!("theme" in localStorage) && window.matchMedia("(prefers-color-scheme: dark)").matches)) {
+        themeToggleLightIcon.classList.remove("hidden");
+        themeToggleDarkIcon.classList.add("hidden");
+      } else {
+        themeToggleLightIcon.classList.add("hidden");
+        themeToggleDarkIcon.classList.remove("hidden");
+      }
+
+      themeToggleBtn.addEventListener("click", function () {
+        themeToggleDarkIcon.classList.toggle("hidden");
+        themeToggleLightIcon.classList.toggle("hidden");
+        if (localStorage.getItem("theme") === "dark") {
+          localStorage.setItem("theme", "light");
+          document.documentElement.classList.remove("dark");
+        } else {
+          localStorage.setItem("theme", "dark");
+          document.documentElement.classList.add("dark");
+        }
+      });
+
+      // Tab functionality
+      function openTab(tabName) {
+        const tabContents = document.getElementsByClassName("tab-content");
+        for (let i = 0; i < tabContents.length; i++) {
+          tabContents[i].classList.remove("active");
+        }
+
+        const tabButtons = document.getElementsByClassName("tab-button");
+        for (let i = 0; i < tabButtons.length; i++) {
+          tabButtons[i].classList.remove("active");
+        }
+
+        document.getElementById(tabName).classList.add("active");
+        event.currentTarget.classList.add("active");
+      }
+
+      // Caesar Cipher
+      function calculateCaesar() {
+        const text = document.getElementById("caesarText").value;
+        const shift = parseInt(document.getElementById("caesarShift").value);
+        const action = document.getElementById("caesarAction").value;
+        let result = "";
+
+        for (let i = 0; i < text.length; i++) {
+          let char = text[i];
+          if (char.match(/[a-z]/i)) {
+            const code = text.charCodeAt(i);
+            // Uppercase letters
+            if (code >= 65 && code <= 90) {
+              char = String.fromCharCode(((code - 65 + (action === 'encrypt' ? shift : (26 - shift))) % 26) + 65);
+            }
+            // Lowercase letters
+            else if (code >= 97 && code <= 122) {
+              char = String.fromCharCode(((code - 97 + (action === 'encrypt' ? shift : (26 - shift))) % 26) + 97);
+            }
+          }
+          result += char;
+        }
+
+        document.getElementById("caesarResult").textContent = result;
+      }
+
+      // XOR Cipher - Fixed version
+      function calculateXOR() {
+        const text = document.getElementById("xorText").value;
+        const key = document.getElementById("xorKey").value;
+        
+        if (!key) {
+          document.getElementById("xorResult").textContent = "Error: Kunci tidak boleh kosong";
+          document.getElementById("xorHexResult").textContent = "";
+          return;
+        }
+
+        let result = "";
+        let hexResult = "";
+
+        for (let i = 0; i < text.length; i++) {
+          const keyChar = key.charCodeAt(i % key.length);
+          const textChar = text.charCodeAt(i);
+          const xor = textChar ^ keyChar;
+          
+          result += String.fromCharCode(xor);
+          hexResult += xor.toString(16).padStart(2, '0') + ' ';
+        }
+
+        document.getElementById("xorResult").textContent = result;
+        document.getElementById("xorHexResult").innerHTML = `Hex: <span class="font-mono">${hexResult.trim()}</span>`;
+      }
+
+      // Hash Generator (using Web Crypto API)
+      async function calculateHash() {
+        const text = document.getElementById("hashText").value;
+        const algorithm = document.getElementById("hashAlgorithm").value;
+        
+        if (!text) {
+          document.getElementById("hashResult").textContent = "Error: Masukkan teks terlebih dahulu";
+          return;
+        }
+
+        // Encode text as UTF-8
+        const encoder = new TextEncoder();
+        const data = encoder.encode(text);
+        
+        // Calculate hash
+        let hashBuffer;
+        try {
+          switch(algorithm) {
+            case 'md5':
+              // Note: MD5 is not supported in Web Crypto API, we'll use a fallback
+              document.getElementById("hashResult").textContent = "MD5 tidak didukung di browser modern (tidak aman)";
+              return;
+            case 'sha1':
+              hashBuffer = await crypto.subtle.digest('SHA-1', data);
+              break;
+            case 'sha256':
+              hashBuffer = await crypto.subtle.digest('SHA-256', data);
+              break;
+            case 'sha512':
+              hashBuffer = await crypto.subtle.digest('SHA-512', data);
+              break;
+            default:
+              throw new Error('Algoritma tidak didukung');
+          }
+        } catch (error) {
+          document.getElementById("hashResult").textContent = `Error: ${error.message}`;
+          return;
+        }
+        
+        // Convert buffer to hex string
+        const hashArray = Array.from(new Uint8Array(hashBuffer));
+        const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+        
+        document.getElementById("hashResult").textContent = hashHex;
+      }
+
+      // Initialize first tab
+      document.addEventListener('DOMContentLoaded', function() {
+        openTab('caesar');
+      });
+    </script>
+</body>
+</html>

@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Kalkulator Logika & Himpunan</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      (function () {
+        const savedTheme =
+          localStorage.getItem("theme") ||
+          (window.matchMedia("(prefers-color-scheme: dark)").matches
+            ? "dark"
+            : "light");
+        document.documentElement.classList.toggle(
+          "dark",
+          savedTheme === "dark"
+        );
+      })();
+
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: [
+                "Inter",
+                "Segoe UI",
+                "Tahoma",
+                "Geneva",
+                "Verdana",
+                "sans-serif",
+              ],
+            },
+            colors: {
+              primary: { light: "#3B82F6", dark: "#60A5FA" },
+              dark: { light: "#1F2937", dark: "#111827" },
+              light: { light: "#F8F9FA", dark: "#1F2937" },
+            },
+          },
+        },
+        corePlugins: { preflight: false },
+      };
+    </script>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      a {
+        text-decoration: none;
+      }
+      .calculator {
+        max-width: 600px;
+        margin: 0 auto;
+      }
+      .input-group {
+        margin-bottom: 15px;
+      }
+      .input-label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: 500;
+      }
+      .number-input, .text-input {
+        width: 100%;
+        padding: 10px;
+        border-radius: 5px;
+        border: 1px solid #d1d5db;
+        background-color: #f9fafb;
+        color: #111827;
+      }
+      .dark .number-input, .dark .text-input {
+        background-color: #374151;
+        border-color: #4b5563;
+        color: #f9fafb;
+      }
+      .select-input {
+        width: 100%;
+        padding: 10px;
+        border-radius: 5px;
+        border: 1px solid #d1d5db;
+        background-color: #f9fafb;
+        color: #111827;
+      }
+      .dark .select-input {
+        background-color: #374151;
+        border-color: #4b5563;
+        color: #f9fafb;
+      }
+      .btn {
+        height: 50px;
+        font-size: 1.2rem;
+      }
+      .btn-primary {
+        background-color: #3b82f6;
+        color: white;
+      }
+      .dark .btn-primary {
+        background-color: #2563eb;
+      }
+      .btn-reset {
+        background-color: #ef4444;
+        color: white;
+      }
+      .dark .btn-reset {
+        background-color: #dc2626;
+      }
+      .result-box {
+        padding: 15px;
+        border-radius: 5px;
+        margin-top: 20px;
+        background-color: #f3f4f6;
+      }
+      .dark .result-box {
+        background-color: #374151;
+      }
+      .result-title {
+        font-weight: 600;
+        margin-bottom: 10px;
+      }
+      .result-content {
+        font-family: monospace;
+        white-space: pre-wrap;
+        background-color: #e5e7eb;
+        padding: 10px;
+        border-radius: 5px;
+        overflow-x: auto;
+      }
+      .dark .result-content {
+        background-color: #4b5563;
+      }
+      .tab-buttons {
+        display: flex;
+        margin-bottom: 15px;
+        border-bottom: 1px solid #d1d5db;
+      }
+      .dark .tab-buttons {
+        border-color: #4b5563;
+      }
+      .tab-button {
+        padding: 10px 20px;
+        cursor: pointer;
+        border: none;
+        background: none;
+        font-weight: 500;
+        color: #6b7280;
+        border-bottom: 3px solid transparent;
+      }
+      .dark .tab-button {
+        color: #9ca3af;
+      }
+      .tab-button.active {
+        color: #3b82f6;
+        border-bottom-color: #3b82f6;
+      }
+      .dark .tab-button.active {
+        color: #60A5FA;
+        border-bottom-color: #60A5FA;
+      }
+      .tab-content {
+        display: none;
+      }
+      .tab-content.active {
+        display: block;
+      }
+      .set-input {
+        font-family: monospace;
+      }
+    </style>
+</head>
+<body class="bg-gray-100 dark:bg-gray-900 min-h-screen">
+    <nav class="bg-white dark:bg-gray-800 shadow-sm">
+      <div class="px-4 py-3 flex justify-between items-center">
+        <a href="../index.html" class="text-blue-600 dark:text-blue-400 font-semibold">← Kembali</a>
+        <button id="theme-toggle" type="button" class="p-2 border-transparent bg-white dark:bg-dark-light text-dark dark:text-gray-300 rounded-lg focus:outline-none transform hover:rotate-12">
+          <svg id="theme-toggle-dark-icon" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+            <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path>
+          </svg>
+          <svg id="theme-toggle-light-icon" class="w-5 h-5 hidden" fill="currentColor" viewBox="0 0 20 20">
+            <path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" fill-rule="evenodd" clip-rule="evenodd"></path>
+          </svg>
+        </button>
+      </div>
+    </nav>
+
+    <main class="container mx-auto px-4 py-8">
+      <h1 class="text-2xl font-bold text-center mb-8 text-gray-800 dark:text-white">
+        Kalkulator Logika & Himpunan
+      </h1>
+
+      <div class="calculator bg-white dark:bg-gray-800 p-4 rounded-lg shadow-md">
+        <div class="tab-buttons">
+          <button class="tab-button active" onclick="openTab('proposition')">Logika Proposisi</button>
+          <button class="tab-button" onclick="openTab('set')">Operasi Himpunan</button>
+          <button class="tab-button" onclick="openTab('combinatorics')">Kombinatorik</button>
+        </div>
+
+        <!-- Logika Proposisi Tab -->
+        <div id="proposition" class="tab-content active">
+          <div class="input-group">
+            <label class="input-label text-gray-700 dark:text-gray-300">Proposisi P</label>
+            <select id="propP" class="select-input">
+              <option value="true">True (BENAR)</option>
+              <option value="false">False (SALAH)</option>
+            </select>
+          </div>
+          <div class="input-group">
+            <label class="input-label text-gray-700 dark:text-gray-300">Proposisi Q</label>
+            <select id="propQ" class="select-input">
+              <option value="true">True (BENAR)</option>
+              <option value="false">False (SALAH)</option>
+            </select>
+          </div>
+          <div class="input-group">
+            <label class="input-label text-gray-700 dark:text-gray-300">Operator Logika</label>
+            <select id="logicalOp" class="select-input">
+              <option value="and">AND (∧)</option>
+              <option value="or">OR (∨)</option>
+              <option value="xor">XOR (⊕)</option>
+              <option value="imply">Implikasi (→)</option>
+              <option value="equiv">Ekuivalensi (↔)</option>
+              <option value="notP">NOT P (¬P)</option>
+              <option value="notQ">NOT Q (¬Q)</option>
+            </select>
+          </div>
+          <button onclick="calculateProposition()" class="btn btn-primary hover:bg-blue-600 w-full mt-4">Hitung</button>
+          <div class="result-box mt-4">
+            <div class="result-title text-gray-800 dark:text-white">Hasil:</div>
+            <div id="propositionResult" class="result-content text-dark dark:text-white">Hasil akan muncul di sini...</div>
+          </div>
+        </div>
+
+        <!-- Operasi Himpunan Tab -->
+        <div id="set" class="tab-content">
+          <div class="input-group">
+            <label class="input-label text-gray-700 dark:text-gray-300">Himpunan A (pisahkan dengan koma)</label>
+            <input type="text" id="setA" class="text-input set-input" value="1, 2, 3, 4, 5">
+          </div>
+          <div class="input-group">
+            <label class="input-label text-gray-700 dark:text-gray-300">Himpunan B (pisahkan dengan koma)</label>
+            <input type="text" id="setB" class="text-input set-input" value="4, 5, 6, 7, 8">
+          </div>
+          <div class="input-group">
+            <label class="input-label text-gray-700 dark:text-gray-300">Operasi Himpunan</label>
+            <select id="setOperation" class="select-input">
+              <option value="union">Gabungan (A ∪ B)</option>
+              <option value="intersection">Irisan (A ∩ B)</option>
+              <option value="difference">Selisih (A - B)</option>
+              <option value="symdifference">Selisih Simetris (A Δ B)</option>
+              <option value="cartesian">Produk Kartesian (A × B)</option>
+              <option value="powerset">Power Set A</option>
+            </select>
+          </div>
+          <button onclick="calculateSet()" class="btn btn-primary hover:bg-blue-600 w-full mt-4">Hitung</button>
+          <div class="result-box mt-4">
+            <div class="result-title text-gray-800 dark:text-white">Hasil:</div>
+            <div id="setResult" class="result-content text-dark dark:text-white">Hasil akan muncul di sini...</div>
+          </div>
+        </div>
+
+        <!-- Kombinatorik Tab -->
+        <div id="combinatorics" class="tab-content">
+          <div class="input-group">
+            <label class="input-label text-gray-700 dark:text-gray-300">Jenis Perhitungan</label>
+            <select id="combinatoricsType" class="select-input">
+              <option value="permutation">Permutasi (nPr)</option>
+              <option value="combination">Kombinasi (nCr)</option>
+              <option value="factorial">Faktorial (n!)</option>
+            </select>
+          </div>
+          <div class="input-group">
+            <label class="input-label text-gray-700 dark:text-gray-300">n (total items)</label>
+            <input type="number" id="comboN" class="number-input" value="5" min="1" max="100">
+          </div>
+          <div class="input-group" id="comboRGroup">
+            <label class="input-label text-gray-700 dark:text-gray-300">r (selected items)</label>
+            <input type="number" id="comboR" class="number-input" value="3" min="1" max="100">
+          </div>
+          <button onclick="calculateCombinatorics()" class="btn btn-primary hover:bg-blue-600 w-full mt-4">Hitung</button>
+          <div class="result-box mt-4">
+            <div class="result-title text-gray-800 dark:text-white">Hasil:</div>
+            <div id="combinatoricsResult" class="result-content text-dark dark:text-white">Hasil akan muncul di sini...</div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <script>
+      // Theme toggle
+      const themeToggleBtn = document.getElementById("theme-toggle");
+      const themeToggleDarkIcon = document.getElementById("theme-toggle-dark-icon");
+      const themeToggleLightIcon = document.getElementById("theme-toggle-light-icon");
+
+      if (localStorage.getItem("theme") === "dark" || (!("theme" in localStorage) && window.matchMedia("(prefers-color-scheme: dark)").matches)) {
+        themeToggleLightIcon.classList.remove("hidden");
+        themeToggleDarkIcon.classList.add("hidden");
+      } else {
+        themeToggleLightIcon.classList.add("hidden");
+        themeToggleDarkIcon.classList.remove("hidden");
+      }
+
+      themeToggleBtn.addEventListener("click", function () {
+        themeToggleDarkIcon.classList.toggle("hidden");
+        themeToggleLightIcon.classList.toggle("hidden");
+        if (localStorage.getItem("theme") === "dark") {
+          localStorage.setItem("theme", "light");
+          document.documentElement.classList.remove("dark");
+        } else {
+          localStorage.setItem("theme", "dark");
+          document.documentElement.classList.add("dark");
+        }
+      });
+
+      // Tab functionality
+      function openTab(tabName) {
+        const tabContents = document.getElementsByClassName("tab-content");
+        for (let i = 0; i < tabContents.length; i++) {
+          tabContents[i].classList.remove("active");
+        }
+
+        const tabButtons = document.getElementsByClassName("tab-button");
+        for (let i = 0; i < tabButtons.length; i++) {
+          tabButtons[i].classList.remove("active");
+        }
+
+        document.getElementById(tabName).classList.add("active");
+        event.currentTarget.classList.add("active");
+
+        // Show/hide r input based on combinatorics type
+        if (tabName === 'combinatorics') {
+          updateCombinatoricsUI();
+        }
+      }
+
+      // Update combinatorics UI based on selected type
+      function updateCombinatoricsUI() {
+        const type = document.getElementById("combinatoricsType").value;
+        const rGroup = document.getElementById("comboRGroup");
+        
+        if (type === 'factorial') {
+          rGroup.style.display = 'none';
+        } else {
+          rGroup.style.display = 'block';
+        }
+      }
+
+      document.getElementById("combinatoricsType").addEventListener("change", updateCombinatoricsUI);
+
+      // Logika Proposisi
+      function calculateProposition() {
+        const p = document.getElementById("propP").value === 'true';
+        const q = document.getElementById("propQ").value === 'true';
+        const op = document.getElementById("logicalOp").value;
+        let result;
+
+        switch(op) {
+          case 'and': result = p && q; break;
+          case 'or': result = p || q; break;
+          case 'xor': result = (p || q) && !(p && q); break;
+          case 'imply': result = !p || q; break;
+          case 'equiv': result = p === q; break;
+          case 'notP': result = !p; break;
+          case 'notQ': result = !q; break;
+        }
+
+        const opSymbols = {
+          'and': '∧', 'or': '∨', 'xor': '⊕', 
+          'imply': '→', 'equiv': '↔', 'notP': '¬P', 'notQ': '¬Q'
+        };
+
+        document.getElementById("propositionResult").textContent = 
+          `P = ${p}, Q = ${q}\n` +
+          `Operator: ${opSymbols[op]}\n` +
+          `Hasil: ${result}`;
+      }
+
+      // Operasi Himpunan
+      function calculateSet() {
+        const setA = new Set(document.getElementById("setA").value.split(',').map(item => item.trim()));
+        const setB = new Set(document.getElementById("setB").value.split(',').map(item => item.trim()));
+        const op = document.getElementById("setOperation").value;
+        let result;
+
+        switch(op) {
+          case 'union':
+            result = new Set([...setA, ...setB]);
+            break;
+          case 'intersection':
+            result = new Set([...setA].filter(x => setB.has(x)));
+            break;
+          case 'difference':
+            result = new Set([...setA].filter(x => !setB.has(x)));
+            break;
+          case 'symdifference':
+            result = new Set([...[...setA].filter(x => !setB.has(x)), ...[...setB].filter(x => !setA.has(x))]);
+            break;
+          case 'cartesian':
+            result = [];
+            for (let a of setA) {
+              for (let b of setB) {
+                result.push(`(${a},${b})`);
+              }
+            }
+            break;
+          case 'powerset':
+            const elements = [...setA];
+            result = [[]];
+            for (let i = 0; i < elements.length; i++) {
+              const currentLength = result.length;
+              for (let j = 0; j < currentLength; j++) {
+                const newSubset = [...result[j], elements[i]];
+                result.push(newSubset);
+              }
+            }
+            break;
+        }
+
+        const opSymbols = {
+          'union': 'A ∪ B',
+          'intersection': 'A ∩ B',
+          'difference': 'A - B',
+          'symdifference': 'A Δ B',
+          'cartesian': 'A × B',
+          'powerset': 'P(A)'
+        };
+
+        let resultText = `A = {${[...setA].join(', ')}}\n`;
+        resultText += `B = {${[...setB].join(', ')}}\n`;
+        resultText += `Operasi: ${opSymbols[op]}\n\n`;
+        
+        if (op === 'powerset') {
+          resultText += `Power Set A (${result.length} subset):\n`;
+          resultText += result.map(subset => `{${subset.join(', ')}}`).join('\n');
+        } else if (op === 'cartesian') {
+          resultText += `Produk Kartesian (${result.length} pasangan):\n`;
+          resultText += result.join(', ');
+        } else {
+          if (Array.isArray(result)) {
+            resultText += `Hasil: [${result.join(', ')}]`;
+          } else {
+            resultText += `Hasil: {${[...result].join(', ')}}`;
+          }
+        }
+
+        document.getElementById("setResult").textContent = resultText;
+      }
+
+      // Faktorial helper function
+      function factorial(n) {
+        if (n < 0) return NaN;
+        if (n <= 1) return 1;
+        let result = 1;
+        for (let i = 2; i <= n; i++) {
+          result *= i;
+        }
+        return result;
+      }
+
+      // Kombinatorik
+      function calculateCombinatorics() {
+        const type = document.getElementById("combinatoricsType").value;
+        const n = parseInt(document.getElementById("comboN").value);
+        let r, result, formula;
+
+        if (type !== 'factorial') {
+          r = parseInt(document.getElementById("comboR").value);
+          if (r > n) {
+            document.getElementById("combinatoricsResult").textContent = 
+              `Error: r tidak boleh lebih besar dari n`;
+            return;
+          }
+        }
+
+        switch(type) {
+          case 'permutation':
+            result = factorial(n) / factorial(n - r);
+            formula = `P(n,r) = n! / (n-r)! = ${n}! / ${n-r}! = ${result}`;
+            break;
+          case 'combination':
+            result = factorial(n) / (factorial(r) * factorial(n - r));
+            formula = `C(n,r) = n! / (r!(n-r)!) = ${n}! / (${r}! × ${n-r}!) = ${result}`;
+            break;
+          case 'factorial':
+            result = factorial(n);
+            formula = `${n}! = ${result}`;
+            break;
+        }
+
+        document.getElementById("combinatoricsResult").textContent = formula;
+      }
+
+      // Initialize the calculator
+      document.addEventListener('DOMContentLoaded', function() {
+        // Set default tab
+        openTab('proposition');
+      });
+    </script>
+</body>
+</html>

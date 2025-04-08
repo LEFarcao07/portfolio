@@ -1,0 +1,856 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Kalkulator Elektronika</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      (function () {
+        const savedTheme =
+          localStorage.getItem("theme") ||
+          (window.matchMedia("(prefers-color-scheme: dark)").matches
+            ? "dark"
+            : "light");
+        document.documentElement.classList.toggle(
+          "dark",
+          savedTheme === "dark"
+        );
+      })();
+
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: [
+                "Inter",
+                "Segoe UI",
+                "Tahoma",
+                "Geneva",
+                "Verdana",
+                "sans-serif",
+              ],
+            },
+            colors: {
+              primary: { light: "#3B82F6", dark: "#60A5FA" },
+              dark: { light: "#1F2937", dark: "#111827" },
+              light: { light: "#F8F9FA", dark: "#1F2937" },
+              customGray: "#3E3E3E",
+              linux: {
+                "merah-error": "#CC0000",
+                "ijo-sukses": "#4E9A06",
+                "kuning-awas": "#C4A000",
+                "biru-info": "#3465A4",
+                "ungu-ajaib": "#75507B",
+                "cyan-keren": "#06989A",
+              },
+            },
+          },
+        },
+        corePlugins: { preflight: false },
+      };
+    </script>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      a {
+        text-decoration: none;
+      }
+      .calculator {
+        max-width: 600px;
+        margin: 0 auto;
+      }
+      .input-group {
+        margin-bottom: 15px;
+      }
+      .input-label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: 500;
+      }
+      .number-input {
+        width: 100%;
+        padding: 10px;
+        border-radius: 5px;
+        border: 1px solid #d1d5db;
+        background-color: #f9fafb;
+        color: #111827;
+      }
+      .dark .number-input {
+        background-color: #374151;
+        border-color: #4b5563;
+        color: #f9fafb;
+      }
+      .select-input {
+        width: 100%;
+        padding: 10px;
+        border-radius: 5px;
+        border: 1px solid #d1d5db;
+        background-color: #f9fafb;
+        color: #111827;
+      }
+      .dark .select-input {
+        background-color: #374151;
+        border-color: #4b5563;
+        color: #f9fafb;
+      }
+      .btn {
+        height: 50px;
+        font-size: 1.2rem;
+      }
+      .btn-primary {
+        background-color: #3b82f6;
+        color: white;
+      }
+      .dark .btn-primary {
+        background-color: #2563eb;
+      }
+      .btn-reset {
+        background-color: #ef4444;
+        color: white;
+      }
+      .dark .btn-reset {
+        background-color: #dc2626;
+      }
+      .result-box {
+        padding: 15px;
+        border-radius: 5px;
+        margin-top: 20px;
+        background-color: #f3f4f6;
+      }
+      .dark .result-box {
+        background-color: #374151;
+      }
+      .result-title {
+        font-weight: 600;
+        margin-bottom: 10px;
+      }
+      .result-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+      }
+      .result-item {
+        padding: 8px;
+        border-radius: 4px;
+        background-color: #e5e7eb;
+      }
+      .dark .result-item {
+        background-color: #4b5563;
+      }
+      .result-value {
+        font-weight: 500;
+      }
+      .result-unit {
+        font-size: 0.8rem;
+        color: #6b7280;
+      }
+      .dark .result-unit {
+        color: #9ca3af;
+      }
+      .tab-buttons {
+        display: flex;
+        margin-bottom: 15px;
+        border-bottom: 1px solid #d1d5db;
+      }
+      .dark .tab-buttons {
+        border-color: #4b5563;
+      }
+      .tab-button {
+        padding: 10px 20px;
+        cursor: pointer;
+        border: none;
+        background: none;
+        font-weight: 500;
+        color: #6b7280;
+        border-bottom: 3px solid transparent;
+      }
+      .dark .tab-button {
+        color: #9ca3af;
+      }
+      .tab-button.active {
+        color: #3b82f6;
+        border-bottom-color: #3b82f6;
+      }
+      .dark .tab-button.active {
+        color: #60A5FA;
+        border-bottom-color: #60A5FA;
+      }
+      .tab-content {
+        display: none;
+      }
+      .tab-content.active {
+        display: block;
+      }
+      .resistor-color {
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        display: inline-block;
+        margin-right: 5px;
+        border: 1px solid #d1d5db;
+      }
+      .dark .resistor-color {
+        border-color: #4b5563;
+      }
+    </style>
+  </head>
+  <body class="bg-gray-100 dark:bg-gray-900 min-h-screen">
+    <nav class="bg-white dark:bg-gray-800 shadow-sm">
+      <div class="px-4 py-3 flex justify-between items-center">
+        <a
+          href="../index.html"
+          class="text-blue-600 dark:text-blue-400 font-semibold"
+          >← Kembali</a
+        >
+        <button
+          id="theme-toggle"
+          type="button"
+          class="p-2 border-transparent bg-white dark:bg-dark-light text-dark dark:text-gray-300 rounded-lg focus:outline-none transform hover:rotate-12"
+        >
+          <svg
+            id="theme-toggle-dark-icon"
+            class="w-5 h-5"
+            fill="currentColor"
+            viewBox="0 0 20 20"
+          >
+            <path
+              d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"
+            ></path>
+          </svg>
+          <svg
+            id="theme-toggle-light-icon"
+            class="w-5 h-5 hidden"
+            fill="currentColor"
+            viewBox="0 0 20 20"
+          >
+            <path
+              d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z"
+              fill-rule="evenodd"
+              clip-rule="evenodd"
+            ></path>
+          </svg>
+        </button>
+      </div>
+    </nav>
+
+    <main class="container mx-auto px-4 py-8">
+      <h1
+        class="text-2xl font-bold text-center mb-8 text-gray-800 dark:text-white"
+      >
+        Kalkulator Elektronika
+      </h1>
+
+      <div
+        class="calculator bg-white dark:bg-gray-800 p-4 rounded-lg shadow-md"
+      >
+        <div class="tab-buttons">
+          <button class="tab-button active" onclick="openTab('ohm')">
+            Hukum Ohm
+          </button>
+          <button class="tab-button" onclick="openTab('power')">
+            Daya Listrik
+          </button>
+          <button class="tab-button" onclick="openTab('circuit')">
+            Rangkaian
+          </button>
+        </div>
+
+        <!-- Hukum Ohm Tab -->
+        <div id="ohm" class="tab-content active">
+          <div class="input-group">
+            <label class="input-label text-gray-700 dark:text-gray-300"
+              >Hitung Berdasarkan</label
+            >
+            <select id="ohmCalcType" class="select-input">
+              <option value="V">Tegangan (V)</option>
+              <option value="I">Arus (I)</option>
+              <option value="R">Hambatan (R)</option>
+            </select>
+          </div>
+
+          <div id="ohmInputs">
+            <!-- Input fields will be dynamically generated here -->
+          </div>
+
+          <div class="grid grid-cols-2 gap-4 mt-4">
+            <button
+              class="btn btn-primary hover:bg-blue-600 rounded"
+              onclick="calculateOhm()"
+            >
+              Hitung
+            </button>
+            <button
+              class="btn btn-reset hover:bg-red-600 rounded"
+              onclick="resetOhm()"
+            >
+              Reset
+            </button>
+          </div>
+
+          <div class="result-box mt-6">
+            <div class="result-title text-gray-800 dark:text-white">
+              Hasil Perhitungan:
+            </div>
+            <div class="result-grid">
+              <div class="result-item">
+                <div class="font-medium text-dark dark:text-white">Tegangan</div>
+                <div id="voltageResult" class="result-value text-dark dark:text-white">
+                  -
+                </div>
+                <div class="result-unit">Volt (V)</div>
+              </div>
+              <div class="result-item">
+                <div class="font-medium text-dark dark:text-white">Arus</div>
+                <div id="currentResult" class="result-value text-dark dark:text-white">
+                  -
+                </div>
+                <div class="result-unit">Ampere (A)</div>
+              </div>
+              <div class="result-item">
+                <div class="font-medium text-dark dark:text-white">Hambatan</div>
+                <div id="resistanceResult" class="result-value text-dark dark:text-white">
+                  -
+                </div>
+                <div class="result-unit">Ohm (Ω)</div>
+              </div>
+              <div class="result-item">
+                <div class="font-medium text-dark dark:text-white">Daya</div>
+                <div id="powerResultOhm" class="result-value text-dark dark:text-white">
+                  -
+                </div>
+                <div class="result-unit">Watt (W)</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Daya Listrik Tab -->
+        <div id="power" class="tab-content">
+          <div class="input-group">
+            <label class="input-label text-gray-700 dark:text-gray-300"
+              >Hitung Berdasarkan</label
+            >
+            <select id="powerCalcType" class="select-input">
+              <option value="P">Daya (P)</option>
+              <option value="V">Tegangan (V)</option>
+              <option value="I">Arus (I)</option>
+              <option value="R">Hambatan (R)</option>
+            </select>
+          </div>
+
+          <div id="powerInputs">
+            <!-- Input fields will be dynamically generated here -->
+          </div>
+
+          <div class="grid grid-cols-2 gap-4 mt-4">
+            <button
+              class="btn btn-primary hover:bg-blue-600 rounded"
+              onclick="calculatePower()"
+            >
+              Hitung
+            </button>
+            <button
+              class="btn btn-reset hover:bg-red-600 rounded"
+              onclick="resetPower()"
+            >
+              Reset
+            </button>
+          </div>
+
+          <div class="result-box mt-6">
+            <div class="result-title text-gray-800 dark:text-white">
+              Hasil Perhitungan:
+            </div>
+            <div class="result-grid">
+              <div class="result-item">
+                <div class="font-medium text-dark dark:text-white">Daya</div>
+                <div id="powerResult" class="result-value text-dark dark:text-white">
+                  -
+                </div>
+                <div class="result-unit">Watt (W)</div>
+              </div>
+              <div class="result-item">
+                <div class="font-medium text-dark dark:text-white">Tegangan</div>
+                <div id="voltageResultPower" class="result-value text-dark dark:text-white">
+                  -
+                </div>
+                <div class="result-unit">Volt (V)</div>
+              </div>
+              <div class="result-item">
+                <div class="font-medium text-dark dark:text-white">Arus</div>
+                <div id="currentResultPower" class="result-value text-dark dark:text-white">
+                  -
+                </div>
+                <div class="result-unit">Ampere (A)</div>
+              </div>
+              <div class="result-item">
+                <div class="font-medium text-dark dark:text-white">Hambatan</div>
+                <div id="resistanceResultPower" class="result-value text-dark dark:text-white">
+                  -
+                </div>
+                <div class="result-unit">Ohm (Ω)</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Rangkaian Listrik Tab -->
+        <div id="circuit" class="tab-content">
+          <div class="input-group">
+            <label class="input-label text-gray-700 dark:text-gray-300"
+              >Jenis Rangkaian</label
+            >
+            <select id="circuitType" class="select-input">
+              <option value="series">Seri</option>
+              <option value="parallel">Paralel</option>
+            </select>
+          </div>
+
+          <div class="input-group">
+            <label class="input-label text-gray-700 dark:text-gray-300"
+              >Jumlah Resistor</label
+            >
+            <input
+              type="number"
+              id="resistorCount"
+              class="number-input"
+              min="2"
+              max="10"
+              value="2"
+              onchange="generateResistorInputs()"
+            />
+          </div>
+
+          <div id="resistorInputs">
+            <!-- Resistor inputs will be generated here -->
+          </div>
+
+          <div class="input-group">
+            <label class="input-label text-gray-700 dark:text-gray-300"
+              >Tegangan Sumber (V)</label
+            >
+            <input
+              type="number"
+              id="sourceVoltage"
+              class="number-input"
+              placeholder="Masukkan tegangan sumber"
+              value="12"
+            />
+          </div>
+
+          <div class="grid grid-cols-2 gap-4 mt-4">
+            <button
+              class="btn btn-primary hover:bg-blue-600 rounded"
+              onclick="calculateCircuit()"
+            >
+              Hitung
+            </button>
+            <button
+              class="btn btn-reset hover:bg-red-600 rounded"
+              onclick="resetCircuit()"
+            >
+              Reset
+            </button>
+          </div>
+
+          <div class="result-box mt-6">
+            <div class="result-title text-gray-800 dark:text-white">
+              Hasil Perhitungan Rangkaian:
+            </div>
+            <div class="result-grid">
+              <div class="result-item">
+                <div class="font-medium text-dark dark:text-white">Hambatan Total</div>
+                <div id="totalResistance" class="result-value text-dark dark:text-white">
+                  -
+                </div>
+                <div class="result-unit">Ohm (Ω)</div>
+              </div>
+              <div class="result-item">
+                <div class="font-medium text-dark dark:text-white">Arus Total</div>
+                <div id="totalCurrent" class="result-value text-dark dark:text-white">
+                  -
+                </div>
+                <div class="result-unit">Ampere (A)</div>
+              </div>
+              <div class="result-item">
+                <div class="font-medium text-dark dark:text-white">Daya Total</div>
+                <div id="totalPower" class="result-value text-dark dark:text-white">
+                  -
+                </div>
+                <div class="result-unit">Watt (W)</div>
+              </div>
+            </div>
+            <div class="mt-4">
+              <div class="result-title text-gray-800 dark:text-white">
+                Tegangan dan Arus per Resistor:
+              </div>
+              <div id="resistorDetails" class="mt-2">
+                <!-- Resistor details will be generated here -->
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <script>
+      // Theme toggle
+      const themeToggleBtn = document.getElementById("theme-toggle");
+      const themeToggleDarkIcon = document.getElementById(
+        "theme-toggle-dark-icon"
+      );
+      const themeToggleLightIcon = document.getElementById(
+        "theme-toggle-light-icon"
+      );
+
+      if (
+        localStorage.getItem("theme") === "dark" ||
+        (!("theme" in localStorage) &&
+          window.matchMedia("(prefers-color-scheme: dark)").matches)
+      ) {
+        themeToggleLightIcon.classList.remove("hidden");
+        themeToggleDarkIcon.classList.add("hidden");
+      } else {
+        themeToggleLightIcon.classList.add("hidden");
+        themeToggleDarkIcon.classList.remove("hidden");
+      }
+
+      themeToggleBtn.addEventListener("click", function () {
+        themeToggleDarkIcon.classList.toggle("hidden");
+        themeToggleLightIcon.classList.toggle("hidden");
+        if (localStorage.getItem("theme") === "dark") {
+          localStorage.setItem("theme", "light");
+          document.documentElement.classList.remove("dark");
+        } else {
+          localStorage.setItem("theme", "dark");
+          document.documentElement.classList.add("dark");
+        }
+      });
+
+      // Tab functionality
+      function openTab(tabName) {
+        const tabContents = document.getElementsByClassName("tab-content");
+        for (let i = 0; i < tabContents.length; i++) {
+          tabContents[i].classList.remove("active");
+        }
+
+        const tabButtons = document.getElementsByClassName("tab-button");
+        for (let i = 0; i < tabButtons.length; i++) {
+          tabButtons[i].classList.remove("active");
+        }
+
+        document.getElementById(tabName).classList.add("active");
+        event.currentTarget.classList.add("active");
+
+        // Generate inputs when tab is opened
+        if (tabName === 'ohm') {
+          generateOhmInputs();
+        } else if (tabName === 'power') {
+          generatePowerInputs();
+        } else if (tabName === 'circuit') {
+          generateResistorInputs();
+        }
+      }
+
+      // Initialize inputs when page loads
+      window.onload = function() {
+        generateOhmInputs();
+        generatePowerInputs();
+        generateResistorInputs();
+      };
+
+      // Ohm's Law Calculator
+      function generateOhmInputs() {
+        const calcType = document.getElementById("ohmCalcType").value;
+        const ohmInputs = document.getElementById("ohmInputs");
+        ohmInputs.innerHTML = '';
+
+        if (calcType === 'V') {
+          ohmInputs.innerHTML = `
+            <div class="input-group">
+              <label class="input-label text-gray-700 dark:text-gray-300">Arus (I)</label>
+              <input type="number" id="currentInput" class="number-input" placeholder="Masukkan arus dalam Ampere">
+            </div>
+            <div class="input-group">
+              <label class="input-label text-gray-700 dark:text-gray-300">Hambatan (R)</label>
+              <input type="number" id="resistanceInput" class="number-input" placeholder="Masukkan hambatan dalam Ohm">
+            </div>
+          `;
+        } else if (calcType === 'I') {
+          ohmInputs.innerHTML = `
+            <div class="input-group">
+              <label class="input-label text-gray-700 dark:text-gray-300">Tegangan (V)</label>
+              <input type="number" id="voltageInput" class="number-input" placeholder="Masukkan tegangan dalam Volt">
+            </div>
+            <div class="input-group">
+              <label class="input-label text-gray-700 dark:text-gray-300">Hambatan (R)</label>
+              <input type="number" id="resistanceInput" class="number-input" placeholder="Masukkan hambatan dalam Ohm">
+            </div>
+          `;
+        } else if (calcType === 'R') {
+          ohmInputs.innerHTML = `
+            <div class="input-group">
+              <label class="input-label text-gray-700 dark:text-gray-300">Tegangan (V)</label>
+              <input type="number" id="voltageInput" class="number-input" placeholder="Masukkan tegangan dalam Volt">
+            </div>
+            <div class="input-group">
+              <label class="input-label text-gray-700 dark:text-gray-300">Arus (I)</label>
+              <input type="number" id="currentInput" class="number-input" placeholder="Masukkan arus dalam Ampere">
+            </div>
+          `;
+        }
+      }
+
+      document.getElementById("ohmCalcType").addEventListener("change", generateOhmInputs);
+
+      function calculateOhm() {
+        const calcType = document.getElementById("ohmCalcType").value;
+        let voltage, current, resistance;
+
+        try {
+          if (calcType === 'V') {
+            current = parseFloat(document.getElementById("currentInput").value);
+            resistance = parseFloat(document.getElementById("resistanceInput").value);
+            if (isNaN(current) || isNaN(resistance)) throw new Error("Masukkan nilai yang valid");
+            voltage = current * resistance;
+            document.getElementById("voltageResult").textContent = voltage.toFixed(4);
+            document.getElementById("currentResult").textContent = current.toFixed(4);
+            document.getElementById("resistanceResult").textContent = resistance.toFixed(4);
+          } else if (calcType === 'I') {
+            voltage = parseFloat(document.getElementById("voltageInput").value);
+            resistance = parseFloat(document.getElementById("resistanceInput").value);
+            if (isNaN(voltage) || isNaN(resistance)) throw new Error("Masukkan nilai yang valid");
+            if (resistance === 0) throw new Error("Hambatan tidak boleh nol");
+            current = voltage / resistance;
+            document.getElementById("voltageResult").textContent = voltage.toFixed(4);
+            document.getElementById("currentResult").textContent = current.toFixed(4);
+            document.getElementById("resistanceResult").textContent = resistance.toFixed(4);
+          } else if (calcType === 'R') {
+            voltage = parseFloat(document.getElementById("voltageInput").value);
+            current = parseFloat(document.getElementById("currentInput").value);
+            if (isNaN(voltage) || isNaN(current)) throw new Error("Masukkan nilai yang valid");
+            if (current === 0) throw new Error("Arus tidak boleh nol");
+            resistance = voltage / current;
+            document.getElementById("voltageResult").textContent = voltage.toFixed(4);
+            document.getElementById("currentResult").textContent = current.toFixed(4);
+            document.getElementById("resistanceResult").textContent = resistance.toFixed(4);
+          }
+
+          // Calculate power (P = V * I)
+          const power = voltage * current;
+          document.getElementById("powerResultOhm").textContent = power.toFixed(4);
+        } catch (error) {
+          alert(error.message);
+        }
+      }
+
+      function resetOhm() {
+        document.getElementById("ohmCalcType").value = "V";
+        generateOhmInputs();
+        document.getElementById("voltageResult").textContent = "-";
+        document.getElementById("currentResult").textContent = "-";
+        document.getElementById("resistanceResult").textContent = "-";
+        document.getElementById("powerResultOhm").textContent = "-";
+      }
+
+      // Power Calculator
+      function generatePowerInputs() {
+        const calcType = document.getElementById("powerCalcType").value;
+        const powerInputs = document.getElementById("powerInputs");
+        powerInputs.innerHTML = '';
+
+        if (calcType === 'P') {
+          powerInputs.innerHTML = `
+            <div class="input-group">
+              <label class="input-label text-gray-700 dark:text-gray-300">Tegangan (V)</label>
+              <input type="number" id="voltageInputPower" class="number-input" placeholder="Masukkan tegangan dalam Volt">
+            </div>
+            <div class="input-group">
+              <label class="input-label text-gray-700 dark:text-gray-300">Arus (I)</label>
+              <input type="number" id="currentInputPower" class="number-input" placeholder="Masukkan arus dalam Ampere">
+            </div>
+          `;
+        } else if (calcType === 'V') {
+          powerInputs.innerHTML = `
+            <div class="input-group">
+              <label class="input-label text-gray-700 dark:text-gray-300">Daya (P)</label>
+              <input type="number" id="powerInput" class="number-input" placeholder="Masukkan daya dalam Watt">
+            </div>
+            <div class="input-group">
+              <label class="input-label text-gray-700 dark:text-gray-300">Arus (I)</label>
+              <input type="number" id="currentInputPower" class="number-input" placeholder="Masukkan arus dalam Ampere">
+            </div>
+          `;
+        } else if (calcType === 'I') {
+          powerInputs.innerHTML = `
+            <div class="input-group">
+              <label class="input-label text-gray-700 dark:text-gray-300">Daya (P)</label>
+              <input type="number" id="powerInput" class="number-input" placeholder="Masukkan daya dalam Watt">
+            </div>
+            <div class="input-group">
+              <label class="input-label text-gray-700 dark:text-gray-300">Tegangan (V)</label>
+              <input type="number" id="voltageInputPower" class="number-input" placeholder="Masukkan tegangan dalam Volt">
+            </div>
+          `;
+        } else if (calcType === 'R') {
+          powerInputs.innerHTML = `
+            <div class="input-group">
+              <label class="input-label text-gray-700 dark:text-gray-300">Daya (P)</label>
+              <input type="number" id="powerInput" class="number-input" placeholder="Masukkan daya dalam Watt">
+            </div>
+            <div class="input-group">
+              <label class="input-label text-gray-700 dark:text-gray-300">Arus (I)</label>
+              <input type="number" id="currentInputPower" class="number-input" placeholder="Masukkan arus dalam Ampere">
+            </div>
+          `;
+        }
+      }
+
+      document.getElementById("powerCalcType").addEventListener("change", generatePowerInputs);
+
+      function calculatePower() {
+        const calcType = document.getElementById("powerCalcType").value;
+        let power, voltage, current, resistance;
+
+        try {
+          if (calcType === 'P') {
+            voltage = parseFloat(document.getElementById("voltageInputPower").value);
+            current = parseFloat(document.getElementById("currentInputPower").value);
+            if (isNaN(voltage) || isNaN(current)) throw new Error("Masukkan nilai yang valid");
+            power = voltage * current;
+            resistance = voltage / current;
+          } else if (calcType === 'V') {
+            power = parseFloat(document.getElementById("powerInput").value);
+            current = parseFloat(document.getElementById("currentInputPower").value);
+            if (isNaN(power) || isNaN(current)) throw new Error("Masukkan nilai yang valid");
+            if (current === 0) throw new Error("Arus tidak boleh nol");
+            voltage = power / current;
+            resistance = voltage / current;
+          } else if (calcType === 'I') {
+            power = parseFloat(document.getElementById("powerInput").value);
+            voltage = parseFloat(document.getElementById("voltageInputPower").value);
+            if (isNaN(power) || isNaN(voltage)) throw new Error("Masukkan nilai yang valid");
+            if (voltage === 0) throw new Error("Tegangan tidak boleh nol");
+            current = power / voltage;
+            resistance = voltage / current;
+          } else if (calcType === 'R') {
+            power = parseFloat(document.getElementById("powerInput").value);
+            current = parseFloat(document.getElementById("currentInputPower").value);
+            if (isNaN(power) || isNaN(current)) throw new Error("Masukkan nilai yang valid");
+            resistance = power / (current * current);
+            voltage = current * resistance;
+          }
+
+          document.getElementById("powerResult").textContent = power.toFixed(4);
+          document.getElementById("voltageResultPower").textContent = voltage.toFixed(4);
+          document.getElementById("currentResultPower").textContent = current.toFixed(4);
+          document.getElementById("resistanceResultPower").textContent = resistance.toFixed(4);
+        } catch (error) {
+          alert(error.message);
+        }
+      }
+
+      function resetPower() {
+        document.getElementById("powerCalcType").value = "P";
+        generatePowerInputs();
+        document.getElementById("powerResult").textContent = "-";
+        document.getElementById("voltageResultPower").textContent = "-";
+        document.getElementById("currentResultPower").textContent = "-";
+        document.getElementById("resistanceResultPower").textContent = "-";
+      }
+
+      // Circuit Calculator
+      function generateResistorInputs() {
+        const count = parseInt(document.getElementById("resistorCount").value);
+        const resistorInputs = document.getElementById("resistorInputs");
+        resistorInputs.innerHTML = '';
+
+        for (let i = 1; i <= count; i++) {
+          resistorInputs.innerHTML += `
+            <div class="input-group">
+              <label class="input-label text-gray-700 dark:text-gray-300">Resistor R${i}</label>
+              <input type="number" id="resistor${i}" class="number-input" placeholder="Masukkan nilai resistor dalam Ohm" value="${i * 100}">
+            </div>
+          `;
+        }
+      }
+
+      document.getElementById("resistorCount").addEventListener("change", generateResistorInputs);
+      document.getElementById("circuitType").addEventListener("change", generateResistorInputs);
+
+      function calculateCircuit() {
+        const circuitType = document.getElementById("circuitType").value;
+        const count = parseInt(document.getElementById("resistorCount").value);
+        const sourceVoltage = parseFloat(document.getElementById("sourceVoltage").value);
+        const resistors = [];
+        let totalResistance = 0;
+
+        try {
+          if (isNaN(sourceVoltage)) throw new Error("Masukkan tegangan sumber yang valid");
+
+          // Collect resistor values
+          for (let i = 1; i <= count; i++) {
+            const value = parseFloat(document.getElementById(`resistor${i}`).value);
+            if (isNaN(value)) throw new Error(`Masukkan nilai yang valid untuk R${i}`);
+            if (value <= 0) throw new Error(`Resistor R${i} harus lebih besar dari 0`);
+            resistors.push(value);
+          }
+
+          // Calculate total resistance
+          if (circuitType === 'series') {
+            totalResistance = resistors.reduce((sum, r) => sum + r, 0);
+          } else {
+            totalResistance = resistors.reduce((sum, r) => sum + 1/r, 0);
+            totalResistance = 1 / totalResistance;
+          }
+
+          // Calculate total current
+          const totalCurrent = sourceVoltage / totalResistance;
+          const totalPower = sourceVoltage * totalCurrent;
+
+          // Display results
+          document.getElementById("totalResistance").textContent = totalResistance.toFixed(4);
+          document.getElementById("totalCurrent").textContent = totalCurrent.toFixed(4);
+          document.getElementById("totalPower").textContent = totalPower.toFixed(4);
+
+          // Display resistor details
+          let detailsHTML = '';
+          resistors.forEach((r, i) => {
+            const voltage = circuitType === 'series' ? totalCurrent * r : sourceVoltage;
+            const current = circuitType === 'series' ? totalCurrent : sourceVoltage / r;
+            const power = voltage * current;
+            
+            detailsHTML += `
+              <div class="result-item mt-2">
+                <div class="font-medium text-dark dark:text-white">Resistor R${i+1} (${r.toFixed(2)} Ω)</div>
+                <div class="text-dark dark:text-white">Tegangan: ${voltage.toFixed(4)} V</div>
+                <div class="text-dark dark:text-white">Arus: ${current.toFixed(4)} A</div>
+                <div class="text-dark dark:text-white">Daya: ${power.toFixed(4)} W</div>
+              </div>
+            `;
+          });
+
+          document.getElementById("resistorDetails").innerHTML = detailsHTML;
+        } catch (error) {
+          alert(error.message);
+        }
+      }
+
+      function resetCircuit() {
+        document.getElementById("circuitType").value = "series";
+        document.getElementById("resistorCount").value = "2";
+        document.getElementById("sourceVoltage").value = "12";
+        generateResistorInputs();
+        document.getElementById("totalResistance").textContent = "-";
+        document.getElementById("totalCurrent").textContent = "-";
+        document.getElementById("totalPower").textContent = "-";
+        document.getElementById("resistorDetails").innerHTML = "";
+      }
+    </script>
+  </body>
+</html>

@@ -5,6 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Modul Pembelajaran Matematika</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
     <script>
       // Initialize theme before loading Tailwind
       (function () {
@@ -74,7 +78,6 @@
       };
     </script>
     <style type="text/css">
-      /* Custom styles that need higher specificity */
       * {
         margin: 0;
         padding: 0;
@@ -82,8 +85,8 @@
       }
       body {
         line-height: 1.6;
-        color: rgb(31 41 55); /* dark */
-        background-color: rgb(248 249 250); /* light */
+        color: rgb(31 41 55);
+        background-color: rgb(248 249 250);
       }
 
       a {
@@ -96,21 +99,21 @@
       }
 
       .card h3 {
-        color: rgb(59 130 246); /* primary */
+        color: rgb(59 130 246);
       }
 
       .dark .card h3 {
-        color: rgb(96 165 250); /* primary-dark */
+        color: rgb(96 165 250);
       }
 
       section h2 {
-        color: rgb(59 130 246); /* primary */
-        border-bottom: 2px solid rgb(59 130 246); /* primary */
+        color: rgb(59 130 246);
+        border-bottom: 2px solid rgb(59 130 246);
       }
 
       .dark section h2 {
-        color: rgb(96 165 250); /* primary-dark */
-        border-bottom: 2px solid rgb(96 165 250); /* primary-dark */
+        color: rgb(96 165 250);
+        border-bottom: 2px solid rgb(96 165 250);
       }
 
       .card {
@@ -119,6 +122,18 @@
 
       .dark .card {
         background-color: rgb(31 41 55);
+      }
+
+      /* Search highlight */
+      .highlight {
+        background-color: rgba(251, 191, 36, 0.3);
+        padding: 0.1rem 0.2rem;
+        border-radius: 0.25rem;
+      }
+
+      /* Smooth transitions */
+      .transition-slow {
+        transition: all 0.5s ease;
       }
     </style>
   </head>
@@ -149,13 +164,36 @@
             <a
               href="../index.html"
               class="hidden sm:block text-xl font-sans font-bold text-blue-600 dark:text-white hover:text-blue-600 dark:hover:text-blue-400 transition-colors transform hover:scale-105"
-              >ANDREAN | PORTFOLIO</a
+              >ANDREAN | MATH & TOOL</a
             >
+          </div>
+
+          <!-- Search Bar -->
+          <div class="hidden md:flex items-center mx-4 flex-1 max-w-md">
+            <div class="relative w-full">
+              <input
+                type="text"
+                id="searchInput"
+                placeholder="Cari alat atau modul..."
+                class="w-full pl-10 pr-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+              <div
+                class="absolute left-3 top-1 text-gray-400 dark:text-gray-300"
+              >
+                <i class="fas fa-search"></i>
+              </div>
+              <button
+                id="clearSearch"
+                class="absolute border-transparent right-3 top-1.5 text-gray-400 dark:text-gray-300 bg-white dark:bg-gray-700 hidden"
+              >
+                <i class="fas fa-times"></i>
+              </button>
+            </div>
           </div>
 
           <div class="flex items-center space-x-4">
             <!-- Desktop Navigation -->
-            <div class="hidden md:flex items-center space-x-8">
+            <div class="hidden md:flex items-center space-x-5">
               <a
                 href="#calculators"
                 class="font-sans text-gray-700 dark:text-gray-300 hover:text-primary dark:hover:text-blue-400 transition-colors relative group"
@@ -178,7 +216,16 @@
                 href="#modules"
                 class="font-sans text-gray-700 dark:text-gray-300 hover:text-primary dark:hover:text-blue-400 transition-colors relative group"
               >
-                Modul Pembelajaran
+                Modul
+                <span
+                  class="absolute bottom-0 left-0 w-0 h-0.5 bg-primary group-hover:w-full transition-all duration-300"
+                ></span>
+              </a>
+              <a
+                href="#lainnya"
+                class="font-sans text-gray-700 dark:text-gray-300 hover:text-primary dark:hover:text-blue-400 transition-colors relative group"
+              >
+                Lainnya
                 <span
                   class="absolute bottom-0 left-0 w-0 h-0.5 bg-primary group-hover:w-full transition-all duration-300"
                 ></span>
@@ -221,7 +268,7 @@
             <!-- Mobile menu button -->
             <button
               id="mobile-menu-button"
-              class="md:hidden border-transparent bg-white dark:bg-dark-light text-dark dark:text-gray-300 rounded-lg focus:outline-non transform hover:scale-110"
+              class="md:hidden border-transparent bg-white dark:bg-dark-light text-dark dark:text-gray-300 rounded-lg focus:outline-non transform hover:scale-110 transition-slow"
               aria-label="Open menu"
             >
               <svg
@@ -247,25 +294,44 @@
           id="mobile-menu"
           class="hidden md:hidden pb-4 transition-all duration-300 ease-in-out"
         >
+          <!-- Mobile Search -->
+          <div class="relative w-full mb-3 px-3">
+            <input
+              type="text"
+              id="mobileSearchInput"
+              placeholder="Cari alat atau modul..."
+              class="w-full pl-10 pr-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+            <div class="absolute left-6 top-1 text-gray-400 dark:text-gray-300">
+              <i class="fas fa-search"></i>
+            </div>
+            <button
+              id="clearMobileSearch"
+              class="absolute border-transparent right-4 top-1.5 text-gray-400 dark:text-gray-300 bg-white dark:bg-gray-700 hidden"
+            >
+              <i class="fas fa-times"></i>
+            </button>
+          </div>
+
           <div class="flex flex-col space-y-2 mt-2">
             <a
               href="#calculators"
-              class="block px-3 py-2 font-sans text-gray-700 dark:text-gray-300 hover:text-primary dark:hover:text-blue-400 transition-colors transform hover:translate-x-2"
+              class="block px-3 py-2 font-sans text-gray-700 dark:text-gray-300 hover:text-primary dark:hover:text-blue-400 transition-colors transform hover:translate-x-2 transition-slow"
               >Kalkulator</a
             >
             <a
               href="#visualizations"
-              class="block px-3 py-2 font-sans text-gray-700 dark:text-gray-300 hover:text-primary dark:hover:text-blue-400 transition-colors transform hover:translate-x-2"
+              class="block px-3 py-2 font-sans text-gray-700 dark:text-gray-300 hover:text-primary dark:hover:text-blue-400 transition-colors transform hover:translate-x-2 transition-slow"
               >Visualisasi</a
             >
             <a
               href="#modules"
-              class="block px-3 py-2 font-sans text-gray-700 dark:text-gray-300 hover:text-primary dark:hover:text-blue-400 transition-colors transform hover:translate-x-2"
-              >Modul Pembelajaran</a
+              class="block px-3 py-2 font-sans text-gray-700 dark:text-gray-300 hover:text-primary dark:hover:text-blue-400 transition-colors transform hover:translate-x-2 transition-slow"
+              >Modul</a
             >
             <a
               href="#lainnya"
-              class="block px-3 py-2 font-sans text-gray-700 dark:text-gray-300 hover:text-primary dark:hover:text-blue-400 transition-colors transform hover:translate-x-2"
+              class="block px-3 py-2 font-sans text-gray-700 dark:text-gray-300 hover:text-primary dark:hover:text-blue-400 transition-colors transform hover:translate-x-2 transition-slow"
               >Lainnya</a
             >
           </div>
@@ -274,6 +340,62 @@
     </nav>
 
     <main class="flex-grow container mx-auto px-4 py-8 max-w-6xl">
+      <!-- Search Results Section (hidden by default) -->
+      <section id="searchResults" class="hidden mb-8">
+        <h2 class="text-2xl font-semibold mb-4 pb-2">Hasil Pencarian</h2>
+        <div
+          id="searchResultsContainer"
+          class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"
+        ></div>
+        <div id="noResults" class="hidden text-center py-8">
+          <i class="fas fa-search text-4xl text-gray-400 mb-4"></i>
+          <p class="text-gray-600 dark:text-gray-300">
+            Tidak ditemukan hasil untuk pencarian Anda
+          </p>
+        </div>
+      </section>
+
+      <!-- Quick Stats -->
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+        <div class="card rounded-lg shadow-md p-4 text-center">
+          <div
+            id="quickStatsCalculator"
+            class="text-2xl font-bold text-blue-600 dark:text-blue-400"
+          >
+            0
+          </div>
+          <div class="text-gray-600 dark:text-gray-300">Kalkulator</div>
+        </div>
+        <div class="card rounded-lg shadow-md p-4 text-center">
+          <div
+            id="quickStatsVisualization"
+            class="text-2xl font-bold text-green-600 dark:text-green-400"
+          >
+            0
+          </div>
+          <div class="text-gray-600 dark:text-gray-300">Visualisasi</div>
+        </div>
+        <div class="card rounded-lg shadow-md p-4 text-center">
+          <div
+            id="quickStatsModule"
+            class="text-2xl font-bold text-purple-600 dark:text-purple-400"
+          >
+            0
+          </div>
+          <div class="text-gray-600 dark:text-gray-300">Modul</div>
+        </div>
+        <div class="card rounded-lg shadow-md p-4 text-center">
+          <div
+            id="quickStatsOther"
+            class="text-2xl font-bold text-yellow-600 dark:text-yellow-400"
+          >
+            0
+          </div>
+          <div class="text-gray-600 dark:text-gray-300">Lainnya</div>
+        </div>
+      </div>
+
+      <!-- Main Content Sections -->
       <section id="calculators" class="mb-12">
         <h2 class="text-2xl font-semibold mb-6 pb-2">Kalkulator</h2>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -296,15 +418,6 @@
             </p>
           </a>
           <a
-            href="calculators/biner.html"
-            class="card rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow hover:-translate-y-1 block"
-          >
-            <h3 class="text-xl font-semibold mb-2">Kalkulator Biner</h3>
-            <p class="text-gray-600 dark:text-gray-300">
-              Konversi biner, desimal, heksadesimal.
-            </p>
-          </a>
-          <a
             href="calculators/bmi.html"
             class="card rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow hover:-translate-y-1 block"
           >
@@ -323,7 +436,7 @@
             </p>
           </a>
           <a
-            href="calculators/suhu.html"
+            href="calculators/temperature.html"
             class="card rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow hover:-translate-y-1 block"
           >
             <h3 class="text-xl font-semibold mb-2">Kalkulator Suhu</h3>
@@ -489,13 +602,39 @@
             <h3 class="text-xl font-semibold mb-2">Statistika</h3>
             <p class="text-gray-600 dark:text-gray-300">
               Distribusi, probabilitas, analisis data
+            </p> </a
+          ><a
+            href="modules/algebra.html"
+            class="card rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow hover:-translate-y-1 block"
+          >
+            <h3 class="text-xl font-semibold mb-2">Aljabar</h3>
+            <p class="text-gray-600 dark:text-gray-300">
+              Persamaan, fungsi, dan matriks
+            </p>
+          </a>
+          <a
+            href="modules/geometry.html"
+            class="card rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow hover:-translate-y-1 block"
+          >
+            <h3 class="text-xl font-semibold mb-2">Geometri</h3>
+            <p class="text-gray-600 dark:text-gray-300">
+              Bentuk, sudut, dan transformasi
+            </p>
+          </a>
+          <a
+            href="modules/statistics.html"
+            class="card rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow hover:-translate-y-1 block"
+          >
+            <h3 class="text-xl font-semibold mb-2">Statistika</h3>
+            <p class="text-gray-600 dark:text-gray-300">
+              Distribusi, probabilitas, analisis data
             </p>
           </a>
         </div>
       </section>
 
       <section id="lainnya" class="mb-12">
-        <h2 class="text-2xl font-semibold mb-6 pb-2">Berbasis Matematika</h2>
+        <h2 class="text-2xl font-semibold mb-6 pb-2">Lainnya</h2>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
           <a
             href="dll/subnet.html"
@@ -507,6 +646,80 @@
               range IP secara otomatis.
             </p>
           </a>
+          <a
+            href="dll/logic-simulator.html"
+            class="card rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow hover:-translate-y-1 block"
+          >
+            <h3 class="text-xl font-semibold mb-2">Simulator Logika & Loop</h3>
+            <p class="text-gray-600 dark:text-gray-300">
+              Simulasi IF/ELSE dan Loop menampilkan logika percabangan dan
+              perulangan secara interaktif.
+            </p>
+          </a>
+          <a
+            href="dll/sql-calculator.html"
+            class="card rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow hover:-translate-y-1 block"
+          >
+            <h3 class="text-xl font-semibold mb-2">Kalkulator SQL Sederhana</h3>
+            <p class="text-gray-600 dark:text-gray-300">
+              Simulasi IF/ELSE dan Loop menampilkan logika percabangan dan
+              perulangan secara interaktif.
+            </p>
+          </a>
+          <a
+            href="dll/number-converter.html"
+            class="card rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow hover:-translate-y-1 block"
+          >
+            <h3 class="text-xl font-semibold mb-2">Konversi Bilangan</h3>
+            <p class="text-gray-600 dark:text-gray-300">
+              Konversi biner, desimal, heksadesimal.
+            </p>
+          </a>
+          <a
+            href="dll/logic-gate.html"
+            class="card rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow hover:-translate-y-1 block"
+          >
+            <h3 class="text-xl font-semibold mb-2">Gerbang Logika</h3>
+            <p class="text-gray-600 dark:text-gray-300">True or False</p>
+          </a>
+          <a
+            href="dll/electronics-calculator.html"
+            class="card rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow hover:-translate-y-1 block"
+          >
+            <h3 class="text-xl font-semibold mb-2">Kalkulator Elektronika</h3>
+            <p class="text-gray-600 dark:text-gray-300">
+              Hitung hukum Ohm, daya Listrik, rangkaian.
+            </p>
+          </a>
+          <a
+            href="dll/statistics-calculator.html"
+            class="card rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow hover:-translate-y-1 block"
+          >
+            <h3 class="text-xl font-semibold mb-2">Kalkulator Statistik</h3>
+            <p class="text-gray-600 dark:text-gray-300">
+              Hitung mean, median, modus, grafik batang.
+            </p>
+          </a>
+          <a
+            href="dll/crypto-calculator.html"
+            class="card rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow hover:-translate-y-1 block"
+          >
+            <h3 class="text-xl font-semibold mb-2">Kalkulator Kriptografi</h3>
+            <p class="text-gray-600 dark:text-gray-300">
+              Hitung mean, median, modus, grafik batang.
+            </p>
+          </a>
+          <a
+            href="dll/logic-set-calculator.html"
+            class="card rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow hover:-translate-y-1 block"
+          >
+            <h3 class="text-xl font-semibold mb-2">
+              Kalkulator Logika & Himpunan
+            </h3>
+            <p class="text-gray-600 dark:text-gray-300">
+              Hitung mean, median, modus, grafik batang.
+            </p>
+          </a>
         </div>
       </section>
     </main>
@@ -516,6 +729,262 @@
     >
       <p>© 2025 Modul Pembelajaran Matematika</p>
     </footer>
-    <script src="../script.js"></script>
+
+    <script>
+      // ===== GLOBAL STATE =====
+      let currentSearchQuery = "";
+      let currentSearchResults = [];
+      let cardsData = [];
+
+      // ===== MAIN APPLICATION INIT =====
+      function initApplication() {
+        console.log("Initializing application...");
+
+        // ===== ELEMENT REFERENCES =====
+        const elements = {
+          themeToggleBtn: document.getElementById("theme-toggle"),
+          themeToggleDarkIcon: document.getElementById(
+            "theme-toggle-dark-icon"
+          ),
+          themeToggleLightIcon: document.getElementById(
+            "theme-toggle-light-icon"
+          ),
+          mobileMenuButton: document.getElementById("mobile-menu-button"),
+          mobileMenu: document.getElementById("mobile-menu"),
+          searchInput: document.getElementById("searchInput"),
+          mobileSearchInput: document.getElementById("mobileSearchInput"),
+          clearSearch: document.getElementById("clearSearch"),
+          clearMobileSearch: document.getElementById("clearMobileSearch"),
+          searchResults: document.getElementById("searchResults"),
+          searchResultsContainer: document.getElementById(
+            "searchResultsContainer"
+          ),
+          noResults: document.getElementById("noResults"),
+          quickStatsCalculator: document.getElementById("quickStatsCalculator"),
+          quickStatsVisualization: document.getElementById(
+            "quickStatsVisualization"
+          ),
+          quickStatsModule: document.getElementById("quickStatsModule"),
+          quickStatsOther: document.getElementById("quickStatsOther"),
+        };
+
+        // ===== THEME SYSTEM =====
+        function initTheme() {
+          if (!elements.themeToggleBtn) return;
+
+          const applyTheme = (isDark) => {
+            document.documentElement.classList.toggle("dark", isDark);
+            elements.themeToggleDarkIcon.classList.toggle("hidden", isDark);
+            elements.themeToggleLightIcon.classList.toggle("hidden", !isDark);
+
+            if (currentSearchQuery) {
+              renderSearchResults();
+            }
+          };
+
+          // Initial theme
+          const isDark =
+            localStorage.getItem("theme") === "dark" ||
+            (!localStorage.getItem("theme") &&
+              window.matchMedia("(prefers-color-scheme: dark)").matches);
+          applyTheme(isDark);
+
+          // Theme toggle
+          elements.themeToggleBtn.addEventListener("click", () => {
+            const isDark = !document.documentElement.classList.contains("dark");
+            localStorage.setItem("theme", isDark ? "dark" : "light");
+            applyTheme(isDark);
+          });
+        }
+
+        // ===== QUICK STATS SYSTEM ===== [FIXED VERSION]
+        function updateQuickStats() {
+          if (!elements.quickStatsCalculator) return;
+
+          const stats = cardsData.reduce(
+            (acc, card) => {
+              if (card.category === "calculators") acc.calculators++;
+              else if (card.category === "visualizations") acc.visualizations++;
+              else if (card.category === "modules") acc.modules++;
+              else if (card.category === "lainnya") acc.lainnya++;
+              return acc;
+            },
+            { calculators: 0, visualizations: 0, modules: 0, lainnya: 0 }
+          );
+
+          elements.quickStatsCalculator.textContent = stats.calculators;
+          elements.quickStatsVisualization.textContent = stats.visualizations;
+          elements.quickStatsModule.textContent = stats.modules;
+          elements.quickStatsOther.textContent = stats.lainnya;
+        }
+
+        // ===== SEARCH SYSTEM =====
+        function setupSearch() {
+          // Debounced search
+          const performSearch = debounce((query) => {
+            query = query.toLowerCase().trim();
+            currentSearchQuery = query;
+
+            if (!query) {
+              elements.searchResults.classList.add("hidden");
+              currentSearchResults = [];
+              return;
+            }
+
+            currentSearchResults = cardsData.filter(
+              (card) =>
+                card.title.toLowerCase().includes(query) ||
+                card.description.toLowerCase().includes(query) ||
+                card.category.toLowerCase().includes(query)
+            );
+
+            renderSearchResults();
+          }, 300);
+
+          // Render results
+          function renderSearchResults() {
+            elements.searchResultsContainer.innerHTML = "";
+
+            if (currentSearchResults.length === 0 && currentSearchQuery) {
+              elements.noResults.classList.remove("hidden");
+            } else {
+              elements.noResults.classList.add("hidden");
+            }
+
+            currentSearchResults.forEach((card) => {
+              const resultItem = document.createElement("a");
+              resultItem.className =
+                "card rounded-lg shadow-md p-6 hover:shadow-lg block mb-4";
+              resultItem.href = card.href;
+              resultItem.innerHTML = `
+                <h3 class="text-xl font-semibold mb-2 text-blue-600 dark:text-blue-400">${highlightText(
+                  card.title
+                )}</h3>
+                <p class="text-gray-600 dark:text-gray-300">${highlightText(
+                  card.description
+                )}</p>
+                <span class="mt-2 inline-block text-sm px-2 py-1 rounded-full bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200">
+                  ${getCategoryName(card.category)}
+                </span>
+              `;
+              elements.searchResultsContainer.appendChild(resultItem);
+            });
+
+            elements.searchResults.classList.toggle(
+              "hidden",
+              !currentSearchQuery
+            );
+          }
+
+          // Highlight text
+          function highlightText(text) {
+            if (!currentSearchQuery) return text;
+            const regex = new RegExp(
+              `(${currentSearchQuery.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")})`,
+              "gi"
+            );
+            return text.replace(
+              regex,
+              '<span class="bg-yellow-200 dark:bg-yellow-700">$1</span>'
+            );
+          }
+
+          // Clear search
+          function clearSearch() {
+            elements.searchInput.value = "";
+            elements.mobileSearchInput.value = "";
+            elements.clearSearch.classList.add("hidden");
+            elements.clearMobileSearch.classList.add("hidden");
+            currentSearchQuery = "";
+            currentSearchResults = [];
+            renderSearchResults();
+          }
+
+          // Event listeners
+          elements.searchInput.addEventListener("input", (e) => {
+            elements.clearSearch.classList.toggle("hidden", !e.target.value);
+            performSearch(e.target.value);
+          });
+
+          elements.mobileSearchInput.addEventListener("input", (e) => {
+            elements.clearMobileSearch.classList.toggle(
+              "hidden",
+              !e.target.value
+            );
+            performSearch(e.target.value);
+          });
+
+          elements.clearSearch.addEventListener("click", clearSearch);
+          elements.clearMobileSearch.addEventListener("click", clearSearch);
+        }
+
+        // ===== HELPER FUNCTIONS =====
+        function debounce(func, delay) {
+          let timeout;
+          return function () {
+            const context = this;
+            const args = arguments;
+            clearTimeout(timeout);
+            timeout = setTimeout(() => func.apply(context, args), delay);
+          };
+        }
+
+        function getCategoryName(id) {
+          const categories = {
+            calculators: "Kalkulator",
+            visualizations: "Visualisasi",
+            modules: "Modul",
+            lainnya: "Lainnya",
+          };
+          return categories[id] || id;
+        }
+
+        function collectCardsData() {
+          const cards = [];
+          document
+            .querySelectorAll("main section a.card")
+            .forEach((card, index) => {
+              try {
+                const titleEl = card.querySelector("h3");
+                const descEl = card.querySelector("p");
+                cards.push({
+                  element: card,
+                  title: titleEl?.textContent.trim() || "Untitled",
+                  description: descEl?.textContent.trim() || "No description",
+                  href: card.getAttribute("href") || "#",
+                  category: card.closest("section")?.id || "unknown",
+                });
+              } catch (error) {
+                console.error(`Error processing card #${index}:`, error);
+              }
+            });
+          return cards;
+        }
+
+        // ===== INITIALIZATION =====
+        try {
+          cardsData = collectCardsData();
+          initTheme();
+          setupSearch();
+          updateQuickStats(); // [FIXED] Call this to initialize quick stats
+
+          // Mobile menu toggle
+          elements.mobileMenuButton?.addEventListener("click", () => {
+            elements.mobileMenu.classList.toggle("hidden");
+          });
+
+          console.log("Application initialized successfully");
+        } catch (error) {
+          console.error("Initialization error:", error);
+        }
+      }
+
+      // Start application
+      if (document.readyState === "complete") {
+        initApplication();
+      } else {
+        document.addEventListener("DOMContentLoaded", initApplication);
+      }
+    </script>
   </body>
 </html>

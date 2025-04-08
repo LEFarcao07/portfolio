@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Simulator Logika & Loop</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      (function () {
+        const savedTheme =
+          localStorage.getItem("theme") ||
+          (window.matchMedia("(prefers-color-scheme: dark)").matches
+            ? "dark"
+            : "light");
+        document.documentElement.classList.toggle(
+          "dark",
+          savedTheme === "dark"
+        );
+      })();
+
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: [
+                "Inter",
+                "Segoe UI",
+                "Tahoma",
+                "Geneva",
+                "Verdana",
+                "sans-serif",
+              ],
+            },
+            colors: {
+              primary: { light: "#3B82F6", dark: "#60A5FA" },
+              dark: { light: "#1F2937", dark: "#111827" },
+              light: { light: "#F8F9FA", dark: "#1F2937" },
+              customGray: "#3E3E3E",
+              linux: {
+                "merah-error": "#CC0000",
+                "ijo-sukses": "#4E9A06",
+                "kuning-awas": "#C4A000",
+                "biru-info": "#3465A4",
+                "ungu-ajaib": "#75507B",
+                "cyan-keren": "#06989A",
+              },
+            },
+          },
+        },
+        corePlugins: { preflight: false },
+      };
+    </script>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      a {
+        text-decoration: none;
+      }
+      .calculator {
+        max-width: 600px;
+        margin: 0 auto;
+      }
+      .input-group {
+        margin-bottom: 15px;
+      }
+      .input-label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: 500;
+      }
+      .number-input {
+        width: 100%;
+        padding: 10px;
+        border-radius: 5px;
+        border: 1px solid #d1d5db;
+        background-color: #f9fafb;
+        color: #111827;
+      }
+      .dark .number-input {
+        background-color: #374151;
+        border-color: #4b5563;
+        color: #f9fafb;
+      }
+      .select-input {
+        width: 100%;
+        padding: 10px;
+        border-radius: 5px;
+        border: 1px solid #d1d5db;
+        background-color: #f9fafb;
+        color: #111827;
+      }
+      .dark .select-input {
+        background-color: #374151;
+        border-color: #4b5563;
+        color: #f9fafb;
+      }
+      .text-input {
+        width: 100%;
+        padding: 10px;
+        border-radius: 5px;
+        border: 1px solid #d1d5db;
+        background-color: #f9fafb;
+        color: #111827;
+        font-family: monospace;
+        min-height: 100px;
+      }
+      .dark .text-input {
+        background-color: #374151;
+        border-color: #4b5563;
+        color: #f9fafb;
+      }
+      .btn {
+        height: 50px;
+        font-size: 1.2rem;
+      }
+      .btn-primary {
+        background-color: #3b82f6;
+        color: white;
+      }
+      .dark .btn-primary {
+        background-color: #2563eb;
+      }
+      .btn-reset {
+        background-color: #ef4444;
+        color: white;
+      }
+      .dark .btn-reset {
+        background-color: #dc2626;
+      }
+      .result-box {
+        padding: 15px;
+        border-radius: 5px;
+        margin-top: 20px;
+        background-color: #f3f4f6;
+      }
+      .dark .result-box {
+        background-color: #374151;
+      }
+      .result-title {
+        font-weight: 600;
+        margin-bottom: 10px;
+      }
+      .result-content {
+        font-family: monospace;
+        white-space: pre-wrap;
+        background-color: #e5e7eb;
+        padding: 10px;
+        border-radius: 5px;
+        overflow-x: auto;
+      }
+      .dark .result-content {
+        background-color: #4b5563;
+      }
+      .tab-buttons {
+        display: flex;
+        margin-bottom: 15px;
+      }
+      .tab-button {
+        padding: 10px 20px;
+        cursor: pointer;
+        border: 1px solid #d1d5db;
+        background-color: #f3f4f6;
+      }
+      .dark .tab-button {
+        background-color: #374151;
+        border-color: #4b5563;
+      }
+      .tab-button.active {
+        background-color: #3b82f6;
+        color: white;
+      }
+      .dark .tab-button.active {
+        background-color: #2563eb;
+      }
+      .tab-content {
+        display: none;
+      }
+      .tab-content.active {
+        display: block;
+      }
+    </style>
+  </head>
+  <body class="bg-gray-100 dark:bg-gray-900 min-h-screen">
+    <nav class="bg-white dark:bg-gray-800 shadow-sm">
+      <div class="px-4 py-3 flex justify-between items-center">
+        <a
+          href="../index.html"
+          class="text-blue-600 dark:text-blue-400 font-semibold"
+          >← Kembali</a
+        >
+        <button
+          id="theme-toggle"
+          type="button"
+          class="p-2 border-transparent bg-white dark:bg-dark-light text-dark dark:text-gray-300 rounded-lg focus:outline-none transform hover:rotate-12"
+        >
+          <svg
+            id="theme-toggle-dark-icon"
+            class="w-5 h-5"
+            fill="currentColor"
+            viewBox="0 0 20 20"
+          >
+            <path
+              d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"
+            ></path>
+          </svg>
+          <svg
+            id="theme-toggle-light-icon"
+            class="w-5 h-5 hidden"
+            fill="currentColor"
+            viewBox="0 0 20 20"
+          >
+            <path
+              d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z"
+              fill-rule="evenodd"
+              clip-rule="evenodd"
+            ></path>
+          </svg>
+        </button>
+      </div>
+    </nav>
+
+    <main class="container mx-auto px-4 py-8">
+      <h1
+        class="text-2xl font-bold text-center mb-8 text-gray-800 dark:text-white"
+      >
+        Simulator Logika & Loop
+      </h1>
+
+      <div
+        class="calculator bg-white dark:bg-gray-800 p-4 rounded-lg shadow-md"
+      >
+        <div class="tab-buttons">
+          <button class="tab-button text-dark dark:text-white active" onclick="openTab('ifelse')">
+            IF/ELSE Simulator
+          </button>
+          <button class="tab-button text-dark dark:text-white" onclick="openTab('loop')">
+            Loop Simulator
+          </button>
+        </div>
+
+        <!-- IF/ELSE Tab -->
+        <div id="ifelse" class="tab-content active">
+          <div class="input-group">
+            <label class="input-label text-gray-700 dark:text-gray-300"
+              >Kondisi (JavaScript)</label
+            >
+            <input
+              type="text"
+              id="conditionInput"
+              class="number-input"
+              placeholder="Contoh: x > 5"
+              value="x > 5"
+            />
+          </div>
+
+          <div class="input-group">
+            <label class="input-label text-gray-700 dark:text-gray-300"
+              >Nilai x</label
+            >
+            <input
+              type="number"
+              id="xValueInput"
+              class="number-input"
+              placeholder="Masukkan nilai x"
+              value="10"
+            />
+          </div>
+
+          <div class="input-group">
+            <label class="input-label text-gray-700 dark:text-gray-300"
+              >Kode IF Block (JavaScript)</label
+            >
+            <textarea
+              id="ifBlockInput"
+              class="text-input"
+              placeholder="Contoh: 'Nilai x lebih besar dari 5'"
+            >
+"Nilai x lebih besar dari 5"</textarea
+            >
+          </div>
+
+          <div class="input-group">
+            <label class="input-label text-gray-700 dark:text-gray-300"
+              >Kode ELSE Block (JavaScript)</label
+            >
+            <textarea
+              id="elseBlockInput"
+              class="text-input"
+              placeholder="Contoh: 'Nilai x tidak lebih besar dari 5'"
+            >
+"Nilai x tidak lebih besar dari 5"</textarea
+            >
+          </div>
+
+          <div class="grid grid-cols-2 gap-4 mt-4">
+            <button
+              class="btn btn-primary hover:bg-blue-600 rounded"
+              onclick="runIfElse()"
+            >
+              Jalankan
+            </button>
+            <button
+              class="btn btn-reset hover:bg-red-600 rounded"
+              onclick="resetIfElse()"
+            >
+              Reset
+            </button>
+          </div>
+
+          <div class="result-box mt-6">
+            <div class="result-title text-gray-800 dark:text-white">
+              Hasil Eksekusi:
+            </div>
+            <div
+              id="ifElseResult"
+              class="result-content text-dark dark:text-white"
+            >
+              Hasil akan muncul di sini...
+            </div>
+          </div>
+        </div>
+
+        <!-- Loop Tab -->
+        <div id="loop" class="tab-content">
+          <div class="input-group">
+            <label class="input-label text-gray-700 dark:text-gray-300"
+              >Jenis Loop</label
+            >
+            <select id="loopType" class="select-input">
+              <option value="for">For Loop</option>
+              <option value="while">While Loop</option>
+              <option value="dowhile">Do-While Loop</option>
+            </select>
+          </div>
+
+          <div class="input-group">
+            <label class="input-label text-gray-700 dark:text-gray-300"
+              >Kondisi Awal (JavaScript)</label
+            >
+            <input
+              type="text"
+              id="initCondition"
+              class="number-input"
+              placeholder="Contoh: let i = 0"
+              value="let i = 0"
+            />
+          </div>
+
+          <div class="input-group">
+            <label class="input-label text-gray-700 dark:text-gray-300"
+              >Kondisi Lanjutan (JavaScript)</label
+            >
+            <input
+              type="text"
+              id="loopCondition"
+              class="number-input"
+              placeholder="Contoh: i < 5"
+              value="i < 5"
+            />
+          </div>
+
+          <div class="input-group">
+            <label class="input-label text-gray-700 dark:text-gray-300"
+              >Increment/Decrement (JavaScript)</label
+            >
+            <input
+              type="text"
+              id="incrementCondition"
+              class="number-input"
+              placeholder="Contoh: i++"
+              value="i++"
+            />
+          </div>
+
+          <div class="input-group">
+            <label class="input-label text-gray-700 dark:text-gray-300"
+              >Kode Loop Block (JavaScript)</label
+            >
+            <textarea
+              id="loopBlockInput"
+              class="text-input"
+              placeholder="Contoh: 'Iterasi ke-' + i"
+            >
+"Iterasi ke-" + i</textarea
+            >
+          </div>
+
+          <div class="grid grid-cols-2 gap-4 mt-4">
+            <button
+              class="btn btn-primary hover:bg-blue-600 rounded"
+              onclick="runLoop()"
+            >
+              Jalankan
+            </button>
+            <button
+              class="btn btn-reset hover:bg-red-600 rounded"
+              onclick="resetLoop()"
+            >
+              Reset
+            </button>
+          </div>
+
+          <div class="result-box mt-6">
+            <div class="result-title text-gray-800 dark:text-white">
+              Hasil Eksekusi:
+            </div>
+            <div
+              id="loopResult"
+              class="result-content text-dark dark:text-white"
+            >
+              Hasil loop akan muncul di sini...
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <script>
+      // Theme toggle
+      const themeToggleBtn = document.getElementById("theme-toggle");
+      const themeToggleDarkIcon = document.getElementById(
+        "theme-toggle-dark-icon"
+      );
+      const themeToggleLightIcon = document.getElementById(
+        "theme-toggle-light-icon"
+      );
+
+      if (
+        localStorage.getItem("theme") === "dark" ||
+        (!("theme" in localStorage) &&
+          window.matchMedia("(prefers-color-scheme: dark)").matches)
+      ) {
+        themeToggleLightIcon.classList.remove("hidden");
+        themeToggleDarkIcon.classList.add("hidden");
+      } else {
+        themeToggleLightIcon.classList.add("hidden");
+        themeToggleDarkIcon.classList.remove("hidden");
+      }
+
+      themeToggleBtn.addEventListener("click", function () {
+        themeToggleDarkIcon.classList.toggle("hidden");
+        themeToggleLightIcon.classList.toggle("hidden");
+        if (localStorage.getItem("theme") === "dark") {
+          localStorage.setItem("theme", "light");
+          document.documentElement.classList.remove("dark");
+        } else {
+          localStorage.setItem("theme", "dark");
+          document.documentElement.classList.add("dark");
+        }
+      });
+
+      // Tab functionality
+      function openTab(tabName) {
+        const tabContents = document.getElementsByClassName("tab-content");
+        for (let i = 0; i < tabContents.length; i++) {
+          tabContents[i].classList.remove("active");
+        }
+
+        const tabButtons = document.getElementsByClassName("tab-button");
+        for (let i = 0; i < tabButtons.length; i++) {
+          tabButtons[i].classList.remove("active");
+        }
+
+        document.getElementById(tabName).classList.add("active");
+        event.currentTarget.classList.add("active");
+      }
+
+      // IF/ELSE Simulator
+      function runIfElse() {
+        try {
+          const condition = document.getElementById("conditionInput").value;
+          const xValue = document.getElementById("xValueInput").value;
+          const ifBlock = document.getElementById("ifBlockInput").value;
+          const elseBlock = document.getElementById("elseBlockInput").value;
+
+          // Create a sandboxed environment
+          const x = parseFloat(xValue);
+          let result;
+
+          // Evaluate the condition
+          const conditionResult = eval(condition);
+
+          // Execute the appropriate block
+          if (conditionResult) {
+            result = eval(ifBlock);
+          } else {
+            result = eval(elseBlock);
+          }
+
+          document.getElementById("ifElseResult").textContent =
+            `Nilai x = ${x}\n` +
+            `Kondisi: ${condition}\n` +
+            `Hasil Evaluasi: ${conditionResult}\n` +
+            `Output: ${result}`;
+        } catch (error) {
+          document.getElementById(
+            "ifElseResult"
+          ).textContent = `Error: ${error.message}`;
+        }
+      }
+
+      function resetIfElse() {
+        document.getElementById("conditionInput").value = "x > 5";
+        document.getElementById("xValueInput").value = "10";
+        document.getElementById("ifBlockInput").value =
+          '"Nilai x lebih besar dari 5"';
+        document.getElementById("elseBlockInput").value =
+          '"Nilai x tidak lebih besar dari 5"';
+        document.getElementById("ifElseResult").textContent =
+          "Hasil akan muncul di sini...";
+      }
+
+      // Loop Simulator
+      function runLoop() {
+        try {
+          const loopType = document.getElementById("loopType").value;
+          const initCondition = document.getElementById("initCondition").value;
+          const loopCondition = document.getElementById("loopCondition").value;
+          const incrementCondition =
+            document.getElementById("incrementCondition").value;
+          const loopBlock = document.getElementById("loopBlockInput").value;
+
+          let result = "";
+          let i; // Deklarasikan variabel i di scope yang lebih luas
+
+          // Initialize variables
+          eval(initCondition);
+
+          // Execute the appropriate loop
+          switch (loopType) {
+            case "for":
+              result += "For Loop:\n";
+              // Gunakan template string untuk membuat kode loop yang lengkap
+              const forLoopCode = `
+            for (${initCondition}; ${loopCondition}; ${incrementCondition}) {
+              result += (${loopBlock}) + '\\n';
+            }
+          `;
+              eval(forLoopCode);
+              break;
+
+            case "while":
+              result += "While Loop:\n";
+              eval(initCondition);
+              const whileLoopCode = `
+            while (${loopCondition}) {
+              result += (${loopBlock}) + '\\n';
+              ${incrementCondition};
+            }
+          `;
+              eval(whileLoopCode);
+              break;
+
+            case "dowhile":
+              result += "Do-While Loop:\n";
+              eval(initCondition);
+              const doWhileLoopCode = `
+            do {
+              result += (${loopBlock}) + '\\n';
+              ${incrementCondition};
+            } while (${loopCondition});
+          `;
+              eval(doWhileLoopCode);
+              break;
+          }
+
+          document.getElementById("loopResult").textContent = result;
+        } catch (error) {
+          document.getElementById(
+            "loopResult"
+          ).textContent = `Error: ${error.message}\n\nPastikan:\n1. Variabel sudah dideklarasikan\n2. Kondisi valid\n3. Sintaks JavaScript benar`;
+        }
+      }
+
+      function resetLoop() {
+        document.getElementById("loopType").value = "for";
+        document.getElementById("initCondition").value = "let i = 0";
+        document.getElementById("loopCondition").value = "i < 5";
+        document.getElementById("incrementCondition").value = "i++";
+        document.getElementById("loopBlockInput").value = '"Iterasi ke-" + i';
+        document.getElementById("loopResult").textContent =
+          "Hasil loop akan muncul di sini...";
+      }
+    </script>
+  </body>
+</html>
