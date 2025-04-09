@@ -3,10 +3,12 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Regresi Linear</title>
+    <title>Regresi Linear Lengkap</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/regression/2.0.1/regression.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.0/es5/tex-mml-chtml.js"></script>
     <script>
       (function () {
         const savedTheme =
@@ -83,6 +85,35 @@
       a {
         text-decoration: none;
       }
+      .formula {
+        background-color: rgba(59, 130, 246, 0.1);
+        padding: 1rem;
+        border-radius: 0.5rem;
+        margin: 1rem 0;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        color: black;
+        margin: 1rem 0;
+      }
+      .dark table {
+        color: white;
+      }
+      th, td {
+        border: 1px solid #ddd;
+        padding: 8px;
+        text-align: center;
+      }
+      th {
+        background-color: rgba(59, 130, 246, 0.2);
+      }
+      .calculation-step {
+        margin-bottom: 1.5rem;
+      }
+      .math-container {
+        overflow-x: auto;
+      }
     </style>
   </head>
   <body class="bg-gray-100 dark:bg-gray-900 min-h-screen">
@@ -128,18 +159,14 @@
     </nav>
 
     <main class="container mx-auto px-4 py-8">
-      <h1
-        class="text-2xl font-bold text-center mb-8 text-gray-800 dark:text-white"
-      >
-        Regresi Linear
+      <h1 class="text-2xl font-bold text-center mb-8 text-gray-800 dark:text-white">
+        Analisis Regresi Linear Lengkap
       </h1>
 
       <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg mb-6">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
           <div>
-            <label
-              class="block text-gray-700 dark:text-gray-300 mb-2"
-              for="x-values"
+            <label class="block text-gray-700 dark:text-gray-300 mb-2" for="x-values"
               >Nilai X (pisahkan dengan koma):</label
             >
             <input
@@ -150,9 +177,7 @@
             />
           </div>
           <div>
-            <label
-              class="block text-gray-700 dark:text-gray-300 mb-2"
-              for="y-values"
+            <label class="block text-gray-700 dark:text-gray-300 mb-2" for="y-values"
               >Nilai Y (pisahkan dengan koma):</label
             >
             <input
@@ -166,7 +191,7 @@
         <div class="flex justify-center">
           <button
             onclick="updateChart()"
-            class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded dark:bg-blue-700 dark:hover:bg-blue-800"
+            class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded dark:bg-blue-700 dark:hover:bg-blue-800"
           >
             Hitung Regresi
           </button>
@@ -174,13 +199,57 @@
       </div>
 
       <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg mb-6">
-        <div
-          id="regression-result"
-          class="text-center text-gray-700 dark:text-gray-300"
-        ></div>
+        <h2 class="text-xl font-bold mb-4 text-gray-800 dark:text-white">Hasil Regresi</h2>
+        <div id="regression-result" class="text-gray-700 dark:text-gray-300"></div>
+      </div>
+
+      <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg mb-6">
+        <h2 class="text-xl font-bold mb-4 text-gray-800 dark:text-white">Metode Kuadrat Terkecil</h2>
+        
+        <div class="formula text-dark dark:text-white">
+          <h3 class="font-bold mb-2">Rumus Umum Garis Regresi:</h3>
+          <div class="math-container">
+            <p class="text-center mb-2">$$ \hat{y} = a + bx $$</p>
+          </div>
+          <p>Dimana:</p>
+          <ul class="list-disc pl-5 mb-2">
+            <li>\( \hat{y} \) = Nilai prediksi</li>
+            <li>\( a \) = Intercept (perpotongan sumbu y)</li>
+            <li>\( b \) = Slope (kemiringan garis)</li>
+          </ul>
+        </div>
+
+        <div class="formula text-dark dark:text-white">
+          <h3 class="font-bold mb-2">Rumus Slope (b):</h3>
+          <div class="math-container">
+            <p class="text-center">$$ b = \frac{\sum (x_i - \bar{x})(y_i - \bar{y})}{\sum (x_i - \bar{x})^2} $$</p>
+          </div>
+        </div>
+
+        <div class="formula text-dark dark:text-white">
+          <h3 class="font-bold mb-2">Rumus Intercept (a):</h3>
+          <div class="math-container">
+            <p class="text-center">$$ a = \bar{y} - b\bar{x} $$</p>
+          </div>
+        </div>
+
+        <div class="formula text-dark dark:text-white">
+          <h3 class="font-bold mb-2">Koefisien Determinasi (R²):</h3>
+          <div class="math-container">
+            <p class="text-center">$$ R^2 = \frac{[\sum (x_i - \bar{x})(y_i - \bar{y})]^2}{\sum (x_i - \bar{x})^2 \sum (y_i - \bar{y})^2} $$</p>
+          </div>
+        </div>
+
+        <div id="calculation-steps" class="mt-4 text-gray-700 dark:text-gray-300"></div>
+      </div>
+
+      <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg mb-6">
+        <h2 class="text-xl font-bold mb-4 text-gray-800 dark:text-white">Tabel Perhitungan</h2>
+        <div id="calculation-table" class="overflow-x-auto"></div>
       </div>
 
       <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg">
+        <h2 class="text-xl font-bold mb-4 text-gray-800 dark:text-white">Diagram Regresi</h2>
         <canvas id="regressionChart"></canvas>
       </div>
     </main>
@@ -188,12 +257,8 @@
     <script>
       // Theme toggle
       const themeToggleBtn = document.getElementById("theme-toggle");
-      const themeToggleDarkIcon = document.getElementById(
-        "theme-toggle-dark-icon"
-      );
-      const themeToggleLightIcon = document.getElementById(
-        "theme-toggle-light-icon"
-      );
+      const themeToggleDarkIcon = document.getElementById("theme-toggle-dark-icon");
+      const themeToggleLightIcon = document.getElementById("theme-toggle-light-icon");
 
       if (
         localStorage.getItem("theme") === "dark" ||
@@ -230,14 +295,146 @@
       }
 
       function calculateRegression(xValues, yValues) {
-        const points = xValues.map((x, i) => [x, yValues[i]]);
-        const result = regression.linear(points);
+        const n = xValues.length;
+        
+        // Hitung rata-rata
+        const sumX = xValues.reduce((a, b) => a + b, 0);
+        const sumY = yValues.reduce((a, b) => a + b, 0);
+        const meanX = sumX / n;
+        const meanY = sumY / n;
 
+        // Hitung komponen untuk tabel
+        let sumXX = 0; // Σ(x-x̄)²
+        let sumYY = 0; // Σ(y-ȳ)²
+        let sumXY = 0; // Σ(x-x̄)(y-ȳ)
+        
+        // Buat tabel perhitungan
+        let tableHTML = `
+          <table class="w-full border border-gray-300 dark:border-gray-600 mb-4">
+            <thead>
+              <tr class="bg-blue-100 dark:bg-blue-900">
+                <th class="p-2 border dark:border-gray-600 dark:text-white">No.</th>
+                <th class="p-2 border dark:border-gray-600 dark:text-white">X</th>
+                <th class="p-2 border dark:border-gray-600 dark:text-white">Y</th>
+                <th class="p-2 border dark:border-gray-600 dark:text-white">(x-x̄)</th>
+                <th class="p-2 border dark:border-gray-600 dark:text-white">(y-ȳ)</th>
+                <th class="p-2 border dark:border-gray-600 dark:text-white">(x-x̄)²</th>
+                <th class="p-2 border dark:border-gray-600 dark:text-white">(x-x̄)(y-ȳ)</th>
+              </tr>
+            </thead>
+            <tbody>
+        `;
+
+        // Hitung nilai untuk setiap row
+        for (let i = 0; i < n; i++) {
+          const xDiff = xValues[i] - meanX;
+          const yDiff = yValues[i] - meanY;
+          const xx = xDiff * xDiff;
+          const xy = xDiff * yDiff;
+          
+          sumXX += xx;
+          sumYY += yDiff * yDiff;
+          sumXY += xy;
+
+          tableHTML += `
+            <tr>
+              <td class="p-2 border dark:border-gray-600 dark:text-white">${i+1}</td>
+              <td class="p-2 border dark:border-gray-600 dark:text-white">${xValues[i].toFixed(2)}</td>
+              <td class="p-2 border dark:border-gray-600 dark:text-white">${yValues[i].toFixed(2)}</td>
+              <td class="p-2 border dark:border-gray-600 dark:text-white">${xDiff.toFixed(2)}</td>
+              <td class="p-2 border dark:border-gray-600 dark:text-white">${yDiff.toFixed(2)}</td>
+              <td class="p-2 border dark:border-gray-600 dark:text-white">${xx.toFixed(2)}</td>
+              <td class="p-2 border dark:border-gray-600 dark:text-white">${xy.toFixed(2)}</td>
+            </tr>
+          `;
+        }
+
+        // Baris total
+        tableHTML += `
+            <tr class="font-bold bg-blue-50 dark:bg-blue-800">
+              <td class="p-2 border dark:border-gray-600 dark:text-white">Total</td>
+              <td class="p-2 border dark:border-gray-600 dark:text-white">${sumX.toFixed(2)}</td>
+              <td class="p-2 border dark:border-gray-600 dark:text-white">${sumY.toFixed(2)}</td>
+              <td class="p-2 border dark:border-gray-600 dark:text-white">-</td>
+              <td class="p-2 border dark:border-gray-600 dark:text-white">-</td>
+              <td class="p-2 border dark:border-gray-600 dark:text-white">${sumXX.toFixed(2)}</td>
+              <td class="p-2 border dark:border-gray-600 dark:text-white">${sumXY.toFixed(2)}</td>
+            </tr>
+            </tbody>
+          </table>
+        `;
+
+        // Hitung slope (b) dan intercept (a)
+        const b = sumXY / sumXX;
+        const a = meanY - b * meanX;
+        
+        // Hitung R-squared
+        const r2 = (sumXY * sumXY) / (sumXX * sumYY);
+
+        // Buat langkah perhitungan
+        const stepsHTML = `
+          <div class="calculation-step">
+            <h3 class="text-lg font-bold mb-2">Langkah Perhitungan Detail</h3>
+            
+            <div class="formula bg-blue-50 dark:bg-blue-900 p-4 rounded-lg mb-4">
+              <h4 class="font-bold mb-2">1. Hitung Rata-rata X dan Y</h4>
+              <div class="math-container">
+                <p>$$ \\bar{x} = \\frac{\\Sigma X}{n} = \\frac{${sumX.toFixed(2)}}{${n}} = ${meanX.toFixed(2)} $$</p>
+                <p>$$ \\bar{y} = \\frac{\\Sigma Y}{n} = \\frac{${sumY.toFixed(2)}}{${n}} = ${meanY.toFixed(2)} $$</p>
+              </div>
+            </div>
+
+            <div class="formula bg-green-50 dark:bg-green-900 p-4 rounded-lg mb-4">
+              <h4 class="font-bold mb-2">2. Hitung Σ(x-x̄)² dan Σ(x-x̄)(y-ȳ)</h4>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4 math-container">
+                <p>$$ \\Sigma (x_i - \\bar{x})^2 = ${sumXX.toFixed(2)} $$</p>
+                <p>$$ \\Sigma (x_i - \\bar{x})(y_i - \\bar{y}) = ${sumXY.toFixed(2)} $$</p>
+              </div>
+            </div>
+
+            <div class="formula bg-purple-50 dark:bg-purple-900 p-4 rounded-lg mb-4">
+              <h4 class="font-bold mb-2">3. Hitung Slope (b)</h4>
+              <div class="math-container">
+                <p>$$ b = \\frac{\\Sigma (x_i - \\bar{x})(y_i - \\bar{y})}{\\Sigma (x_i - \\bar{x})^2} $$</p>
+                <p>$$ = \\frac{${sumXY.toFixed(2)}}{${sumXX.toFixed(2)}} $$</p>
+                <p>$$ = ${b.toFixed(4)} $$</p>
+              </div>
+            </div>
+
+            <div class="formula bg-yellow-50 dark:bg-yellow-900 p-4 rounded-lg mb-4">
+              <h4 class="font-bold mb-2">4. Hitung Intercept (a)</h4>
+              <div class="math-container">
+                <p>$$ a = \\bar{y} - b\\bar{x} $$</p>
+                <p>$$ = ${meanY.toFixed(2)} - (${b.toFixed(4)} \\times ${meanX.toFixed(2)}) $$</p>
+                <p>$$ = ${a.toFixed(4)} $$</p>
+              </div>
+            </div>
+
+            <div class="formula bg-red-50 dark:bg-red-900 p-4 rounded-lg">
+              <h4 class="font-bold mb-2">5. Hitung Koefisien Determinasi (R²)</h4>
+              <div class="math-container">
+                <p>$$ R^2 = \\frac{[\\Sigma (x_i - \\bar{x})(y_i - \\bar{y})]^2}{\\Sigma (x_i - \\bar{x})^2 \\Sigma (y_i - \\bar{y})^2} $$</p>
+                <p>$$ = \\frac{${sumXY.toFixed(2)}^2}{${sumXX.toFixed(2)} \\times ${sumYY.toFixed(2)}} $$</p>
+                <p>$$ = \\frac{${(sumXY * sumXY).toFixed(2)}}{${(sumXX * sumYY).toFixed(2)}} $$</p>
+                <p>$$ = ${r2.toFixed(4)} $$</p>
+              </div>
+            </div>
+          </div>
+        `;
+        
         return {
-          slope: result.equation[0],
-          intercept: result.equation[1],
-          r2: result.r2,
-          points: result.points,
+          slope: b,
+          intercept: a,
+          r2: r2,
+          sumX: sumX,
+          sumY: sumY,
+          sumXX: sumXX,
+          sumXY: sumXY,
+          meanX: meanX,
+          meanY: meanY,
+          n: n,
+          tableHTML: tableHTML,
+          stepsHTML: stepsHTML
         };
       }
 
@@ -248,29 +445,83 @@
         const xValues = parseInput(xInput);
         const yValues = parseInput(yInput);
 
-        if (
-          xValues.length === 0 ||
-          yValues.length === 0 ||
-          xValues.length !== yValues.length
-        ) {
-          alert(
-            "Masukkan data yang valid untuk X dan Y dengan jumlah yang sama"
-          );
+        if (xValues.length === 0 || yValues.length === 0) {
+          Swal.fire({
+            icon: 'error',
+            title: 'Data Kosong',
+            text: 'Data X dan Y tidak boleh kosong',
+            confirmButtonColor: '#3B82F6',
+          });
+          return;
+        }
+
+        if (xValues.length !== yValues.length) {
+          Swal.fire({
+            icon: 'error',
+            title: 'Jumlah Data Tidak Sama',
+            text: 'Jumlah data X dan Y harus sama',
+            confirmButtonColor: '#3B82F6',
+          });
           return;
         }
 
         const regressionResult = calculateRegression(xValues, yValues);
         const resultElement = document.getElementById("regression-result");
+        const tableElement = document.getElementById("calculation-table");
+        const stepsElement = document.getElementById("calculation-steps");
 
         resultElement.innerHTML = `
-        <p class="text-lg font-semibold">Persamaan Regresi: y = ${regressionResult.slope.toFixed(
-          2
-        )}x + ${regressionResult.intercept.toFixed(2)}</p>
-        <p class="text-sm">Koefisien Determinasi (R²): ${regressionResult.r2.toFixed(
-          4
-        )}</p>
-    `;
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+            <div class="bg-blue-50 dark:bg-blue-900 p-4 rounded-lg">
+              <h3 class="font-bold mb-2">Persamaan Regresi</h3>
+              <div class="math-container">
+                <p class="text-center">$$ \\hat{y} = ${regressionResult.intercept.toFixed(4)} + ${regressionResult.slope.toFixed(4)}x $$</p>
+              </div>
+            </div>
+            <div class="bg-green-50 dark:bg-green-900 p-4 rounded-lg">
+              <h3 class="font-bold mb-2">Koefisien Determinasi</h3>
+              <div class="math-container">
+                <p class="text-center">$$ R^2 = ${regressionResult.r2.toFixed(4)} $$</p>
+              </div>
+            </div>
+            <div class="bg-purple-50 dark:bg-purple-900 p-4 rounded-lg">
+              <h3 class="font-bold mb-2">Korelasi (r)</h3>
+              <div class="math-container">
+                <p class="text-center">$$ r = ${Math.sqrt(regressionResult.r2).toFixed(4)} $$</p>
+              </div>
+            </div>
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <h3 class="font-bold mb-2">Slope (b)</h3>
+              <p>${regressionResult.slope.toFixed(4)}</p>
+              <p class="text-sm text-gray-600 dark:text-gray-400">Perubahan Y per unit X</p>
+            </div>
+            <div>
+              <h3 class="font-bold mb-2">Intercept (a)</h3>
+              <p>${regressionResult.intercept.toFixed(4)}</p>
+              <p class="text-sm text-gray-600 dark:text-gray-400">Nilai Y ketika X=0</p>
+            </div>
+          </div>
+        `;
 
+        tableElement.innerHTML = regressionResult.tableHTML;
+        stepsElement.innerHTML = regressionResult.stepsHTML;
+
+        // Render MathJax formulas
+        if (window.MathJax) {
+          MathJax.typesetPromise().then(() => {
+            createChart(xValues, yValues, regressionResult);
+          }).catch((err) => {
+            console.error('MathJax typesetting error:', err);
+            createChart(xValues, yValues, regressionResult);
+          });
+        } else {
+          createChart(xValues, yValues, regressionResult);
+        }
+      }
+
+      function createChart(xValues, yValues, regressionResult) {
         const ctx = document.getElementById("regressionChart").getContext("2d");
 
         // Destroy previous chart if it exists
@@ -306,7 +557,7 @@
                 pointHoverRadius: 8,
               },
               {
-                label: "Regression Line",
+                label: "Garis Regresi",
                 data: regressionLine,
                 type: "line",
                 borderColor: "rgba(239, 68, 68, 1)",
@@ -353,13 +604,28 @@
                   color: "#6B7280",
                 },
               },
+              tooltip: {
+                callbacks: {
+                  label: function(context) {
+                    return `(${context.parsed.x}, ${context.parsed.y})`;
+                  }
+                }
+              }
             },
           },
         });
       }
 
       // Initialize chart on page load
-      document.addEventListener("DOMContentLoaded", updateChart);
+      document.addEventListener("DOMContentLoaded", function() {
+        if (window.MathJax) {
+          MathJax.startup.promise.then(() => {
+            updateChart();
+          });
+        } else {
+          updateChart();
+        }
+      });
     </script>
   </body>
 </html>

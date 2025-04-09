@@ -6,6 +6,7 @@
     <title>Diagram Pencar</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
       (function () {
         const savedTheme =
@@ -165,7 +166,7 @@
         <div class="flex justify-center">
           <button
             onclick="updateChart()"
-            class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded dark:bg-blue-700 dark:hover:bg-blue-800"
+            class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded dark:bg-blue-700 dark:hover:bg-blue-800"
           >
             Gambar Diagram
           </button>
@@ -173,6 +174,12 @@
       </div>
 
       <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg">
+        <div
+          id="correlation-result"
+          class="text-center text-lg font-semibold p-4 rounded-lg mb-4 hidden"
+        >
+          <!-- Hasil korelasi akan ditampilkan di sini -->
+        </div>
         <canvas id="scatterChart"></canvas>
       </div>
     </main>
@@ -221,6 +228,43 @@
           .filter((item) => !isNaN(item));
       }
 
+      function determineCorrelation(xValues, yValues) {
+        if (xValues.length < 3) return "Tidak Dapat Ditentukan";
+
+        let upwardTrend = 0;
+        let downwardTrend = 0;
+        let noTrend = 0;
+
+        // Analisis arah pergerakan titik
+        for (let i = 1; i < xValues.length; i++) {
+          if (xValues[i] > xValues[i - 1]) {
+            if (yValues[i] > yValues[i - 1]) {
+              upwardTrend++;
+            } else if (yValues[i] < yValues[i - 1]) {
+              downwardTrend++;
+            } else {
+              noTrend++;
+            }
+          }
+        }
+
+        const total = upwardTrend + downwardTrend + noTrend;
+        if (total === 0) return "Tidak Ada Korelasi (Pola Acak)";
+
+        // Jika 70% atau lebih bergerak naik -> positif
+        if (upwardTrend / total >= 0.7) {
+          return "Korelasi Positif (Pola Naik)";
+        }
+        // Jika 70% atau lebih bergerak turun -> negatif
+        else if (downwardTrend / total >= 0.7) {
+          return "Korelasi Negatif (Pola Turun)";
+        }
+        // Selain itu -> tidak ada korelasi
+        else {
+          return "Tidak Ada Korelasi (Pola Acak)";
+        }
+      }
+
       function updateChart() {
         const xInput = document.getElementById("x-values").value;
         const yInput = document.getElementById("y-values").value;
@@ -228,20 +272,69 @@
         const xValues = parseInput(xInput);
         const yValues = parseInput(yInput);
 
-        if (
-          xValues.length === 0 ||
-          yValues.length === 0 ||
-          xValues.length !== yValues.length
-        ) {
-          alert(
-            "Masukkan data yang valid untuk X dan Y dengan jumlah yang sama"
-          );
+        if (xValues.length === 0 || yValues.length === 0) {
+          Swal.fire({
+            icon: "error",
+            title: "Data Kosong",
+            text: "Data X dan Y tidak boleh kosong",
+            confirmButtonColor: "#3B82F6",
+          });
           return;
         }
 
+        if (xValues.length !== yValues.length) {
+          Swal.fire({
+            icon: "error",
+            title: "Jumlah Data Tidak Sama",
+            text: "Jumlah data X dan Y harus sama",
+            confirmButtonColor: "#3B82F6",
+          });
+          return;
+        }
+        if (xValues.length === 0 || yValues.length === 0) {
+          Swal.fire({
+            icon: "error",
+            title: "Data Kosong",
+            text: "Data X dan Y tidak boleh kosong",
+            confirmButtonColor: "#3B82F6",
+          });
+          return;
+        }
+
+        if (xValues.length !== yValues.length) {
+          Swal.fire({
+            icon: "error",
+            title: "Jumlah Data Tidak Sama",
+            text: "Jumlah data X dan Y harus sama",
+            confirmButtonColor: "#3B82F6",
+          });
+          return;
+        }
+
+        // Tentukan jenis korelasi berdasarkan pola titik
+        const correlationType = determineCorrelation(xValues, yValues);
+        const correlationResult = document.getElementById("correlation-result");
+        correlationResult.classList.remove("hidden");
+
+        // Set tampilan berdasarkan jenis korelasi
+        let bgColor, textColor;
+        if (correlationType.includes("Positif")) {
+          bgColor = "bg-green-100 dark:bg-green-900";
+          textColor = "text-green-800 dark:text-green-200";
+        } else if (correlationType.includes("Negatif")) {
+          bgColor = "bg-red-100 dark:bg-red-900";
+          textColor = "text-red-800 dark:text-red-200";
+        } else {
+          bgColor = "bg-gray-100 dark:bg-gray-700";
+          textColor = "text-gray-800 dark:text-gray-200";
+        }
+
+        correlationResult.className = `text-center text-lg font-semibold p-4 rounded-lg ${bgColor} ${textColor}`;
+        correlationResult.textContent = `Hasil: ${correlationType}`;
+
         const ctx = document.getElementById("scatterChart").getContext("2d");
 
-        // Destroy previous chart if it exists
+        // Hapus chart sebelumnya jika ada
         if (scatterChart) {
           scatterChart.destroy();
         }
@@ -297,12 +390,19 @@
                   color: "#6B7280",
                 },
               },
+              tooltip: {
+                callbacks: {
+                  label: function (context) {
+                    return `(${context.parsed.x}, ${context.parsed.y})`;
+                  },
+                },
+              },
             },
           },
         });
       }
 
-      // Initialize chart on page load
+      // Inisialisasi chart saat halaman dimuat
       document.addEventListener("DOMContentLoaded", updateChart);
     </script>
   </body>
