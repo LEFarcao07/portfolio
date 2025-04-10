@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Modul Pengukuran</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      (function () {
+        const savedTheme =
+          localStorage.getItem("theme") ||
+          (window.matchMedia("(prefers-color-scheme: dark)").matches
+            ? "dark"
+            : "light");
+        document.documentElement.classList.toggle(
+          "dark",
+          savedTheme === "dark"
+        );
+      })();
+
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: [
+                "Inter",
+                "Segoe UI",
+                "Tahoma",
+                "Geneva",
+                "Verdana",
+                "sans-serif",
+              ],
+            },
+            colors: {
+              primary: { light: "#3B82F6", dark: "#60A5FA" },
+              dark: { light: "#1F2937", dark: "#111827" },
+              light: { light: "#F8F9FA", dark: "#1F2937" },
+            },
+          },
+        },
+        corePlugins: { preflight: false },
+      };
+    </script>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      a {
+        text-decoration: none;
+      }
+      .operation-btn {
+        transition: all 0.2s ease;
+      }
+      .operation-btn:hover {
+        transform: translateY(-2px);
+      }
+    </style>
+  </head>
+  <body class="bg-gray-100 dark:bg-gray-900 min-h-screen">
+    <nav class="bg-white dark:bg-gray-800 shadow-sm">
+      <div class="px-4 py-3 flex justify-between items-center">
+        <a
+          href="../index"
+          class="text-blue-600 dark:text-blue-400 font-semibold"
+          >← Kembali</a
+        >
+        <button
+          id="theme-toggle"
+          type="button"
+          class="p-2 border-transparent bg-white dark:bg-dark-light text-dark dark:text-gray-300 rounded-lg focus:outline-none transform hover:rotate-12"
+        >
+          <svg
+            id="theme-toggle-dark-icon"
+            class="w-5 h-5"
+            fill="currentColor"
+            viewBox="0 0 20 20"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"
+            ></path>
+          </svg>
+          <svg
+            id="theme-toggle-light-icon"
+            class="w-5 h-5 hidden"
+            fill="currentColor"
+            viewBox="0 0 20 20"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z"
+              fill-rule="evenodd"
+              clip-rule="evenodd"
+            ></path>
+          </svg>
+        </button>
+      </div>
+    </nav>
+
+    <main class="container mx-auto px-4 py-8 max-w-4xl">
+      <h1
+        class="text-2xl font-bold text-center mb-8 text-gray-800 dark:text-white"
+      >
+        Modul Pembelajaran Pengukuran
+      </h1>
+
+      <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg mb-6">
+        <h2 class="text-xl font-semibold mb-4 text-blue-600 dark:text-blue-400">
+          Konversi Satuan Panjang
+        </h2>
+        <p class="mb-4 text-gray-700 dark:text-gray-300">
+          Konversi antara berbagai satuan panjang (meter, kilometer, centimeter,
+          dll).
+        </p>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+          <div>
+            <label
+              class="block text-gray-700 dark:text-gray-300 mb-2"
+              for="length-value"
+              >Nilai:</label
+            >
+            <input
+              type="number"
+              id="length-value"
+              class="w-full p-2 border rounded dark:bg-gray-700 dark:text-white dark:border-gray-600"
+              value="1"
+            />
+          </div>
+          <div>
+            <label
+              class="block text-gray-700 dark:text-gray-300 mb-2"
+              for="length-from"
+              >Dari Satuan:</label
+            >
+            <select
+              id="length-from"
+              class="w-full p-2 border rounded dark:bg-gray-700 dark:text-white dark:border-gray-600"
+            >
+              <option value="mm">Milimeter (mm)</option>
+              <option value="cm">Centimeter (cm)</option>
+              <option value="m" selected>Meter (m)</option>
+              <option value="km">Kilometer (km)</option>
+              <option value="in">Inci (in)</option>
+              <option value="ft">Kaki (ft)</option>
+              <option value="yd">Yard (yd)</option>
+              <option value="mi">Mil (mi)</option>
+            </select>
+          </div>
+          <div>
+            <label
+              class="block text-gray-700 dark:text-gray-300 mb-2"
+              for="length-to"
+              >Ke Satuan:</label
+            >
+            <select
+              id="length-to"
+              class="w-full p-2 border rounded dark:bg-gray-700 dark:text-white dark:border-gray-600"
+            >
+              <option value="mm">Milimeter (mm)</option>
+              <option value="cm" selected>Centimeter (cm)</option>
+              <option value="m">Meter (m)</option>
+              <option value="km">Kilometer (km)</option>
+              <option value="in">Inci (in)</option>
+              <option value="ft">Kaki (ft)</option>
+              <option value="yd">Yard (yd)</option>
+              <option value="mi">Mil (mi)</option>
+            </select>
+          </div>
+        </div>
+
+        <button
+          onclick="convertLength()"
+          class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded dark:bg-blue-700 dark:hover:bg-blue-800 mb-4"
+        >
+          Konversi
+        </button>
+
+        <div
+          id="length-result"
+          class="text-gray-700 dark:text-gray-300 p-3 bg-gray-100 dark:bg-gray-700 rounded"
+        ></div>
+      </div>
+
+      <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg mb-6">
+        <h2 class="text-xl font-semibold mb-4 text-blue-600 dark:text-blue-400">
+          Konversi Satuan Berat/Massa
+        </h2>
+        <p class="mb-4 text-gray-700 dark:text-gray-300">
+          Konversi antara berbagai satuan berat (gram, kilogram, ton, pound,
+          dll).
+        </p>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+          <div>
+            <label
+              class="block text-gray-700 dark:text-gray-300 mb-2"
+              for="weight-value"
+              >Nilai:</label
+            >
+            <input
+              type="number"
+              id="weight-value"
+              class="w-full p-2 border rounded dark:bg-gray-700 dark:text-white dark:border-gray-600"
+              value="1"
+            />
+          </div>
+          <div>
+            <label
+              class="block text-gray-700 dark:text-gray-300 mb-2"
+              for="weight-from"
+              >Dari Satuan:</label
+            >
+            <select
+              id="weight-from"
+              class="w-full p-2 border rounded dark:bg-gray-700 dark:text-white dark:border-gray-600"
+            >
+              <option value="mg">Miligram (mg)</option>
+              <option value="g">Gram (g)</option>
+              <option value="kg" selected>Kilogram (kg)</option>
+              <option value="ton">Ton</option>
+              <option value="oz">Ons (oz)</option>
+              <option value="lb">Pound (lb)</option>
+            </select>
+          </div>
+          <div>
+            <label
+              class="block text-gray-700 dark:text-gray-300 mb-2"
+              for="weight-to"
+              >Ke Satuan:</label
+            >
+            <select
+              id="weight-to"
+              class="w-full p-2 border rounded dark:bg-gray-700 dark:text-white dark:border-gray-600"
+            >
+              <option value="mg">Miligram (mg)</option>
+              <option value="g" selected>Gram (g)</option>
+              <option value="kg">Kilogram (kg)</option>
+              <option value="ton">Ton</option>
+              <option value="oz">Ons (oz)</option>
+              <option value="lb">Pound (lb)</option>
+            </select>
+          </div>
+        </div>
+
+        <button
+          onclick="convertWeight()"
+          class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded dark:bg-blue-700 dark:hover:bg-blue-800 mb-4"
+        >
+          Konversi
+        </button>
+
+        <div
+          id="weight-result"
+          class="text-gray-700 dark:text-gray-300 p-3 bg-gray-100 dark:bg-gray-700 rounded"
+        ></div>
+      </div>
+
+      <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg">
+        <h2 class="text-xl font-semibold mb-4 text-blue-600 dark:text-blue-400">
+          Konversi Satuan Volume
+        </h2>
+        <p class="mb-4 text-gray-700 dark:text-gray-300">
+          Konversi antara berbagai satuan volume (liter, mililiter, gallon,
+          kubik, dll).
+        </p>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+          <div>
+            <label
+              class="block text-gray-700 dark:text-gray-300 mb-2"
+              for="volume-value"
+              >Nilai:</label
+            >
+            <input
+              type="number"
+              id="volume-value"
+              class="w-full p-2 border rounded dark:bg-gray-700 dark:text-white dark:border-gray-600"
+              value="1"
+            />
+          </div>
+          <div>
+            <label
+              class="block text-gray-700 dark:text-gray-300 mb-2"
+              for="volume-from"
+              >Dari Satuan:</label
+            >
+            <select
+              id="volume-from"
+              class="w-full p-2 border rounded dark:bg-gray-700 dark:text-white dark:border-gray-600"
+            >
+              <option value="ml">Mililiter (ml)</option>
+              <option value="cl">Centiliter (cl)</option>
+              <option value="l" selected>Liter (l)</option>
+              <option value="m3">Meter Kubik (m³)</option>
+              <option value="gal">Gallon (gal)</option>
+              <option value="pt">Pint (pt)</option>
+              <option value="qt">Quart (qt)</option>
+            </select>
+          </div>
+          <div>
+            <label
+              class="block text-gray-700 dark:text-gray-300 mb-2"
+              for="volume-to"
+              >Ke Satuan:</label
+            >
+            <select
+              id="volume-to"
+              class="w-full p-2 border rounded dark:bg-gray-700 dark:text-white dark:border-gray-600"
+            >
+              <option value="ml" selected>Mililiter (ml)</option>
+              <option value="cl">Centiliter (cl)</option>
+              <option value="l">Liter (l)</option>
+              <option value="m3">Meter Kubik (m³)</option>
+              <option value="gal">Gallon (gal)</option>
+              <option value="pt">Pint (pt)</option>
+              <option value="qt">Quart (qt)</option>
+            </select>
+          </div>
+        </div>
+
+        <button
+          onclick="convertVolume()"
+          class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded dark:bg-blue-700 dark:hover:bg-blue-800 mb-4"
+        >
+          Konversi
+        </button>
+
+        <div
+          id="volume-result"
+          class="text-gray-700 dark:text-gray-300 p-3 bg-gray-100 dark:bg-gray-700 rounded"
+        ></div>
+      </div>
+    </main>
+
+    <script>
+      // Theme toggle
+      const themeToggleBtn = document.getElementById("theme-toggle");
+      const themeToggleDarkIcon = document.getElementById(
+        "theme-toggle-dark-icon"
+      );
+      const themeToggleLightIcon = document.getElementById(
+        "theme-toggle-light-icon"
+      );
+
+      if (
+        localStorage.getItem("theme") === "dark" ||
+        (!("theme" in localStorage) &&
+          window.matchMedia("(prefers-color-scheme: dark)").matches)
+      ) {
+        themeToggleLightIcon.classList.remove("hidden");
+        themeToggleDarkIcon.classList.add("hidden");
+      } else {
+        themeToggleLightIcon.classList.add("hidden");
+        themeToggleDarkIcon.classList.remove("hidden");
+      }
+
+      themeToggleBtn.addEventListener("click", function () {
+        themeToggleDarkIcon.classList.toggle("hidden");
+        themeToggleLightIcon.classList.toggle("hidden");
+        if (localStorage.getItem("theme") === "dark") {
+          localStorage.setItem("theme", "light");
+          document.documentElement.classList.remove("dark");
+        } else {
+          localStorage.setItem("theme", "dark");
+          document.documentElement.classList.add("dark");
+        }
+      });
+
+      // Length conversion factors (to meters)
+      const lengthFactors = {
+        mm: 0.001,
+        cm: 0.01,
+        m: 1,
+        km: 1000,
+        in: 0.0254,
+        ft: 0.3048,
+        yd: 0.9144,
+        mi: 1609.34,
+      };
+
+      function convertLength() {
+        const value = parseFloat(document.getElementById("length-value").value);
+        const fromUnit = document.getElementById("length-from").value;
+        const toUnit = document.getElementById("length-to").value;
+
+        // Convert to meters first
+        const meters = value * lengthFactors[fromUnit];
+        // Convert to target unit
+        const result = meters / lengthFactors[toUnit];
+
+        document.getElementById("length-result").innerHTML = `
+          <p>${value} ${fromUnit} = ${result.toFixed(6)} ${toUnit}</p>
+        `;
+      }
+
+      // Weight conversion factors (to kilograms)
+      const weightFactors = {
+        mg: 0.000001,
+        g: 0.001,
+        kg: 1,
+        ton: 1000,
+        oz: 0.0283495,
+        lb: 0.453592,
+      };
+
+      function convertWeight() {
+        const value = parseFloat(document.getElementById("weight-value").value);
+        const fromUnit = document.getElementById("weight-from").value;
+        const toUnit = document.getElementById("weight-to").value;
+
+        // Convert to kg first
+        const kg = value * weightFactors[fromUnit];
+        // Convert to target unit
+        const result = kg / weightFactors[toUnit];
+
+        document.getElementById("weight-result").innerHTML = `
+          <p>${value} ${fromUnit} = ${result.toFixed(6)} ${toUnit}</p>
+        `;
+      }
+
+      // Volume conversion factors (to liters)
+      const volumeFactors = {
+        ml: 0.001,
+        cl: 0.01,
+        l: 1,
+        m3: 1000,
+        gal: 3.78541,
+        pt: 0.473176,
+        qt: 0.946353,
+      };
+
+      function convertVolume() {
+        const value = parseFloat(document.getElementById("volume-value").value);
+        const fromUnit = document.getElementById("volume-from").value;
+        const toUnit = document.getElementById("volume-to").value;
+
+        // Convert to liters first
+        const liters = value * volumeFactors[fromUnit];
+        // Convert to target unit
+        const result = liters / volumeFactors[toUnit];
+
+        document.getElementById("volume-result").innerHTML = `
+          <p>${value} ${fromUnit} = ${result.toFixed(6)} ${toUnit}</p>
+        `;
+      }
+    </script>
+  </body>
+</html>

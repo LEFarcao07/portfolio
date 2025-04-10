@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Modul Logika Matematika</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      (function () {
+        const savedTheme = localStorage.getItem("theme") || (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+        document.documentElement.classList.toggle("dark", savedTheme === "dark");
+      })();
+
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ["Inter", "Segoe UI", "Tahoma", "Geneva", "Verdana", "sans-serif"],
+            },
+            colors: {
+              primary: { light: "#3B82F6", dark: "#60A5FA" },
+              dark: { light: "#1F2937", dark: "#111827" },
+              light: { light: "#F8F9FA", dark: "#1F2937" },
+            },
+          },
+        },
+        corePlugins: { preflight: false },
+      };
+    </script>
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      a { text-decoration: none; }
+      .operation-btn { transition: all 0.2s ease; }
+      .operation-btn:hover { transform: translateY(-2px); }
+      .truth-table { border-collapse: collapse; width: 100%; }
+      .truth-table th, .truth-table td { border: 1px solid #ddd; padding: 8px; text-align: center; }
+      .dark .truth-table th, .dark .truth-table td { border-color: #4b5563; }
+    </style>
+</head>
+<body class="bg-gray-100 dark:bg-gray-900 min-h-screen">
+    <nav class="bg-white dark:bg-gray-800 shadow-sm">
+      <div class="px-4 py-3 flex justify-between items-center">
+        <a href="../index" class="text-blue-600 dark:text-blue-400 font-semibold">← Kembali</a>
+        <button id="theme-toggle" type="button" class="p-2 border-transparent bg-white dark:bg-dark-light text-dark dark:text-gray-300 rounded-lg focus:outline-none transform hover:rotate-12">
+          <svg id="theme-toggle-dark-icon" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path></svg>
+          <svg id="theme-toggle-light-icon" class="w-5 h-5 hidden" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" fill-rule="evenodd" clip-rule="evenodd"></path></svg>
+        </button>
+      </div>
+    </nav>
+
+    <main class="container mx-auto px-4 py-8 max-w-4xl">
+      <h1 class="text-2xl font-bold text-center mb-8 text-gray-800 dark:text-white">Modul Pembelajaran Logika Matematika</h1>
+
+      <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg mb-6">
+        <h2 class="text-xl font-semibold mb-4 text-blue-600 dark:text-blue-400">Operator Logika Dasar</h2>
+        <p class="mb-4 text-gray-700 dark:text-gray-300">Evaluasi pernyataan logika dengan operator AND, OR, NOT.</p>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+          <div>
+            <label class="block text-gray-700 dark:text-gray-300 mb-2" for="logic-p">Pernyataan p:</label>
+            <select id="logic-p" class="w-full p-2 border rounded dark:bg-gray-700 dark:text-white dark:border-gray-600">
+              <option value="true">Benar (True)</option>
+              <option value="false">Salah (False)</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-gray-700 dark:text-gray-300 mb-2" for="logic-q">Pernyataan q:</label>
+            <select id="logic-q" class="w-full p-2 border rounded dark:bg-gray-700 dark:text-white dark:border-gray-600">
+              <option value="true">Benar (True)</option>
+              <option value="false">Salah (False)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-3 gap-2 mb-4">
+          <button onclick="evaluateLogic('and')" class="operation-btn bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded dark:bg-blue-600 dark:hover:bg-blue-700">AND (∧)</button>
+          <button onclick="evaluateLogic('or')" class="operation-btn bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded dark:bg-green-600 dark:hover:bg-green-700">OR (∨)</button>
+          <button onclick="evaluateLogic('not')" class="operation-btn bg-purple-500 hover:bg-purple-600 text-white font-bold py-2 px-4 rounded dark:bg-purple-600 dark:hover:bg-purple-700">NOT (¬)</button>
+        </div>
+
+        <div id="logic-result" class="text-gray-700 dark:text-gray-300 p-3 bg-gray-100 dark:bg-gray-700 rounded"></div>
+      </div>
+
+      <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg mb-6">
+        <h2 class="text-xl font-semibold mb-4 text-blue-600 dark:text-blue-400">Implikasi dan Biimplikasi</h2>
+        <p class="mb-4 text-gray-700 dark:text-gray-300">Evaluasi implikasi (jika-maka) dan biimplikasi (jika-dan-hanya-jika).</p>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+          <div>
+            <label class="block text-gray-700 dark:text-gray-300 mb-2" for="implication-p">Pernyataan p:</label>
+            <select id="implication-p" class="w-full p-2 border rounded dark:bg-gray-700 dark:text-white dark:border-gray-600">
+              <option value="true">Benar (True)</option>
+              <option value="false">Salah (False)</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-gray-700 dark:text-gray-300 mb-2" for="implication-q">Pernyataan q:</label>
+            <select id="implication-q" class="w-full p-2 border rounded dark:bg-gray-700 dark:text-white dark:border-gray-600">
+              <option value="true">Benar (True)</option>
+              <option value="false">Salah (False)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-2 mb-4">
+          <button onclick="evaluateImplication('implies')" class="operation-btn bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-4 rounded dark:bg-yellow-600 dark:hover:bg-yellow-700">Implikasi (p→q)</button>
+          <button onclick="evaluateImplication('iff')" class="operation-btn bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-2 px-4 rounded dark:bg-indigo-600 dark:hover:bg-indigo-700">Biimplikasi (p↔q)</button>
+        </div>
+
+        <div id="implication-result" class="text-gray-700 dark:text-gray-300 p-3 bg-gray-100 dark:bg-gray-700 rounded"></div>
+      </div>
+
+      <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg">
+        <h2 class="text-xl font-semibold mb-4 text-blue-600 dark:text-blue-400">Tabel Kebenaran</h2>
+        <p class="mb-4 text-gray-700 dark:text-gray-300">Tampilkan tabel kebenaran untuk operator logika.</p>
+
+        <div class="mb-4">
+          <label class="block text-gray-700 dark:text-gray-300 mb-2" for="truth-table-operator">Pilih Operator:</label>
+          <select id="truth-table-operator" class="w-full p-2 border rounded dark:bg-gray-700 dark:text-white dark:border-gray-600">
+            <option value="and">AND (∧)</option>
+            <option value="or">OR (∨)</option>
+            <option value="implies">Implikasi (→)</option>
+            <option value="iff">Biimplikasi (↔)</option>
+          </select>
+        </div>
+
+        <button onclick="generateTruthTable()" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded dark:bg-blue-700 dark:hover:bg-blue-800 mb-4">Tampilkan Tabel Kebenaran</button>
+
+        <div id="truth-table-result" class="text-gray-700 dark:text-gray-300 p-3 bg-gray-100 dark:bg-gray-700 rounded overflow-x-auto"></div>
+      </div>
+    </main>
+
+    <script>
+      // Theme toggle
+      const themeToggleBtn = document.getElementById("theme-toggle");
+      const themeToggleDarkIcon = document.getElementById(
+        "theme-toggle-dark-icon"
+      );
+      const themeToggleLightIcon = document.getElementById(
+        "theme-toggle-light-icon"
+      );
+
+      if (
+        localStorage.getItem("theme") === "dark" ||
+        (!("theme" in localStorage) &&
+          window.matchMedia("(prefers-color-scheme: dark)").matches)
+      ) {
+        themeToggleLightIcon.classList.remove("hidden");
+        themeToggleDarkIcon.classList.add("hidden");
+      } else {
+        themeToggleLightIcon.classList.add("hidden");
+        themeToggleDarkIcon.classList.remove("hidden");
+      }
+
+      themeToggleBtn.addEventListener("click", function () {
+        themeToggleDarkIcon.classList.toggle("hidden");
+        themeToggleLightIcon.classList.toggle("hidden");
+        if (localStorage.getItem("theme") === "dark") {
+          localStorage.setItem("theme", "light");
+          document.documentElement.classList.remove("dark");
+        } else {
+          localStorage.setItem("theme", "dark");
+          document.documentElement.classList.add("dark");
+        }
+      });
+
+      // Basic logic evaluation
+      function evaluateLogic(operator) {
+        const p = document.getElementById("logic-p").value === "true";
+        const q = document.getElementById("logic-q").value === "true";
+        let result;
+        
+        switch(operator) {
+          case 'and': result = p && q; break;
+          case 'or': result = p || q; break;
+          case 'not': result = !p; break;
+        }
+        
+        const pStr = p ? "Benar" : "Salah";
+        const qStr = q ? "Benar" : "Salah";
+        let operationStr = "";
+        
+        switch(operator) {
+          case 'and': operationStr = `${pStr} AND ${qStr}`; break;
+          case 'or': operationStr = `${pStr} OR ${qStr}`; break;
+          case 'not': operationStr = `NOT ${pStr}`; break;
+        }
+        
+        document.getElementById("logic-result").innerHTML = `
+          <p>${operationStr} = ${result ? "Benar" : "Salah"}</p>
+        `;
+      }
+
+      // Implication evaluation
+      function evaluateImplication(type) {
+        const p = document.getElementById("implication-p").value === "true";
+        const q = document.getElementById("implication-q").value === "true";
+        let result;
+        
+        if(type === 'implies') {
+          result = !p || q;  // p → q equivalen dengan ¬p ∨ q
+        } else if(type === 'iff') {
+          result = p === q;   // p ↔ q benar jika p dan q sama
+        }
+        
+        const pStr = p ? "Benar" : "Salah";
+        const qStr = q ? "Benar" : "Salah";
+        const operator = type === 'implies' ? "→" : "↔";
+        
+        document.getElementById("implication-result").innerHTML = `
+          <p>${pStr} ${operator} ${qStr} = ${result ? "Benar" : "Salah"}</p>
+        `;
+      }
+
+      // Generate truth table
+      function generateTruthTable() {
+        const operator = document.getElementById("truth-table-operator").value;
+        const combinations = [
+          { p: true, q: true },
+          { p: true, q: false },
+          { p: false, q: true },
+          { p: false, q: false }
+        ];
+        
+        let tableHTML = `
+          <table class="truth-table">
+            <thead>
+              <tr>
+                <th>p</th>
+                <th>q</th>
+                <th>Hasil</th>
+              </tr>
+            </thead>
+            <tbody>
+        `;
+        
+        combinations.forEach(comb => {
+          let result;
+          switch(operator) {
+            case 'and': result = comb.p && comb.q; break;
+            case 'or': result = comb.p || comb.q; break;
+            case 'implies': result = !comb.p || comb.q; break;
+            case 'iff': result = comb.p === comb.q; break;
+          }
+          
+          tableHTML += `
+            <tr>
+              <td>${comb.p ? "T" : "F"}</td>
+              <td>${comb.q ? "T" : "F"}</td>
+              <td>${result ? "T" : "F"}</td>
+            </tr>
+          `;
+        });
+        
+        tableHTML += `
+            </tbody>
+          </table>
+        `;
+        
+        document.getElementById("truth-table-result").innerHTML = tableHTML;
+      }
+    </script>
+</body>
+</html>

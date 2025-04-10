@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Modul Probabilitas</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/11.6.0/math.js"></script>
+    <script>
+      (function () {
+        const savedTheme =
+          localStorage.getItem("theme") ||
+          (window.matchMedia("(prefers-color-scheme: dark)").matches
+            ? "dark"
+            : "light");
+        document.documentElement.classList.toggle(
+          "dark",
+          savedTheme === "dark"
+        );
+      })();
+
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: [
+                "Inter",
+                "Segoe UI",
+                "Tahoma",
+                "Geneva",
+                "Verdana",
+                "sans-serif",
+              ],
+            },
+            colors: {
+              primary: { light: "#3B82F6", dark: "#60A5FA" },
+              dark: { light: "#1F2937", dark: "#111827" },
+              light: { light: "#F8F9FA", dark: "#1F2937" },
+            },
+          },
+        },
+        corePlugins: { preflight: false },
+      };
+    </script>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      a {
+        text-decoration: none;
+      }
+      .operation-btn {
+        transition: all 0.2s ease;
+      }
+      .operation-btn:hover {
+        transform: translateY(-2px);
+      }
+    </style>
+  </head>
+  <body class="bg-gray-100 dark:bg-gray-900 min-h-screen">
+    <nav class="bg-white dark:bg-gray-800 shadow-sm">
+      <div class="px-4 py-3 flex justify-between items-center">
+        <a
+          href="../index"
+          class="text-blue-600 dark:text-blue-400 font-semibold"
+          >← Kembali</a
+        >
+        <button
+          id="theme-toggle"
+          type="button"
+          class="p-2 border-transparent bg-white dark:bg-dark-light text-dark dark:text-gray-300 rounded-lg focus:outline-none transform hover:rotate-12"
+        >
+          <svg
+            id="theme-toggle-dark-icon"
+            class="w-5 h-5"
+            fill="currentColor"
+            viewBox="0 0 20 20"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"
+            ></path>
+          </svg>
+          <svg
+            id="theme-toggle-light-icon"
+            class="w-5 h-5 hidden"
+            fill="currentColor"
+            viewBox="0 0 20 20"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z"
+              fill-rule="evenodd"
+              clip-rule="evenodd"
+            ></path>
+          </svg>
+        </button>
+      </div>
+    </nav>
+
+    <main class="container mx-auto px-4 py-8 max-w-4xl">
+      <h1
+        class="text-2xl font-bold text-center mb-8 text-gray-800 dark:text-white"
+      >
+        Modul Pembelajaran Probabilitas
+      </h1>
+
+      <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg mb-6">
+        <h2 class="text-xl font-semibold mb-4 text-blue-600 dark:text-blue-400">
+          Probabilitas Dasar
+        </h2>
+        <p class="mb-4 text-gray-700 dark:text-gray-300">
+          Hitung probabilitas suatu kejadian.
+        </p>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+          <div>
+            <label
+              class="block text-gray-700 dark:text-gray-300 mb-2"
+              for="favorable-outcomes"
+              >Kejadian yang Diinginkan:</label
+            >
+            <input
+              type="number"
+              id="favorable-outcomes"
+              class="w-full p-2 border rounded dark:bg-gray-700 dark:text-white dark:border-gray-600"
+              value="3"
+            />
+          </div>
+          <div>
+            <label
+              class="block text-gray-700 dark:text-gray-300 mb-2"
+              for="total-outcomes"
+              >Total Kemungkinan:</label
+            >
+            <input
+              type="number"
+              id="total-outcomes"
+              class="w-full p-2 border rounded dark:bg-gray-700 dark:text-white dark:border-gray-600"
+              value="6"
+            />
+          </div>
+        </div>
+
+        <button
+          onclick="calculateProbability()"
+          class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded dark:bg-blue-700 dark:hover:bg-blue-800 mb-4"
+        >
+          Hitung Probabilitas
+        </button>
+
+        <div
+          id="probability-result"
+          class="text-gray-700 dark:text-gray-300 p-3 bg-gray-100 dark:bg-gray-700 rounded"
+        ></div>
+      </div>
+
+      <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg mb-6">
+        <h2 class="text-xl font-semibold mb-4 text-blue-600 dark:text-blue-400">
+          Frekuensi Harapan
+        </h2>
+        <p class="mb-4 text-gray-700 dark:text-gray-300">
+          Hitung frekuensi harapan suatu kejadian dalam sejumlah percobaan.
+        </p>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+          <div>
+            <label
+              class="block text-gray-700 dark:text-gray-300 mb-2"
+              for="event-probability"
+              >Probabilitas Kejadian:</label
+            >
+            <input
+              type="number"
+              id="event-probability"
+              class="w-full p-2 border rounded dark:bg-gray-700 dark:text-white dark:border-gray-600"
+              min="0"
+              max="1"
+              step="0.01"
+              value="0.5"
+            />
+          </div>
+          <div>
+            <label
+              class="block text-gray-700 dark:text-gray-300 mb-2"
+              for="total-trials"
+              >Jumlah Percobaan:</label
+            >
+            <input
+              type="number"
+              id="total-trials"
+              class="w-full p-2 border rounded dark:bg-gray-700 dark:text-white dark:border-gray-600"
+              value="100"
+            />
+          </div>
+        </div>
+
+        <button
+          onclick="calculateExpectedFrequency()"
+          class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded dark:bg-blue-700 dark:hover:bg-blue-800 mb-4"
+        >
+          Hitung Frekuensi Harapan
+        </button>
+
+        <div
+          id="frequency-result"
+          class="text-gray-700 dark:text-gray-300 p-3 bg-gray-100 dark:bg-gray-700 rounded"
+        ></div>
+      </div>
+
+      <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg">
+        <h2 class="text-xl font-semibold mb-4 text-blue-600 dark:text-blue-400">
+          Probabilitas Bersyarat
+        </h2>
+        <p class="mb-4 text-gray-700 dark:text-gray-300">
+          Hitung probabilitas kejadian A dengan syarat kejadian B telah terjadi.
+        </p>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+          <div>
+            <label class="block text-gray-700 dark:text-gray-300 mb-2" for="p-a"
+              >P(A):</label
+            >
+            <input
+              type="number"
+              id="p-a"
+              class="w-full p-2 border rounded dark:bg-gray-700 dark:text-white dark:border-gray-600"
+              min="0"
+              max="1"
+              step="0.01"
+              value="0.3"
+            />
+          </div>
+          <div>
+            <label class="block text-gray-700 dark:text-gray-300 mb-2" for="p-b"
+              >P(B):</label
+            >
+            <input
+              type="number"
+              id="p-b"
+              class="w-full p-2 border rounded dark:bg-gray-700 dark:text-white dark:border-gray-600"
+              min="0"
+              max="1"
+              step="0.01"
+              value="0.4"
+            />
+          </div>
+          <div>
+            <label
+              class="block text-gray-700 dark:text-gray-300 mb-2"
+              for="p-a-and-b"
+              >P(A∩B):</label
+            >
+            <input
+              type="number"
+              id="p-a-and-b"
+              class="w-full p-2 border rounded dark:bg-gray-700 dark:text-white dark:border-gray-600"
+              min="0"
+              max="1"
+              step="0.01"
+              value="0.2"
+            />
+          </div>
+        </div>
+
+        <button
+          onclick="calculateConditionalProbability()"
+          class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded dark:bg-blue-700 dark:hover:bg-blue-800 mb-4"
+        >
+          Hitung Probabilitas Bersyarat
+        </button>
+
+        <div
+          id="conditional-result"
+          class="text-gray-700 dark:text-gray-300 p-3 bg-gray-100 dark:bg-gray-700 rounded"
+        ></div>
+      </div>
+    </main>
+
+    <script>
+      // Theme toggle
+      const themeToggleBtn = document.getElementById("theme-toggle");
+      const themeToggleDarkIcon = document.getElementById(
+        "theme-toggle-dark-icon"
+      );
+      const themeToggleLightIcon = document.getElementById(
+        "theme-toggle-light-icon"
+      );
+
+      if (
+        localStorage.getItem("theme") === "dark" ||
+        (!("theme" in localStorage) &&
+          window.matchMedia("(prefers-color-scheme: dark)").matches)
+      ) {
+        themeToggleLightIcon.classList.remove("hidden");
+        themeToggleDarkIcon.classList.add("hidden");
+      } else {
+        themeToggleLightIcon.classList.add("hidden");
+        themeToggleDarkIcon.classList.remove("hidden");
+      }
+
+      themeToggleBtn.addEventListener("click", function () {
+        themeToggleDarkIcon.classList.toggle("hidden");
+        themeToggleLightIcon.classList.toggle("hidden");
+        if (localStorage.getItem("theme") === "dark") {
+          localStorage.setItem("theme", "light");
+          document.documentElement.classList.remove("dark");
+        } else {
+          localStorage.setItem("theme", "dark");
+          document.documentElement.classList.add("dark");
+        }
+      });
+
+      // Basic probability
+      function calculateProbability() {
+        const favorable = parseInt(
+          document.getElementById("favorable-outcomes").value
+        );
+        const total = parseInt(document.getElementById("total-outcomes").value);
+
+        if (total <= 0) {
+          document.getElementById("probability-result").innerHTML =
+            "Error: Total kemungkinan harus > 0";
+          return;
+        }
+
+        if (favorable < 0 || favorable > total) {
+          document.getElementById("probability-result").innerHTML =
+            "Error: Kejadian yang diinginkan harus antara 0 dan total kemungkinan";
+          return;
+        }
+
+        const probability = favorable / total;
+        const percentage = probability * 100;
+
+        document.getElementById("probability-result").innerHTML = `
+          <p>Probabilitas: ${probability.toFixed(4)} (${percentage.toFixed(
+          2
+        )}%)</p>
+          <p>Pecahan: ${favorable}/${total}</p>
+        `;
+      }
+
+      // Expected frequency
+      function calculateExpectedFrequency() {
+        const probability = parseFloat(
+          document.getElementById("event-probability").value
+        );
+        const trials = parseInt(document.getElementById("total-trials").value);
+
+        if (probability < 0 || probability > 1) {
+          document.getElementById("frequency-result").innerHTML =
+            "Error: Probabilitas harus antara 0 dan 1";
+          return;
+        }
+
+        if (trials <= 0) {
+          document.getElementById("frequency-result").innerHTML =
+            "Error: Jumlah percobaan harus > 0";
+          return;
+        }
+
+        const expected = probability * trials;
+
+        document.getElementById("frequency-result").innerHTML = `
+          <p>Frekuensi harapan: ${expected.toFixed(
+            2
+          )} dari ${trials} percobaan</p>
+          <p>Artinya kejadian diharapkan terjadi sekitar ${Math.round(
+            expected
+          )} kali dalam ${trials} percobaan</p>
+        `;
+      }
+
+      // Conditional probability
+      function calculateConditionalProbability() {
+        const pA = parseFloat(document.getElementById("p-a").value);
+        const pB = parseFloat(document.getElementById("p-b").value);
+        const pAandB = parseFloat(document.getElementById("p-a-and-b").value);
+
+        // Validate inputs
+        if (pA < 0 || pA > 1 || pB < 0 || pB > 1 || pAandB < 0 || pAandB > 1) {
+          document.getElementById("conditional-result").innerHTML =
+            "Error: Probabilitas harus antara 0 dan 1";
+          return;
+        }
+
+        if (pAandB > pB) {
+          document.getElementById("conditional-result").innerHTML =
+            "Error: P(A∩B) tidak boleh lebih besar dari P(B)";
+          return;
+        }
+
+        if (pB === 0) {
+          document.getElementById("conditional-result").innerHTML =
+            "Error: P(B) tidak boleh 0";
+          return;
+        }
+
+        const pAgivenB = pAandB / pB;
+        const pBgivenA = pAandB / pA;
+
+        document.getElementById("conditional-result").innerHTML = `
+          <p>P(A|B) = P(A∩B)/P(B) = ${pAgivenB.toFixed(4)}</p>
+          <p>P(B|A) = P(A∩B)/P(A) = ${pBgivenA.toFixed(4)}</p>
+        `;
+      }
+    </script>
+  </body>
+</html>

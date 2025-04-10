@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Modul Relasi dan Fungsi</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/11.6.0/math.js"></script>
+    <script>
+      (function () {
+        const savedTheme =
+          localStorage.getItem("theme") ||
+          (window.matchMedia("(prefers-color-scheme: dark)").matches
+            ? "dark"
+            : "light");
+        document.documentElement.classList.toggle(
+          "dark",
+          savedTheme === "dark"
+        );
+      })();
+
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: [
+                "Inter",
+                "Segoe UI",
+                "Tahoma",
+                "Geneva",
+                "Verdana",
+                "sans-serif",
+              ],
+            },
+            colors: {
+              primary: { light: "#3B82F6", dark: "#60A5FA" },
+              dark: { light: "#1F2937", dark: "#111827" },
+              light: { light: "#F8F9FA", dark: "#1F2937" },
+            },
+          },
+        },
+        corePlugins: { preflight: false },
+      };
+    </script>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      a {
+        text-decoration: none;
+      }
+      .operation-btn {
+        transition: all 0.2s ease;
+      }
+      .operation-btn:hover {
+        transform: translateY(-2px);
+      }
+    </style>
+  </head>
+  <body class="bg-gray-100 dark:bg-gray-900 min-h-screen">
+    <nav class="bg-white dark:bg-gray-800 shadow-sm">
+      <div class="px-4 py-3 flex justify-between items-center">
+        <a
+          href="../index"
+          class="text-blue-600 dark:text-blue-400 font-semibold"
+          >← Kembali</a
+        >
+        <button
+          id="theme-toggle"
+          type="button"
+          class="p-2 border-transparent bg-white dark:bg-dark-light text-dark dark:text-gray-300 rounded-lg focus:outline-none transform hover:rotate-12"
+        >
+          <svg
+            id="theme-toggle-dark-icon"
+            class="w-5 h-5"
+            fill="currentColor"
+            viewBox="0 0 20 20"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"
+            ></path>
+          </svg>
+          <svg
+            id="theme-toggle-light-icon"
+            class="w-5 h-5 hidden"
+            fill="currentColor"
+            viewBox="0 0 20 20"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z"
+              fill-rule="evenodd"
+              clip-rule="evenodd"
+            ></path>
+          </svg>
+        </button>
+      </div>
+    </nav>
+
+    <main class="container mx-auto px-4 py-8 max-w-4xl">
+      <h1
+        class="text-2xl font-bold text-center mb-8 text-gray-800 dark:text-white"
+      >
+        Modul Pembelajaran Relasi dan Fungsi
+      </h1>
+
+      <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg mb-6">
+        <h2 class="text-xl font-semibold mb-4 text-blue-600 dark:text-blue-400">
+          Evaluasi Fungsi
+        </h2>
+        <p class="mb-4 text-gray-700 dark:text-gray-300">
+          Masukkan fungsi dan nilai x untuk menghitung f(x).
+        </p>
+
+        <div class="mb-4">
+          <label
+            class="block text-gray-700 dark:text-gray-300 mb-2"
+            for="function-expr"
+            >Fungsi f(x):</label
+          >
+          <input
+            type="text"
+            id="function-expr"
+            class="w-full p-2 border rounded dark:bg-gray-700 dark:text-white dark:border-gray-600"
+            value="2*x + 3"
+          />
+        </div>
+
+        <div class="mb-4">
+          <label
+            class="block text-gray-700 dark:text-gray-300 mb-2"
+            for="function-x"
+            >Nilai x:</label
+          >
+          <input
+            type="number"
+            id="function-x"
+            class="w-full p-2 border rounded dark:bg-gray-700 dark:text-white dark:border-gray-600"
+            value="5"
+          />
+        </div>
+
+        <button
+          onclick="evaluateFunction()"
+          class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded dark:bg-blue-700 dark:hover:bg-blue-800 mb-4"
+        >
+          Hitung f(x)
+        </button>
+
+        <div
+          id="function-result"
+          class="text-gray-700 dark:text-gray-300 p-3 bg-gray-100 dark:bg-gray-700 rounded"
+        ></div>
+      </div>
+
+      <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg mb-6">
+        <h2 class="text-xl font-semibold mb-4 text-blue-600 dark:text-blue-400">
+          Jenis Fungsi
+        </h2>
+        <p class="mb-4 text-gray-700 dark:text-gray-300">
+          Identifikasi jenis fungsi berdasarkan persamaannya.
+        </p>
+
+        <div class="mb-4">
+          <label
+            class="block text-gray-700 dark:text-gray-300 mb-2"
+            for="function-type"
+            >Fungsi:</label
+          >
+          <input
+            type="text"
+            id="function-type"
+            class="w-full p-2 border rounded dark:bg-gray-700 dark:text-white dark:border-gray-600"
+            value="2x + 3"
+          />
+        </div>
+
+        <button
+          onclick="identifyFunction()"
+          class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded dark:bg-blue-700 dark:hover:bg-blue-800 mb-4"
+        >
+          Identifikasi Fungsi
+        </button>
+
+        <div
+          id="type-result"
+          class="text-gray-700 dark:text-gray-300 p-3 bg-gray-100 dark:bg-gray-700 rounded"
+        ></div>
+      </div>
+
+      <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg">
+        <h2 class="text-xl font-semibold mb-4 text-blue-600 dark:text-blue-400">
+          Domain dan Range
+        </h2>
+        <p class="mb-4 text-gray-700 dark:text-gray-300">
+          Tentukan domain dan range dari suatu fungsi.
+        </p>
+
+        <div class="mb-4">
+          <label
+            class="block text-gray-700 dark:text-gray-300 mb-2"
+            for="domain-function"
+            >Fungsi:</label
+          >
+          <select
+            id="domain-function"
+            class="w-full p-2 border rounded dark:bg-gray-700 dark:text-white dark:border-gray-600"
+          >
+            <option value="linear">f(x) = 2x + 3 (Linear)</option>
+            <option value="quadratic">f(x) = x² (Kuadrat)</option>
+            <option value="sqrt">f(x) = √x (Akar)</option>
+            <option value="rational">f(x) = 1/(x-2) (Rasional)</option>
+          </select>
+        </div>
+
+        <button
+          onclick="findDomainRange()"
+          class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded dark:bg-blue-700 dark:hover:bg-blue-800 mb-4"
+        >
+          Tentukan Domain & Range
+        </button>
+
+        <div
+          id="domain-range-result"
+          class="text-gray-700 dark:text-gray-300 p-3 bg-gray-100 dark:bg-gray-700 rounded"
+        ></div>
+      </div>
+    </main>
+
+    <script>
+      // Theme toggle
+      const themeToggleBtn = document.getElementById("theme-toggle");
+      const themeToggleDarkIcon = document.getElementById(
+        "theme-toggle-dark-icon"
+      );
+      const themeToggleLightIcon = document.getElementById(
+        "theme-toggle-light-icon"
+      );
+
+      if (
+        localStorage.getItem("theme") === "dark" ||
+        (!("theme" in localStorage) &&
+          window.matchMedia("(prefers-color-scheme: dark)").matches)
+      ) {
+        themeToggleLightIcon.classList.remove("hidden");
+        themeToggleDarkIcon.classList.add("hidden");
+      } else {
+        themeToggleLightIcon.classList.add("hidden");
+        themeToggleDarkIcon.classList.remove("hidden");
+      }
+
+      themeToggleBtn.addEventListener("click", function () {
+        themeToggleDarkIcon.classList.toggle("hidden");
+        themeToggleLightIcon.classList.toggle("hidden");
+        if (localStorage.getItem("theme") === "dark") {
+          localStorage.setItem("theme", "light");
+          document.documentElement.classList.remove("dark");
+        } else {
+          localStorage.setItem("theme", "dark");
+          document.documentElement.classList.add("dark");
+        }
+      });
+
+      // Evaluate function
+      function evaluateFunction() {
+        const funcStr = document.getElementById("function-expr").value;
+        const xValue = parseFloat(document.getElementById("function-x").value);
+
+        try {
+          const scope = { x: xValue };
+          const result = math.evaluate(funcStr, scope);
+
+          document.getElementById("function-result").innerHTML = `
+            <p>f(${xValue}) = ${result}</p>
+          `;
+        } catch (e) {
+          document.getElementById("function-result").innerHTML =
+            "Error: Fungsi tidak valid";
+        }
+      }
+
+      // Identify function type
+      function identifyFunction() {
+        const funcStr = document
+          .getElementById("function-type")
+          .value.toLowerCase();
+        let type = "";
+        let example = "";
+
+        if (funcStr.includes("x^2") || funcStr.includes("x²")) {
+          type = "Kuadrat";
+          example = "Contoh: f(x) = ax² + bx + c";
+        } else if (funcStr.includes("x^3") || funcStr.includes("x³")) {
+          type = "Kubik";
+          example = "Contoh: f(x) = ax³ + bx² + cx + d";
+        } else if (funcStr.includes("x")) {
+          type = "Linear";
+          example = "Contoh: f(x) = ax + b";
+        } else if (funcStr.includes("sqrt") || funcStr.includes("√")) {
+          type = "Akar";
+          example = "Contoh: f(x) = √(ax + b)";
+        } else if (funcStr.includes("/")) {
+          type = "Rasional";
+          example = "Contoh: f(x) = p(x)/q(x)";
+        } else if (funcStr.includes("e^") || funcStr.includes("exp(")) {
+          type = "Eksponensial";
+          example = "Contoh: f(x) = e^x atau a^x";
+        } else if (funcStr.includes("log") || funcStr.includes("ln")) {
+          type = "Logaritmik";
+          example = "Contoh: f(x) = log(x) atau ln(x)";
+        } else {
+          type = "Konstan";
+          example = "Contoh: f(x) = c";
+        }
+
+        document.getElementById("type-result").innerHTML = `
+          <p>Jenis Fungsi: ${type}</p>
+          <p>${example}</p>
+        `;
+      }
+
+      // Find domain and range
+      function findDomainRange() {
+        const funcType = document.getElementById("domain-function").value;
+        let domain = "";
+        let range = "";
+
+        switch (funcType) {
+          case "linear":
+            domain = "Semua bilangan real (-∞, ∞)";
+            range = "Semua bilangan real (-∞, ∞)";
+            break;
+          case "quadratic":
+            domain = "Semua bilangan real (-∞, ∞)";
+            range = "[0, ∞) karena x² selalu positif";
+            break;
+          case "sqrt":
+            domain = "[0, ∞) karena √x hanya terdefinisi untuk x ≥ 0";
+            range = "[0, ∞)";
+            break;
+          case "rational":
+            domain = "Semua bilangan real kecuali x = 2";
+            range = "Semua bilangan real kecuali y = 0";
+            break;
+        }
+
+        document.getElementById("domain-range-result").innerHTML = `
+          <p><strong>Domain:</strong> ${domain}</p>
+          <p><strong>Range:</strong> ${range}</p>
+        `;
+      }
+    </script>
+  </body>
+</html>

@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Modul Trigonometri</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/11.6.0/math.js"></script>
+    <script>
+      (function () {
+        const savedTheme =
+          localStorage.getItem("theme") ||
+          (window.matchMedia("(prefers-color-scheme: dark)").matches
+            ? "dark"
+            : "light");
+        document.documentElement.classList.toggle(
+          "dark",
+          savedTheme === "dark"
+        );
+      })();
+
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: [
+                "Inter",
+                "Segoe UI",
+                "Tahoma",
+                "Geneva",
+                "Verdana",
+                "sans-serif",
+              ],
+            },
+            colors: {
+              primary: { light: "#3B82F6", dark: "#60A5FA" },
+              dark: { light: "#1F2937", dark: "#111827" },
+              light: { light: "#F8F9FA", dark: "#1F2937" },
+            },
+          },
+        },
+        corePlugins: { preflight: false },
+      };
+    </script>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      a {
+        text-decoration: none;
+      }
+      .operation-btn {
+        transition: all 0.2s ease;
+      }
+      .operation-btn:hover {
+        transform: translateY(-2px);
+      }
+    </style>
+  </head>
+  <body class="bg-gray-100 dark:bg-gray-900 min-h-screen">
+    <nav class="bg-white dark:bg-gray-800 shadow-sm">
+      <div class="px-4 py-3 flex justify-between items-center">
+        <a
+          href="../index"
+          class="text-blue-600 dark:text-blue-400 font-semibold"
+          >← Kembali</a
+        >
+        <button
+          id="theme-toggle"
+          type="button"
+          class="p-2 border-transparent bg-white dark:bg-dark-light text-dark dark:text-gray-300 rounded-lg focus:outline-none transform hover:rotate-12"
+          aria-label="Toggle dark mode"
+        >
+          <svg
+            id="theme-toggle-dark-icon"
+            class="w-5 h-5"
+            fill="currentColor"
+            viewBox="0 0 20 20"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"
+            ></path>
+          </svg>
+          <svg
+            id="theme-toggle-light-icon"
+            class="w-5 h-5 hidden"
+            fill="currentColor"
+            viewBox="0 0 20 20"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z"
+              fill-rule="evenodd"
+              clip-rule="evenodd"
+            ></path>
+          </svg>
+        </button>
+      </div>
+    </nav>
+
+    <main class="container mx-auto px-4 py-8 max-w-4xl">
+      <h1
+        class="text-2xl font-bold text-center mb-8 text-gray-800 dark:text-white"
+      >
+        Modul Pembelajaran Trigonometri
+      </h1>
+
+      <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg mb-6">
+        <h2 class="text-xl font-semibold mb-4 text-blue-600 dark:text-blue-400">
+          Fungsi Trigonometri Dasar
+        </h2>
+        <p class="mb-4 text-gray-700 dark:text-gray-300">
+          Hitung nilai sin, cos, tan dari sudut tertentu (dalam derajat atau
+          radian).
+        </p>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+          <div>
+            <label
+              class="block text-gray-700 dark:text-gray-300 mb-2"
+              for="trig-angle"
+              >Sudut:</label
+            >
+            <input
+              type="number"
+              id="trig-angle"
+              class="w-full p-2 border rounded dark:bg-gray-700 dark:text-white dark:border-gray-600"
+              value="30"
+            />
+          </div>
+          <div>
+            <label
+              class="block text-gray-700 dark:text-gray-300 mb-2"
+              for="trig-unit"
+              >Satuan:</label
+            >
+            <select
+              id="trig-unit"
+              class="w-full p-2 border rounded dark:bg-gray-700 dark:text-white dark:border-gray-600"
+            >
+              <option value="deg">Derajat</option>
+              <option value="rad">Radian</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-3 gap-2 mb-4">
+          <button
+            onclick="calculateTrig('sin')"
+            class="operation-btn bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded dark:bg-blue-600 dark:hover:bg-blue-700"
+          >
+            Sin
+          </button>
+          <button
+            onclick="calculateTrig('cos')"
+            class="operation-btn bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded dark:bg-green-600 dark:hover:bg-green-700"
+          >
+            Cos
+          </button>
+          <button
+            onclick="calculateTrig('tan')"
+            class="operation-btn bg-purple-500 hover:bg-purple-600 text-white font-bold py-2 px-4 rounded dark:bg-purple-600 dark:hover:bg-purple-700"
+          >
+            Tan
+          </button>
+        </div>
+
+        <div
+          id="trig-result"
+          class="text-gray-700 dark:text-gray-300 p-3 bg-gray-100 dark:bg-gray-700 rounded"
+        ></div>
+      </div>
+
+      <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg mb-6">
+        <h2 class="text-xl font-semibold mb-4 text-blue-600 dark:text-blue-400">
+          Segitiga Siku-Siku
+        </h2>
+        <p class="mb-4 text-gray-700 dark:text-gray-300">
+          Hitung sisi atau sudut dalam segitiga siku-siku menggunakan
+          trigonometri.
+        </p>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+          <div>
+            <label
+              class="block text-gray-700 dark:text-gray-300 mb-2"
+              for="triangle-side-a"
+              >Sisi A (alas):</label
+            >
+            <input
+              type="number"
+              id="triangle-side-a"
+              class="w-full p-2 border rounded dark:bg-gray-700 dark:text-white dark:border-gray-600"
+              placeholder="Masukkan nilai"
+            />
+          </div>
+          <div>
+            <label
+              class="block text-gray-700 dark:text-gray-300 mb-2"
+              for="triangle-side-b"
+              >Sisi B (tinggi):</label
+            >
+            <input
+              type="number"
+              id="triangle-side-b"
+              class="w-full p-2 border rounded dark:bg-gray-700 dark:text-white dark:border-gray-600"
+              placeholder="Masukkan nilai"
+            />
+          </div>
+          <div>
+            <label
+              class="block text-gray-700 dark:text-gray-300 mb-2"
+              for="triangle-side-c"
+              >Sisi C (miring):</label
+            >
+            <input
+              type="number"
+              id="triangle-side-c"
+              class="w-full p-2 border rounded dark:bg-gray-700 dark:text-white dark:border-gray-600"
+              placeholder="Masukkan nilai"
+            />
+          </div>
+        </div>
+
+        <button
+          onclick="solveTriangle()"
+          class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded dark:bg-blue-700 dark:hover:bg-blue-800 mb-4"
+        >
+          Hitung Segitiga
+        </button>
+
+        <div
+          id="triangle-result"
+          class="text-gray-700 dark:text-gray-300 p-3 bg-gray-100 dark:bg-gray-700 rounded"
+        ></div>
+      </div>
+
+      <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg">
+        <h2 class="text-xl font-semibold mb-4 text-blue-600 dark:text-blue-400">
+          Identitas Trigonometri
+        </h2>
+        <p class="mb-4 text-gray-700 dark:text-gray-300">
+          Verifikasi identitas trigonometri umum.
+        </p>
+
+        <div class="mb-4">
+          <label
+            class="block text-gray-700 dark:text-gray-300 mb-2"
+            for="trig-identity"
+            >Pilih Identitas:</label
+          >
+          <select
+            id="trig-identity"
+            class="w-full p-2 border rounded dark:bg-gray-700 dark:text-white dark:border-gray-600"
+          >
+            <option value="pythagorean">Sin²θ + Cos²θ = 1</option>
+            <option value="sum">Sin(A+B) = SinACosB + CosASinB</option>
+            <option value="double">Sin(2θ) = 2SinθCosθ</option>
+          </select>
+        </div>
+
+        <button
+          onclick="verifyIdentity()"
+          class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded dark:bg-blue-700 dark:hover:bg-blue-800 mb-4"
+        >
+          Verifikasi
+        </button>
+
+        <div
+          id="identity-result"
+          class="text-gray-700 dark:text-gray-300 p-3 bg-gray-100 dark:bg-gray-700 rounded"
+        ></div>
+      </div>
+    </main>
+
+    <script>
+      // Theme toggle
+      const themeToggleBtn = document.getElementById("theme-toggle");
+      const themeToggleDarkIcon = document.getElementById(
+        "theme-toggle-dark-icon"
+      );
+      const themeToggleLightIcon = document.getElementById(
+        "theme-toggle-light-icon"
+      );
+
+      if (
+        localStorage.getItem("theme") === "dark" ||
+        (!("theme" in localStorage) &&
+          window.matchMedia("(prefers-color-scheme: dark)").matches)
+      ) {
+        themeToggleLightIcon.classList.remove("hidden");
+        themeToggleDarkIcon.classList.add("hidden");
+      } else {
+        themeToggleLightIcon.classList.add("hidden");
+        themeToggleDarkIcon.classList.remove("hidden");
+      }
+
+      themeToggleBtn.addEventListener("click", function () {
+        themeToggleDarkIcon.classList.toggle("hidden");
+        themeToggleLightIcon.classList.toggle("hidden");
+        if (localStorage.getItem("theme") === "dark") {
+          localStorage.setItem("theme", "light");
+          document.documentElement.classList.remove("dark");
+        } else {
+          localStorage.setItem("theme", "dark");
+          document.documentElement.classList.add("dark");
+        }
+      });
+
+      // Basic trig functions
+      function calculateTrig(func) {
+        const angle = parseFloat(document.getElementById("trig-angle").value);
+        const unit = document.getElementById("trig-unit").value;
+        let radianAngle;
+
+        if (unit === "deg") {
+          radianAngle = (angle * Math.PI) / 180;
+        } else {
+          radianAngle = angle;
+        }
+
+        let result;
+        switch (func) {
+          case "sin":
+            result = Math.sin(radianAngle);
+            break;
+          case "cos":
+            result = Math.cos(radianAngle);
+            break;
+          case "tan":
+            if (Math.abs(angle % 90) === 0 && unit === "deg") {
+              document.getElementById("trig-result").innerHTML =
+                "Tan tidak terdefinisi untuk sudut 90° + k·180°";
+              return;
+            }
+            result = Math.tan(radianAngle);
+            break;
+        }
+
+        document.getElementById("trig-result").innerHTML = `
+          <p>${func.toUpperCase()}(${angle}${
+          unit === "deg" ? "°" : " rad"
+        }) = ${result.toFixed(4)}</p>
+        `;
+      }
+
+      // Triangle solver
+      function solveTriangle() {
+        const a =
+          parseFloat(document.getElementById("triangle-side-a").value) || null;
+        const b =
+          parseFloat(document.getElementById("triangle-side-b").value) || null;
+        const c =
+          parseFloat(document.getElementById("triangle-side-c").value) || null;
+
+        let resultHTML = "";
+
+        if (a && b) {
+          const hyp = Math.sqrt(a * a + b * b);
+          const angleA = (Math.atan(b / a) * 180) / Math.PI;
+          const angleB = 90 - angleA;
+
+          resultHTML = `
+            <p>Sisi Miring (c): ${hyp.toFixed(2)}</p>
+            <p>Sudut A (terhadap alas): ${angleA.toFixed(2)}°</p>
+            <p>Sudut B: ${angleB.toFixed(2)}°</p>
+          `;
+        } else if (a && c) {
+          const remainingSide = Math.sqrt(c * c - a * a);
+          const angleA = (Math.asin(a / c) * 180) / Math.PI;
+          const angleB = 90 - angleA;
+
+          resultHTML = `
+            <p>Sisi B (tinggi): ${remainingSide.toFixed(2)}</p>
+            <p>Sudut A: ${angleA.toFixed(2)}°</p>
+            <p>Sudut B: ${angleB.toFixed(2)}°</p>
+          `;
+        } else if (b && c) {
+          const remainingSide = Math.sqrt(c * c - b * b);
+          const angleA = (Math.acos(b / c) * 180) / Math.PI;
+          const angleB = 90 - angleA;
+
+          resultHTML = `
+            <p>Sisi A (alas): ${remainingSide.toFixed(2)}</p>
+            <p>Sudut A: ${angleA.toFixed(2)}°</p>
+            <p>Sudut B: ${angleB.toFixed(2)}°</p>
+          `;
+        } else {
+          resultHTML = "Masukkan setidaknya 2 nilai (sisi atau sudut)";
+        }
+
+        document.getElementById("triangle-result").innerHTML = resultHTML;
+      }
+
+      // Verify identities
+      function verifyIdentity() {
+        const identity = document.getElementById("trig-identity").value;
+        let result;
+
+        switch (identity) {
+          case "pythagorean":
+            const theta = (30 * Math.PI) / 180; // contoh sudut 30 derajat
+            const left =
+              Math.pow(Math.sin(theta), 2) + Math.pow(Math.cos(theta), 2);
+            result = `Sin²(30°) + Cos²(30°) = ${left.toFixed(4)} ≈ 1`;
+            break;
+
+          case "sum":
+            const A = (30 * Math.PI) / 180;
+            const B = (45 * Math.PI) / 180;
+            const leftSum = Math.sin(A + B);
+            const rightSum =
+              Math.sin(A) * Math.cos(B) + Math.cos(A) * Math.sin(B);
+            result = `Sin(75°) = ${leftSum.toFixed(
+              4
+            )}<br>Sin(30°)Cos(45°) + Cos(30°)Sin(45°) = ${rightSum.toFixed(4)}`;
+            break;
+
+          case "double":
+            const angle = (30 * Math.PI) / 180;
+            const leftDouble = Math.sin(2 * angle);
+            const rightDouble = 2 * Math.sin(angle) * Math.cos(angle);
+            result = `Sin(60°) = ${leftDouble.toFixed(
+              4
+            )}<br>2×Sin(30°)Cos(30°) = ${rightDouble.toFixed(4)}`;
+            break;
+        }
+
+        document.getElementById("identity-result").innerHTML = result;
+      }
+    </script>
+  </body>
+</html>

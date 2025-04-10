@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Modul Persamaan dan Pertidaksamaan</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/11.6.0/math.js"></script>
+    <script>
+      (function () {
+        const savedTheme =
+          localStorage.getItem("theme") ||
+          (window.matchMedia("(prefers-color-scheme: dark)").matches
+            ? "dark"
+            : "light");
+        document.documentElement.classList.toggle(
+          "dark",
+          savedTheme === "dark"
+        );
+      })();
+
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: [
+                "Inter",
+                "Segoe UI",
+                "Tahoma",
+                "Geneva",
+                "Verdana",
+                "sans-serif",
+              ],
+            },
+            colors: {
+              primary: { light: "#3B82F6", dark: "#60A5FA" },
+              dark: { light: "#1F2937", dark: "#111827" },
+              light: { light: "#F8F9FA", dark: "#1F2937" },
+            },
+          },
+        },
+        corePlugins: { preflight: false },
+      };
+    </script>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      a {
+        text-decoration: none;
+      }
+      .operation-btn {
+        transition: all 0.2s ease;
+      }
+      .operation-btn:hover {
+        transform: translateY(-2px);
+      }
+      .equation-input {
+        width: 60px;
+        text-align: center;
+      }
+    </style>
+  </head>
+  <body class="bg-gray-100 dark:bg-gray-900 min-h-screen">
+    <nav class="bg-white dark:bg-gray-800 shadow-sm">
+      <div class="px-4 py-3 flex justify-between items-center">
+        <a
+          href="../index"
+          class="text-blue-600 dark:text-blue-400 font-semibold"
+          >← Kembali</a
+        >
+        <button
+          id="theme-toggle"
+          type="button"
+          class="p-2 border-transparent bg-white dark:bg-dark-light text-dark dark:text-gray-300 rounded-lg focus:outline-none transform hover:rotate-12"
+        >
+          <svg
+            id="theme-toggle-dark-icon"
+            class="w-5 h-5"
+            fill="currentColor"
+            viewBox="0 0 20 20"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"
+            ></path>
+          </svg>
+          <svg
+            id="theme-toggle-light-icon"
+            class="w-5 h-5 hidden"
+            fill="currentColor"
+            viewBox="0 0 20 20"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z"
+              fill-rule="evenodd"
+              clip-rule="evenodd"
+            ></path>
+          </svg>
+        </button>
+      </div>
+    </nav>
+
+    <main class="container mx-auto px-4 py-8 max-w-4xl">
+      <h1
+        class="text-2xl font-bold text-center mb-8 text-gray-800 dark:text-white"
+      >
+        Modul Pembelajaran Persamaan dan Pertidaksamaan
+      </h1>
+
+      <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg mb-6">
+        <h2 class="text-xl font-semibold mb-4 text-blue-600 dark:text-blue-400">
+          Sistem Persamaan Linear
+        </h2>
+        <p class="mb-4 text-gray-700 dark:text-gray-300">
+          Selesaikan sistem persamaan linear dua variabel.
+        </p>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-4">
+          <div class="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg">
+            <h3
+              class="text-lg font-medium mb-3 text-gray-700 dark:text-gray-300"
+            >
+              Persamaan 1:
+            </h3>
+            <div class="flex items-center justify-center space-x-2">
+              <input
+                type="number"
+                id="e1-coef-x"
+                class="equation-input p-2 border rounded dark:bg-gray-600 dark:text-white dark:border-gray-500"
+                value="2"
+              />
+              <span class="text-gray-700 dark:text-gray-300">x +</span>
+              <input
+                type="number"
+                id="e1-coef-y"
+                class="equation-input p-2 border rounded dark:bg-gray-600 dark:text-white dark:border-gray-500"
+                value="3"
+              />
+              <span class="text-gray-700 dark:text-gray-300">y =</span>
+              <input
+                type="number"
+                id="e1-const"
+                class="equation-input p-2 border rounded dark:bg-gray-600 dark:text-white dark:border-gray-500"
+                value="8"
+              />
+            </div>
+          </div>
+          <div class="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg">
+            <h3
+              class="text-lg font-medium mb-3 text-gray-700 dark:text-gray-300"
+            >
+              Persamaan 2:
+            </h3>
+            <div class="flex items-center justify-center space-x-2">
+              <input
+                type="number"
+                id="e2-coef-x"
+                class="equation-input p-2 border rounded dark:bg-gray-600 dark:text-white dark:border-gray-500"
+                value="3"
+              />
+              <span class="text-gray-700 dark:text-gray-300">x +</span>
+              <input
+                type="number"
+                id="e2-coef-y"
+                class="equation-input p-2 border rounded dark:bg-gray-600 dark:text-white dark:border-gray-500"
+                value="2"
+              />
+              <span class="text-gray-700 dark:text-gray-300">y =</span>
+              <input
+                type="number"
+                id="e2-const"
+                class="equation-input p-2 border rounded dark:bg-gray-600 dark:text-white dark:border-gray-500"
+                value="7"
+              />
+            </div>
+          </div>
+        </div>
+
+        <button
+          onclick="solveLinearSystem()"
+          class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded dark:bg-blue-700 dark:hover:bg-blue-800 mb-4"
+        >
+          Selesaikan Sistem
+        </button>
+
+        <div
+          id="linear-system-result"
+          class="text-gray-700 dark:text-gray-300 p-3 bg-gray-100 dark:bg-gray-700 rounded"
+        ></div>
+      </div>
+
+      <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg mb-6">
+        <h2 class="text-xl font-semibold mb-4 text-blue-600 dark:text-blue-400">
+          Pertidaksamaan Linear
+        </h2>
+        <p class="mb-4 text-gray-700 dark:text-gray-300">
+          Selesaikan pertidaksamaan linear satu variabel (contoh: x > 5, 2x ≤ 8,
+          dll).
+        </p>
+
+        <div class="mb-4">
+          <label
+            class="block text-gray-700 dark:text-gray-300 mb-2"
+            for="inequality-expr"
+            >Masukkan pertidaksamaan:</label
+          >
+          <input
+            type="text"
+            id="inequality-expr"
+            class="w-full p-2 border rounded dark:bg-gray-700 dark:text-white dark:border-gray-600"
+            value="x > 5"
+            placeholder="Contoh: 2x + 3 < 7, x ≥ 5, 4 ≤ x"
+          />
+        </div>
+
+        <button
+          onclick="solveInequality()"
+          class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded dark:bg-blue-700 dark:hover:bg-blue-800 mb-4"
+        >
+          Selesaikan Pertidaksamaan
+        </button>
+
+        <div
+          id="inequality-result"
+          class="text-gray-700 dark:text-gray-300 p-3 bg-gray-100 dark:bg-gray-700 rounded"
+        ></div>
+      </div>
+
+      <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg">
+        <h2 class="text-xl font-semibold mb-4 text-blue-600 dark:text-blue-400">
+          Persamaan Eksponensial dan Logaritma
+        </h2>
+        <p class="mb-4 text-gray-700 dark:text-gray-300">
+          Selesaikan persamaan eksponensial dan logaritma sederhana.
+        </p>
+
+        <div class="mb-4">
+          <label
+            class="block text-gray-700 dark:text-gray-300 mb-2"
+            for="eq-type"
+            >Jenis Persamaan:</label
+          >
+          <select
+            id="eq-type"
+            class="w-full p-2 border rounded dark:bg-gray-700 dark:text-white dark:border-gray-600"
+          >
+            <option value="exponential">Eksponensial (a^x = b)</option>
+            <option value="logarithmic">Logaritma (logₐx = b)</option>
+          </select>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+          <div>
+            <label
+              class="block text-gray-700 dark:text-gray-300 mb-2"
+              for="eq-base"
+              >Basis (a):</label
+            >
+            <input
+              type="number"
+              id="eq-base"
+              class="w-full p-2 border rounded dark:bg-gray-700 dark:text-white dark:border-gray-600"
+              value="2"
+              min="0.1"
+              step="0.1"
+            />
+          </div>
+          <div>
+            <label
+              class="block text-gray-700 dark:text-gray-300 mb-2"
+              for="eq-arg"
+              >Argumen:</label
+            >
+            <input
+              type="number"
+              id="eq-arg"
+              class="w-full p-2 border rounded dark:bg-gray-700 dark:text-white dark:border-gray-600"
+              value="8"
+              min="0.1"
+              step="0.1"
+            />
+          </div>
+          <div>
+            <label
+              class="block text-gray-700 dark:text-gray-300 mb-2"
+              for="eq-result"
+              >Hasil (b):</label
+            >
+            <input
+              type="number"
+              id="eq-result"
+              class="w-full p-2 border rounded dark:bg-gray-700 dark:text-white dark:border-gray-600"
+              value="3"
+              min="0.1"
+              step="0.1"
+            />
+          </div>
+        </div>
+
+        <button
+          onclick="solveSpecialEquation()"
+          class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded dark:bg-blue-700 dark:hover:bg-blue-800 mb-4"
+        >
+          Selesaikan Persamaan
+        </button>
+
+        <div
+          id="special-eq-result"
+          class="text-gray-700 dark:text-gray-300 p-3 bg-gray-100 dark:bg-gray-700 rounded"
+        ></div>
+      </div>
+    </main>
+
+    <script>
+      // Theme toggle
+      const themeToggleBtn = document.getElementById("theme-toggle");
+      const themeToggleDarkIcon = document.getElementById(
+        "theme-toggle-dark-icon"
+      );
+      const themeToggleLightIcon = document.getElementById(
+        "theme-toggle-light-icon"
+      );
+
+      if (
+        localStorage.getItem("theme") === "dark" ||
+        (!("theme" in localStorage) &&
+          window.matchMedia("(prefers-color-scheme: dark)").matches)
+      ) {
+        themeToggleLightIcon.classList.remove("hidden");
+        themeToggleDarkIcon.classList.add("hidden");
+      } else {
+        themeToggleLightIcon.classList.add("hidden");
+        themeToggleDarkIcon.classList.remove("hidden");
+      }
+
+      themeToggleBtn.addEventListener("click", function () {
+        themeToggleDarkIcon.classList.toggle("hidden");
+        themeToggleLightIcon.classList.toggle("hidden");
+        if (localStorage.getItem("theme") === "dark") {
+          localStorage.setItem("theme", "light");
+          document.documentElement.classList.remove("dark");
+        } else {
+          localStorage.setItem("theme", "dark");
+          document.documentElement.classList.add("dark");
+        }
+      });
+
+      // Solve linear system
+      function solveLinearSystem() {
+        const a1 = parseFloat(document.getElementById("e1-coef-x").value);
+        const b1 = parseFloat(document.getElementById("e1-coef-y").value);
+        const c1 = parseFloat(document.getElementById("e1-const").value);
+        const a2 = parseFloat(document.getElementById("e2-coef-x").value);
+        const b2 = parseFloat(document.getElementById("e2-coef-y").value);
+        const c2 = parseFloat(document.getElementById("e2-const").value);
+
+        const det = a1 * b2 - a2 * b1;
+
+        if (det === 0) {
+          document.getElementById("linear-system-result").innerHTML =
+            "Sistem tidak memiliki solusi unik (mungkin tidak ada solusi atau tak terhingga banyak solusi)";
+          return;
+        }
+
+        const x = (b2 * c1 - b1 * c2) / det;
+        const y = (a1 * c2 - a2 * c1) / det;
+
+        document.getElementById("linear-system-result").innerHTML = `
+          <p class="font-medium">Solusi sistem:</p>
+          <p>x = ${x.toFixed(2)}</p>
+          <p>y = ${y.toFixed(2)}</p>
+          <p class="mt-2">Persamaan 1: ${a1}x + ${b1}y = ${c1}</p>
+          <p>Persamaan 2: ${a2}x + ${b2}y = ${c2}</p>
+        `;
+      }
+
+      // Solve inequality
+      function solveInequality() {
+        const expr = document.getElementById("inequality-expr").value.trim();
+
+        // Normalize expression (remove spaces, replace special characters)
+        const normalized = expr
+          .replace(/\s+/g, "")
+          .replace(/≤/g, "<=")
+          .replace(/≥/g, ">=")
+          .replace(/=/g, "==");
+
+        // Pattern 1: ax + b < c or similar
+        const pattern1 = /^([+-]?\d*x)\s*([<>]=?|==)\s*([+-]?\d+)$/;
+        // Pattern 2: a < bx or similar
+        const pattern2 = /^([+-]?\d+)\s*([<>]=?|==)\s*([+-]?\d*x)$/;
+
+        let left, operator, right, coefficient, constant;
+
+        // Try pattern 1 first
+        let match = normalized.match(pattern1);
+        if (match) {
+          left = match[1];
+          operator = match[2];
+          right = match[3];
+
+          // Extract coefficient
+          coefficient = left.replace("x", "");
+          if (coefficient === "+" || coefficient === "") coefficient = "1";
+          if (coefficient === "-") coefficient = "-1";
+          coefficient = parseFloat(coefficient);
+
+          constant = parseFloat(right);
+        }
+        // Try pattern 2 if pattern 1 doesn't match
+        else {
+          match = normalized.match(pattern2);
+          if (match) {
+            left = match[1];
+            operator = match[2];
+            right = match[3];
+
+            // Extract coefficient
+            coefficient = right.replace("x", "");
+            if (coefficient === "+" || coefficient === "") coefficient = "1";
+            if (coefficient === "-") coefficient = "-1";
+            coefficient = parseFloat(coefficient);
+
+            constant = parseFloat(left);
+
+            // Flip the operator when moving x to left side
+            operator =
+              operator === "<"
+                ? ">"
+                : operator === "<="
+                ? ">="
+                : operator === ">"
+                ? "<"
+                : operator === ">="
+                ? "<="
+                : operator;
+          }
+          // If no pattern matches
+          else {
+            document.getElementById("inequality-result").innerHTML =
+              '<p class="text-red-600 dark:text-red-400">Format tidak valid. Contoh yang diterima:<br>' +
+              '"x > 5"<br>"2x ≤ 8"<br>"3x + 2 < 11"<br>"5 ≥ x"<br>"4 ≤ 2x"<br>' +
+              '"-3x > 9"</p>';
+            return;
+          }
+        }
+
+        // Calculate solution
+        const solution = constant / coefficient;
+
+        // Handle operator flipping for negative coefficients
+        if (coefficient < 0) {
+          operator =
+            operator === "<"
+              ? ">"
+              : operator === "<="
+              ? ">="
+              : operator === ">"
+              ? "<"
+              : operator === ">="
+              ? "<="
+              : operator;
+        }
+
+        // Format the solution
+        let solutionText;
+        if (operator === "==") {
+          solutionText = `x = ${solution.toFixed(2)}`;
+        } else {
+          solutionText = `x ${operator} ${solution.toFixed(2)}`;
+        }
+
+        // Display steps
+        let steps = `<p class="font-medium">Pertidaksamaan: ${expr}</p>`;
+        steps += `<p>Langkah penyelesaian:</p>`;
+        steps += `<p>1. ${left} ${operator} ${right}</p>`;
+
+        if (coefficient !== 1 && coefficient !== -1) {
+          steps += `<p>2. Dibagi ${coefficient}: x ${operator} ${solution.toFixed(
+            2
+          )}</p>`;
+          if (coefficient < 0) {
+            steps += `<p>3. Tanda dibalik karena dibagi bilangan negatif</p>`;
+          }
+        }
+
+        steps += `<p class="font-medium mt-2">Solusi: ${solutionText}</p>`;
+
+        document.getElementById("inequality-result").innerHTML = steps;
+      }
+
+      // Solve exponential or logarithmic equation
+      function solveSpecialEquation() {
+        const type = document.getElementById("eq-type").value;
+        const base = parseFloat(document.getElementById("eq-base").value);
+        const arg = parseFloat(document.getElementById("eq-arg").value);
+        const result = parseFloat(document.getElementById("eq-result").value);
+
+        if (base <= 0 || base === 1) {
+          document.getElementById("special-eq-result").innerHTML =
+            '<p class="text-red-600 dark:text-red-400">Basis harus positif dan tidak sama dengan 1</p>';
+          return;
+        }
+
+        let solution;
+        if (type === "exponential") {
+          // a^x = b → x = logₐ(b)
+          const x = Math.log(arg) / Math.log(base);
+          solution = `x = log<sub>${base}</sub>(${arg}) ≈ ${x.toFixed(4)}`;
+        } else if (type === "logarithmic") {
+          // logₐ(x) = b → x = a^b
+          const x = Math.pow(base, result);
+          solution = `x = ${base}<sup>${result}</sup> = ${x.toFixed(4)}`;
+        }
+
+        document.getElementById("special-eq-result").innerHTML = `
+          <p class="font-medium">Persamaan: ${
+            type === "exponential"
+              ? `${base}<sup>x</sup> = ${arg}`
+              : `log<sub>${base}</sub>x = ${result}`
+          }</p>
+          <p>Solusi: ${solution}</p>
+        `;
+      }
+    </script>
+  </body>
+</html>
