@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Diagram Venn</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/venn.js@0.2.20/venn.min.js"></script>
+    <script>
+      (function () {
+        const savedTheme =
+          localStorage.getItem("theme") ||
+          (window.matchMedia("(prefers-color-scheme: dark)").matches
+            ? "dark"
+            : "light");
+        document.documentElement.classList.toggle(
+          "dark",
+          savedTheme === "dark"
+        );
+      })();
+
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: [
+                "Inter",
+                "Segoe UI",
+                "Tahoma",
+                "Geneva",
+                "Verdana",
+                "sans-serif",
+              ],
+            },
+            colors: {
+              primary: { light: "#3B82F6", dark: "#60A5FA" },
+              dark: { light: "#1F2937", dark: "#111827" },
+              light: { light: "#F8F9FA", dark: "#1F2937" },
+              customGray: "#3E3E3E",
+              linux: {
+                "merah-error": "#CC0000",
+                "ijo-sukses": "#4E9A06",
+                "kuning-awas": "#C4A000",
+                "biru-info": "#3465A4",
+                "ungu-ajaib": "#75507B",
+                "cyan-keren": "#06989A",
+              },
+            },
+          },
+        },
+        corePlugins: { preflight: false },
+      };
+    </script>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      a {
+        text-decoration: none;
+      }
+      .chart-container {
+        height: 400px;
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 10px;
+      }
+      .number-input, .text-input {
+        width: 100%;
+        padding: 10px;
+        border-radius: 5px;
+        border: 1px solid #d1d5db;
+      }
+      .dark .number-input, .dark .text-input {
+        background-color: #374151;
+        border-color: #4b5563;
+        color: #f9fafb;
+      }
+      #vennChart {
+        width: 100%;
+        height: 100%;
+        max-width: 100%;
+        overflow: visible;
+      }
+      .venn-circle {
+        stroke-width: 2px;
+      }
+      .venn-circle text {
+        font-weight: normal !important;
+        stroke-width: 0px;
+        font-size: 14px;
+      }
+      .venn-intersection {
+        font-size: 12px;
+        font-weight: normal;
+      }
+      
+      /* Responsive adjustments */
+      @media (max-width: 640px) {
+        .chart-container {
+          height: 300px;
+        }
+        .grid-cols-7 {
+          grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+        }
+        .grid-cols-7 > div:nth-child(n+5) {
+          grid-column: span 2;
+        }
+        .venn-circle text {
+          font-size: 12px;
+        }
+        .venn-intersection {
+          font-size: 10px;
+        }
+      }
+    </style>
+  </head>
+  <body class="bg-gray-100 dark:bg-gray-900 min-h-screen">
+    <nav class="bg-white dark:bg-gray-800 shadow-sm">
+      <div class="px-4 py-3 flex justify-between items-center">
+        <a
+          href="../index"
+          class="text-blue-600 dark:text-blue-400 font-semibold"
+          >← Kembali</a
+        >
+        <button
+          id="theme-toggle"
+          type="button"
+          class="p-2 border-transparent bg-white dark:bg-dark-light text-dark dark:text-gray-300 rounded-lg focus:outline-none transform hover:rotate-12"
+          aria-label="Toggle dark mode"
+        >
+          <svg
+            id="theme-toggle-dark-icon"
+            class="w-5 h-5"
+            fill="currentColor"
+            viewBox="0 0 20 20"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"
+            ></path>
+          </svg>
+          <svg
+            id="theme-toggle-light-icon"
+            class="w-5 h-5 hidden"
+            fill="currentColor"
+            viewBox="0 0 20 20"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z"
+              fill-rule="evenodd"
+              clip-rule="evenodd"
+            ></path>
+          </svg>
+        </button>
+      </div>
+    </nav>
+
+    <main class="container mx-auto px-4 py-8">
+      <h1 class="text-2xl font-bold text-center text-dark dark:text-white mb-8">
+        Diagram Venn
+      </h1>
+
+      <div
+        class="bg-white dark:bg-gray-800 p-4 sm:p-6 rounded-lg shadow-md max-w-4xl mx-auto"
+      >
+        <div class="mb-6">
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+            <div class="input-group">
+              <label class="block text-dark dark:text-white mb-2">Set A Label</label>
+              <input
+                type="text"
+                id="setALabel"
+                class="text-input"
+                value="Hewan"
+              />
+            </div>
+            <div class="input-group">
+              <label class="block text-dark dark:text-white mb-2">Set B Label</label>
+              <input
+                type="text"
+                id="setBLabel"
+                class="text-input"
+                value="Bisa Terbang"
+              />
+            </div>
+            <div class="input-group">
+              <label class="block text-dark dark:text-white mb-2">Set C Label</label>
+              <input
+                type="text"
+                id="setCLabel"
+                class="text-input"
+                value="Berenang"
+              />
+            </div>
+          </div>
+
+          <div class="grid grid-cols-4 md:grid-cols-7 gap-2 sm:gap-4 mb-4">
+            <div class="input-group">
+              <label class="block text-dark dark:text-white mb-2 text-sm sm:text-base">A only</label>
+              <input
+                type="number"
+                id="aOnly"
+                class="number-input text-sm sm:text-base"
+                value="10"
+                min="0"
+              />
+            </div>
+            <div class="input-group">
+              <label class="block text-dark dark:text-white mb-2 text-sm sm:text-base">B only</label>
+              <input
+                type="number"
+                id="bOnly"
+                class="number-input text-sm sm:text-base"
+                value="8"
+                min="0"
+              />
+            </div>
+            <div class="input-group">
+              <label class="block text-dark dark:text-white mb-2 text-sm sm:text-base">C only</label>
+              <input
+                type="number"
+                id="cOnly"
+                class="number-input text-sm sm:text-base"
+                value="5"
+                min="0"
+              />
+            </div>
+            <div class="input-group">
+              <label class="block text-dark dark:text-white mb-2 text-sm sm:text-base">A ∩ B</label>
+              <input
+                type="number"
+                id="aAndB"
+                class="number-input text-sm sm:text-base"
+                value="4"
+                min="0"
+              />
+            </div>
+            <div class="input-group">
+              <label class="block text-dark dark:text-white mb-2 text-sm sm:text-base">A ∩ C</label>
+              <input
+                type="number"
+                id="aAndC"
+                class="number-input text-sm sm:text-base"
+                value="3"
+                min="0"
+              />
+            </div>
+            <div class="input-group">
+              <label class="block text-dark dark:text-white mb-2 text-sm sm:text-base">B ∩ C</label>
+              <input
+                type="number"
+                id="bAndC"
+                class="number-input text-sm sm:text-base"
+                value="2"
+                min="0"
+              />
+            </div>
+            <div class="input-group">
+              <label class="block text-dark dark:text-white mb-2 text-sm sm:text-base">A ∩ B ∩ C</label>
+              <input
+                type="number"
+                id="aAndBAndC"
+                class="number-input text-sm sm:text-base"
+                value="1"
+                min="0"
+              />
+            </div>
+          </div>
+
+          <button
+            onclick="createVennDiagram()"
+            class="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded text-sm sm:text-base"
+          >
+            Buat Diagram Venn
+          </button>
+        </div>
+
+        <div class="chart-container">
+          <div id="vennChart"></div>
+        </div>
+
+        <div class="mt-6 p-4 bg-blue-50 dark:bg-blue-900 rounded-lg">
+          <h3 class="font-bold text-dark dark:text-white mb-2">
+            Contoh Penggunaan:
+          </h3>
+          <p class="text-dark dark:text-gray-300">
+            - Menunjukkan irisan antara beberapa himpunan data
+          </p>
+          <p class="text-dark dark:text-gray-300">
+            - Visualisasi kesamaan dan perbedaan antar kelompok
+          </p>
+          <p class="text-dark dark:text-gray-300">
+            - Analisis logika himpunan dalam matematika
+          </p>
+        </div>
+      </div>
+    </main>
+
+    <script>
+      // Theme toggle
+      const themeToggleBtn = document.getElementById("theme-toggle");
+      const themeToggleDarkIcon = document.getElementById(
+        "theme-toggle-dark-icon"
+      );
+      const themeToggleLightIcon = document.getElementById(
+        "theme-toggle-light-icon"
+      );
+
+      if (
+        localStorage.getItem("theme") === "dark" ||
+        (!("theme" in localStorage) &&
+          window.matchMedia("(prefers-color-scheme: dark)").matches)
+      ) {
+        themeToggleLightIcon.classList.remove("hidden");
+        themeToggleDarkIcon.classList.add("hidden");
+      } else {
+        themeToggleLightIcon.classList.add("hidden");
+        themeToggleDarkIcon.classList.remove("hidden");
+      }
+
+      themeToggleBtn.addEventListener("click", function () {
+        themeToggleDarkIcon.classList.toggle("hidden");
+        themeToggleLightIcon.classList.toggle("hidden");
+        if (localStorage.getItem("theme") === "dark") {
+          localStorage.setItem("theme", "light");
+          document.documentElement.classList.remove("dark");
+        } else {
+          localStorage.setItem("theme", "dark");
+          document.documentElement.classList.add("dark");
+        }
+        
+        createVennDiagram();
+      });
+
+      function createVennDiagram() {
+        const setALabel = document.getElementById("setALabel").value || "A";
+        const setBLabel = document.getElementById("setBLabel").value || "B";
+        const setCLabel = document.getElementById("setCLabel").value || "C";
+
+        const sets = [
+          { sets: [setALabel], size: parseInt(document.getElementById("aOnly").value) || 0 },
+          { sets: [setBLabel], size: parseInt(document.getElementById("bOnly").value) || 0 },
+          { sets: [setCLabel], size: parseInt(document.getElementById("cOnly").value) || 0 },
+          { sets: [setALabel, setBLabel], size: parseInt(document.getElementById("aAndB").value) || 0 },
+          { sets: [setALabel, setCLabel], size: parseInt(document.getElementById("aAndC").value) || 0 },
+          { sets: [setBLabel, setCLabel], size: parseInt(document.getElementById("bAndC").value) || 0 },
+          { sets: [setALabel, setBLabel, setCLabel], size: parseInt(document.getElementById("aAndBAndC").value) || 0 }
+        ].filter(set => set.size > 0);
+
+        const container = document.getElementById("vennChart");
+        const width = container.clientWidth;
+        const height = container.clientHeight;
+        
+        const chart = venn.VennDiagram()
+          .width(width)
+          .height(height);
+
+        const div = d3.select("#vennChart");
+        div.datum(sets).call(chart);
+
+        // Apply theme colors
+        const isDark = document.documentElement.classList.contains("dark");
+        const textColor = isDark ? "#f9fafb" : "#111827";
+        const strokeColor = isDark ? "#f9fafb" : "#111827";
+        const fillColors = [
+          "rgba(255, 99, 132, 0.5)",
+          "rgba(54, 162, 235, 0.5)",
+          "rgba(255, 206, 86, 0.5)"
+        ];
+
+        div.selectAll(".venn-circle")
+          .style("fill", (d, i) => fillColors[i % fillColors.length])
+          .style("stroke", strokeColor);
+
+        div.selectAll(".venn-circle text")
+          .style("fill", textColor)
+          .style("font-weight", "normal")
+          .style("font-size", window.innerWidth < 640 ? "12px" : "14px");
+
+        div.selectAll(".venn-intersection")
+          .style("fill", textColor)
+          .style("font-size", window.innerWidth < 640 ? "10px" : "12px");
+      }
+
+      // Handle window resize
+      window.addEventListener("resize", function() {
+        createVennDiagram();
+      });
+
+      document.addEventListener("DOMContentLoaded", createVennDiagram);
+    </script>
+  </body>
+</html>

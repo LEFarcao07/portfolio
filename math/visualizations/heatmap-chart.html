@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Diagram Heatmap</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-chart-matrix@1.1.0/dist/chartjs-chart-matrix.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+      (function () {
+        const savedTheme =
+          localStorage.getItem("theme") ||
+          (window.matchMedia("(prefers-color-scheme: dark)").matches
+            ? "dark"
+            : "light");
+        document.documentElement.classList.toggle(
+          "dark",
+          savedTheme === "dark"
+        );
+      })();
+
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: [
+                "Inter",
+                "Segoe UI",
+                "Tahoma",
+                "Geneva",
+                "Verdana",
+                "sans-serif",
+              ],
+            },
+            colors: {
+              primary: { light: "#3B82F6", dark: "#60A5FA" },
+              dark: { light: "#1F2937", dark: "#111827" },
+              light: { light: "#F8F9FA", dark: "#1F2937" },
+              customGray: "#3E3E3E",
+              linux: {
+                "merah-error": "#CC0000",
+                "ijo-sukses": "#4E9A06",
+                "kuning-awas": "#C4A000",
+                "biru-info": "#3465A4",
+                "ungu-ajaib": "#75507B",
+                "cyan-keren": "#06989A",
+              },
+            },
+          },
+        },
+        corePlugins: { preflight: false },
+      };
+    </script>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      a {
+        text-decoration: none;
+      }
+      .chart-container {
+        height: 500px;
+        display: flex;
+        justify-content: center;
+      }
+      .number-input, .text-input {
+        width: 100%;
+        padding: 10px;
+        border-radius: 5px;
+        border: 1px solid #d1d5db;
+      }
+      .dark .number-input, .dark .text-input {
+        background-color: #374151;
+        border-color: #4b5563;
+        color: #f9fafb;
+      }
+      textarea {
+        min-height: 100px;
+        resize: vertical;
+      }
+    </style>
+  </head>
+  <body class="bg-gray-100 dark:bg-gray-900 min-h-screen">
+    <nav class="bg-white dark:bg-gray-800 shadow-sm">
+      <div class="px-4 py-3 flex justify-between items-center">
+        <a
+          href="../index"
+          class="text-blue-600 dark:text-blue-400 font-semibold"
+          >← Kembali</a
+        >
+        <button
+          id="theme-toggle"
+          type="button"
+          class="p-2 border-transparent bg-white dark:bg-dark-light text-dark dark:text-gray-300 rounded-lg focus:outline-none transform hover:rotate-12"
+          aria-label="Toggle dark mode"
+        >
+          <svg
+            id="theme-toggle-dark-icon"
+            class="w-5 h-5"
+            fill="currentColor"
+            viewBox="0 0 20 20"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"
+            ></path>
+          </svg>
+          <svg
+            id="theme-toggle-light-icon"
+            class="w-5 h-5 hidden"
+            fill="currentColor"
+            viewBox="0 0 20 20"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z"
+              fill-rule="evenodd"
+              clip-rule="evenodd"
+            ></path>
+          </svg>
+        </button>
+      </div>
+    </nav>
+
+    <main class="container mx-auto px-4 py-8">
+      <h1 class="text-2xl font-bold text-center text-dark dark:text-white mb-8">
+        Diagram Heatmap
+      </h1>
+
+      <div
+        class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md max-w-4xl mx-auto"
+      >
+        <div class="mb-6">
+          <div class="input-group mb-4">
+            <label class="block text-dark dark:text-white mb-2"
+              >Label Baris (pisahkan dengan koma)</label
+            >
+            <input
+              type="text"
+              id="rowLabels"
+              class="text-input"
+              value="Senin,Selasa,Rabu,Kamis,Jumat"
+            />
+          </div>
+          <div class="input-group mb-4">
+            <label class="block text-dark dark:text-white mb-2"
+              >Label Kolom (pisahkan dengan koma)</label
+            >
+            <input
+              type="text"
+              id="colLabels"
+              class="text-input"
+              value="Pagi,Siang,Sore,Malam"
+            />
+          </div>
+          <div class="input-group mb-4">
+            <label class="block text-dark dark:text-white mb-2"
+              >Data Matriks (baris dipisahkan titik koma, kolom dipisahkan koma)</label
+            >
+            <textarea
+              id="matrixData"
+              class="text-input"
+            >12,19,3,5;17,2,11,9;7,14,21,4;15,8,13,6;10,16,1,18</textarea>
+          </div>
+          <button
+            onclick="createHeatmap()"
+            class="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded"
+          >
+            Buat Diagram Heatmap
+          </button>
+        </div>
+
+        <div class="chart-container">
+          <canvas id="heatmapChart"></canvas>
+        </div>
+
+        <div class="mt-6 p-4 bg-blue-50 dark:bg-blue-900 rounded-lg">
+          <h3 class="font-bold text-dark dark:text-white mb-2">
+            Contoh Penggunaan:
+          </h3>
+          <p class="text-dark dark:text-gray-300">
+            - Intensitas pengunjung toko berdasarkan hari dan jam
+          </p>
+          <p class="text-dark dark:text-gray-300">
+            - Korelasi antara variabel dalam penelitian
+          </p>
+          <p class="text-dark dark:text-gray-300">
+            - Distribusi suhu berdasarkan lokasi dan waktu
+          </p>
+          <p class="text-dark dark:text-gray-300">
+            - Matriks konfusi dalam evaluasi model machine learning
+          </p>
+        </div>
+      </div>
+    </main>
+
+    <script>
+      // Theme toggle
+      const themeToggleBtn = document.getElementById("theme-toggle");
+      const themeToggleDarkIcon = document.getElementById(
+        "theme-toggle-dark-icon"
+      );
+      const themeToggleLightIcon = document.getElementById(
+        "theme-toggle-light-icon"
+      );
+
+      if (
+        localStorage.getItem("theme") === "dark" ||
+        (!("theme" in localStorage) &&
+          window.matchMedia("(prefers-color-scheme: dark)").matches)
+      ) {
+        themeToggleLightIcon.classList.remove("hidden");
+        themeToggleDarkIcon.classList.add("hidden");
+      } else {
+        themeToggleLightIcon.classList.add("hidden");
+        themeToggleDarkIcon.classList.remove("hidden");
+      }
+
+      themeToggleBtn.addEventListener("click", function () {
+        themeToggleDarkIcon.classList.toggle("hidden");
+        themeToggleLightIcon.classList.toggle("hidden");
+        if (localStorage.getItem("theme") === "dark") {
+          localStorage.setItem("theme", "light");
+          document.documentElement.classList.remove("dark");
+        } else {
+          localStorage.setItem("theme", "dark");
+          document.documentElement.classList.add("dark");
+        }
+        
+        // Update chart colors when theme changes
+        if (heatmapChart) {
+          updateChartColors();
+        }
+      });
+
+      let heatmapChart = null;
+
+      function parseMatrixData(dataString) {
+        const rows = dataString.split(';');
+        return rows.map(row => {
+          const cols = row.split(',');
+          return cols.map(Number);
+        });
+      }
+
+      function createHeatmap() {
+        const rowLabels = document.getElementById("rowLabels").value.split(",");
+        const colLabels = document.getElementById("colLabels").value.split(",");
+        const matrixData = parseMatrixData(document.getElementById("matrixData").value);
+
+        // Validate data
+        const isValid = matrixData.every(row => 
+          row.length === colLabels.length && 
+          row.every(val => !isNaN(val))
+        );
+
+        if (!isValid) {
+          Swal.fire(
+            "Error",
+            "Format data matriks tidak valid! Pastikan jumlah kolom sama dengan label kolom dan semua nilai berupa angka.",
+            "error"
+          );
+          return;
+        }
+
+        if (matrixData.length !== rowLabels.length) {
+          Swal.fire(
+            "Error",
+            "Jumlah baris data harus sama dengan jumlah label baris!",
+            "error"
+          );
+          return;
+        }
+
+        const ctx = document.getElementById("heatmapChart").getContext("2d");
+        if (heatmapChart) heatmapChart.destroy();
+
+        // Prepare data for chart
+        const data = [];
+        for (let i = 0; i < rowLabels.length; i++) {
+          for (let j = 0; j < colLabels.length; j++) {
+            data.push({
+              x: colLabels[j],
+              y: rowLabels[i],
+              v: matrixData[i][j]
+            });
+          }
+        }
+
+        // Find min and max for color scaling
+        const allValues = matrixData.flat();
+        const minValue = Math.min(...allValues);
+        const maxValue = Math.max(...allValues);
+
+        heatmapChart = new Chart(ctx, {
+          type: 'matrix',
+          data: {
+            datasets: [{
+              label: 'Heatmap Data',
+              data: data,
+              backgroundColor: function(context) {
+                const value = context.dataset.data[context.dataIndex].v;
+                const alpha = (value - minValue) / (maxValue - minValue);
+                return `rgba(59, 130, 246, ${0.2 + alpha * 0.8})`;
+              },
+              borderColor: function(context) {
+                const value = context.dataset.data[context.dataIndex].v;
+                const alpha = (value - minValue) / (maxValue - minValue);
+                return `rgba(59, 130, 246, ${0.5 + alpha * 0.5})`;
+              },
+              borderWidth: 1,
+              width: ({chart}) => (chart.chartArea || {}).width / colLabels.length - 1,
+              height: ({chart}) => (chart.chartArea || {}).height / rowLabels.length - 1
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              title: {
+                display: true,
+                text: 'Diagram Heatmap',
+                font: {
+                  size: 16,
+                },
+                color: document.documentElement.classList.contains('dark') ? '#f9fafb' : '#111827'
+              },
+              legend: {
+                display: false
+              },
+              tooltip: {
+                callbacks: {
+                  label: function(context) {
+                    return `${context.parsed.y} - ${context.parsed.x}: ${context.parsed.v}`;
+                  }
+                }
+              }
+            },
+            scales: {
+              x: {
+                type: 'category',
+                labels: colLabels,
+                offset: true,
+                grid: {
+                  display: false
+                },
+                ticks: {
+                  color: document.documentElement.classList.contains('dark') ? '#f9fafb' : '#111827'
+                }
+              },
+              y: {
+                type: 'category',
+                labels: rowLabels,
+                offset: true,
+                grid: {
+                  display: false
+                },
+                ticks: {
+                  color: document.documentElement.classList.contains('dark') ? '#f9fafb' : '#111827'
+                }
+              }
+            }
+          }
+        });
+      }
+
+      function updateChartColors() {
+        if (!heatmapChart) return;
+        
+        // Update title color
+        heatmapChart.options.plugins.title.color = 
+          document.documentElement.classList.contains('dark') ? '#f9fafb' : '#111827';
+        
+        // Update axis ticks color
+        heatmapChart.options.scales.x.ticks.color = 
+          document.documentElement.classList.contains('dark') ? '#f9fafb' : '#111827';
+        heatmapChart.options.scales.y.ticks.color = 
+          document.documentElement.classList.contains('dark') ? '#f9fafb' : '#111827';
+        
+        heatmapChart.update();
+      }
+
+      document.addEventListener("DOMContentLoaded", createHeatmap);
+    </script>
+  </body>
+</html>

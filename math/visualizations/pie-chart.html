@@ -3,10 +3,10 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Box Plot</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <title>Diagram Lingkaran</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chartjs-chart-box-and-violin-plot@3.6.0"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
       (function () {
         const savedTheme =
@@ -62,6 +62,22 @@
       a {
         text-decoration: none;
       }
+      .chart-container {
+        height: 400px;
+        display: flex;
+        justify-content: center;
+      }
+      .number-input {
+        width: 100%;
+        padding: 10px;
+        border-radius: 5px;
+        border: 1px solid #d1d5db;
+      }
+      .dark .number-input {
+        background-color: #374151;
+        border-color: #4b5563;
+        color: #f9fafb;
+      }
     </style>
   </head>
   <body class="bg-gray-100 dark:bg-gray-900 min-h-screen">
@@ -107,7 +123,9 @@
     </nav>
 
     <main class="container mx-auto px-4 py-8">
-      <h1 class="text-2xl font-bold text-center">Box Plot (Diagram Kotak)</h1>
+      <h1 class="text-2xl font-bold text-center text-dark dark:text-white mb-8">
+        Diagram Lingkaran
+      </h1>
 
       <div
         class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md max-w-2xl mx-auto"
@@ -115,25 +133,51 @@
         <div class="mb-6">
           <div class="input-group mb-4">
             <label class="block text-dark dark:text-white mb-2"
-              >Data (pisahkan dengan koma)</label
+              >Label Kategori (pisahkan dengan koma)</label
             >
             <input
               type="text"
-              id="boxplotData"
+              id="pieLabels"
               class="number-input"
-              value="10,12,15,18,20,22,24,25,26,28,30,35,40"
+              value="Mobil,Motor,Sepeda,Bus,Truk"
+            />
+          </div>
+          <div class="input-group mb-4">
+            <label class="block text-dark dark:text-white mb-2"
+              >Nilai (pisahkan dengan koma)</label
+            >
+            <input
+              type="text"
+              id="pieValues"
+              class="number-input"
+              value="45,30,15,7,3"
             />
           </div>
           <button
-            onclick="createBoxPlot()"
+            onclick="createPieChart()"
             class="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded"
           >
-            Buat Box Plot
+            Buat Diagram Lingkaran
           </button>
         </div>
 
         <div class="chart-container">
-          <canvas id="boxplotChart"></canvas>
+          <canvas id="pieChart"></canvas>
+        </div>
+
+        <div class="mt-6 p-4 bg-blue-50 dark:bg-blue-900 rounded-lg">
+          <h3 class="font-bold text-dark dark:text-white mb-2">
+            Contoh Penggunaan:
+          </h3>
+          <p class="text-dark dark:text-gray-300">
+            - Persentase jenis kendaraan di parkiran
+          </p>
+          <p class="text-dark dark:text-gray-300">
+            - Komposisi penduduk berdasarkan agama
+          </p>
+          <p class="text-dark dark:text-gray-300">
+            - Distribusi penjualan produk
+          </p>
         </div>
       </div>
     </main>
@@ -171,36 +215,58 @@
           document.documentElement.classList.add("dark");
         }
       });
-      
-      let boxplotChart = null;
 
-      function createBoxPlot() {
-        const data = document
-          .getElementById("boxplotData")
+      let pieChart = null;
+
+      function createPieChart() {
+        const labels = document.getElementById("pieLabels").value.split(",");
+        const values = document
+          .getElementById("pieValues")
           .value.split(",")
           .map(Number);
 
-        if (data.some(isNaN)) {
+        if (values.some(isNaN)) {
           Swal.fire(
             "Error",
-            "Data harus berupa angka yang dipisahkan koma!",
+            "Nilai harus berupa angka yang dipisahkan koma!",
             "error"
           );
           return;
         }
 
-        const ctx = document.getElementById("boxplotChart").getContext("2d");
-        if (boxplotChart) boxplotChart.destroy();
+        if (labels.length !== values.length) {
+          Swal.fire(
+            "Error",
+            "Jumlah label dan nilai harus sama!",
+            "error"
+          );
+          return;
+        }
 
-        boxplotChart = new Chart(ctx, {
-          type: "boxplot",
+        const ctx = document.getElementById("pieChart").getContext("2d");
+        if (pieChart) pieChart.destroy();
+
+        pieChart = new Chart(ctx, {
+          type: "pie",
           data: {
-            labels: ["Data"],
+            labels: labels,
             datasets: [
               {
-                data: [data],
-                backgroundColor: "rgba(59, 130, 246, 0.5)",
-                borderColor: "rgba(59, 130, 246, 1)",
+                data: values,
+                backgroundColor: [
+                  "rgba(255, 99, 132, 0.7)",
+                  "rgba(54, 162, 235, 0.7)",
+                  "rgba(255, 206, 86, 0.7)",
+                  "rgba(75, 192, 192, 0.7)",
+                  "rgba(153, 102, 255, 0.7)",
+                ],
+                borderColor: [
+                  "rgba(255, 99, 132, 1)",
+                  "rgba(54, 162, 235, 1)",
+                  "rgba(255, 206, 86, 1)",
+                  "rgba(75, 192, 192, 1)",
+                  "rgba(153, 102, 255, 1)",
+                ],
                 borderWidth: 1,
               },
             ],
@@ -208,13 +274,31 @@
           options: {
             responsive: true,
             plugins: {
-              title: { display: true, text: "Box Plot" },
+              title: {
+                display: true,
+                text: "Diagram Lingkaran",
+                font: {
+                  size: 16,
+                },
+              },
+              legend: {
+                position: "right",
+                labels: {
+                  color: "#111827",
+                },
+              },
             },
           },
         });
+
+        // Update legend color for dark mode
+        if (document.documentElement.classList.contains("dark")) {
+          pieChart.options.plugins.legend.labels.color = "#f9fafb";
+          pieChart.update();
+        }
       }
 
-      document.addEventListener("DOMContentLoaded", createBoxPlot);
+      document.addEventListener("DOMContentLoaded", createPieChart);
     </script>
   </body>
 </html>
