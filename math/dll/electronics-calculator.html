@@ -1,11 +1,12 @@
 <!DOCTYPE html>
+
 <html lang="id">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Kalkulator Elektronika</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Kalkulator Elektronika</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
       (function () {
         const savedTheme =
           localStorage.getItem("theme") ||
@@ -51,7 +52,7 @@
         corePlugins: { preflight: false },
       };
     </script>
-    <style>
+<style>
       * {
         margin: 0;
         padding: 0;
@@ -198,307 +199,281 @@
         border-color: #4b5563;
       }
     </style>
-  </head>
-  <body class="bg-gray-100 dark:bg-gray-900 min-h-screen">
-    <nav class="bg-white dark:bg-gray-800 shadow-sm">
-      <div class="px-4 py-3 flex justify-between items-center">
-        <a
-          href="../index"
-          class="text-blue-600 dark:text-blue-400 font-semibold"
-          >← Kembali</a
-        >
-        <button
-          id="theme-toggle"
-          type="button"
-          class="p-2 border-transparent bg-white dark:bg-dark-light text-dark dark:text-gray-300 rounded-lg focus:outline-none transform hover:rotate-12"
-        >
-          <svg
-            id="theme-toggle-dark-icon"
-            class="w-5 h-5"
-            fill="currentColor"
-            viewBox="0 0 20 20"
-          >
-            <path
-              d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"
-            ></path>
-          </svg>
-          <svg
-            id="theme-toggle-light-icon"
-            class="w-5 h-5 hidden"
-            fill="currentColor"
-            viewBox="0 0 20 20"
-          >
-            <path
-              d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z"
-              fill-rule="evenodd"
-              clip-rule="evenodd"
-            ></path>
-          </svg>
-        </button>
-      </div>
-    </nav>
+<style>
+@media (hover: hover) and (pointer: fine) {
+  html,
+  body,
+  * {
+    cursor: none !important;
+    margin: 0;
+    padding: 0;
+  }
 
-    <main class="container mx-auto px-4 py-8">
-      <h1
-        class="text-2xl font-bold text-center mb-8 text-gray-800 dark:text-white"
-      >
+  .cursor-outer,
+  .cursor-inner {
+    display: block !important;
+  }
+}
+
+@media (hover: none) and (pointer: coarse) {
+  html,
+  body {
+    cursor: auto !important;
+    overflow-x: hidden;
+    margin: 0;
+    padding: 0;
+  }
+
+  .cursor-outer,
+  .cursor-inner {
+    display: none !important;
+  }
+}
+
+.cursor-outer {
+  position: fixed;
+  width: 30px;
+  height: 30px;
+  background-color: rgba(59, 130, 246, 0.2);
+  border-radius: 50%;
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+  transition: transform 0.1s ease-out, background-color 0.1s ease-out;
+  z-index: 9999;
+  will-change: transform;
+}
+
+.cursor-inner {
+  position: fixed;
+  width: 6px;
+  height: 6px;
+  background-color: #fff;
+  border-radius: 50%;
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+  z-index: 9999;
+  transition: transform 0.05s ease-out;
+  mix-blend-mode: difference;
+  will-change: transform;
+}
+</style></head>
+<body class="bg-gray-100 dark:bg-gray-900 min-h-screen">
+<!-- Custom Cursor -->
+<div class="cursor-outer"></div>
+<div class="cursor-inner"></div>
+
+<nav class="bg-white dark:bg-gray-800 shadow-sm">
+<div class="px-4 py-3 flex justify-between items-center">
+<a class="text-blue-600 dark:text-blue-400 font-semibold" href="../index">← Kembali</a>
+<button class="p-2 border-transparent bg-white dark:bg-dark-light text-dark dark:text-gray-300 rounded-lg focus:outline-none transform hover:rotate-12" id="theme-toggle" type="button">
+<svg class="w-5 h-5" fill="currentColor" id="theme-toggle-dark-icon" viewbox="0 0 20 20">
+<path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path>
+</svg>
+<svg class="w-5 h-5 hidden" fill="currentColor" id="theme-toggle-light-icon" viewbox="0 0 20 20">
+<path clip-rule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" fill-rule="evenodd"></path>
+</svg>
+</button>
+</div>
+</nav>
+<main class="container mx-auto px-4 py-8">
+<h1 class="text-2xl font-bold text-center mb-8 text-gray-800 dark:text-white">
         Kalkulator Elektronika
       </h1>
-
-      <div
-        class="calculator bg-white dark:bg-gray-800 p-4 rounded-lg shadow-md"
-      >
-        <div class="tab-buttons">
-          <button class="tab-button active" onclick="openTab('ohm')">
+<div class="calculator bg-white dark:bg-gray-800 p-4 rounded-lg shadow-md">
+<div class="tab-buttons">
+<button class="tab-button active" onclick="openTab('ohm')">
             Hukum Ohm
           </button>
-          <button class="tab-button" onclick="openTab('power')">
+<button class="tab-button" onclick="openTab('power')">
             Daya Listrik
           </button>
-          <button class="tab-button" onclick="openTab('circuit')">
+<button class="tab-button" onclick="openTab('circuit')">
             Rangkaian
           </button>
-        </div>
-
-        <!-- Hukum Ohm Tab -->
-        <div id="ohm" class="tab-content active">
-          <div class="input-group">
-            <label class="input-label text-gray-700 dark:text-gray-300"
-              >Hitung Berdasarkan</label
-            >
-            <select id="ohmCalcType" class="select-input">
-              <option value="V">Tegangan (V)</option>
-              <option value="I">Arus (I)</option>
-              <option value="R">Hambatan (R)</option>
-            </select>
-          </div>
-
-          <div id="ohmInputs">
-            <!-- Input fields will be dynamically generated here -->
-          </div>
-
-          <div class="grid grid-cols-2 gap-4 mt-4">
-            <button
-              class="btn btn-primary hover:bg-blue-600 rounded"
-              onclick="calculateOhm()"
-            >
+</div>
+<!-- Hukum Ohm Tab -->
+<div class="tab-content active" id="ohm">
+<div class="input-group">
+<label class="input-label text-gray-700 dark:text-gray-300">Hitung Berdasarkan</label>
+<select class="select-input" id="ohmCalcType">
+<option value="V">Tegangan (V)</option>
+<option value="I">Arus (I)</option>
+<option value="R">Hambatan (R)</option>
+</select>
+</div>
+<div id="ohmInputs">
+<!-- Input fields will be dynamically generated here -->
+</div>
+<div class="grid grid-cols-2 gap-4 mt-4">
+<button class="btn btn-primary hover:bg-blue-600 rounded" onclick="calculateOhm()">
               Hitung
             </button>
-            <button
-              class="btn btn-reset hover:bg-red-600 rounded"
-              onclick="resetOhm()"
-            >
+<button class="btn btn-reset hover:bg-red-600 rounded" onclick="resetOhm()">
               Reset
             </button>
-          </div>
-
-          <div class="result-box mt-6">
-            <div class="result-title text-gray-800 dark:text-white">
+</div>
+<div class="result-box mt-6">
+<div class="result-title text-gray-800 dark:text-white">
               Hasil Perhitungan:
             </div>
-            <div class="result-grid">
-              <div class="result-item">
-                <div class="font-medium text-dark dark:text-white">Tegangan</div>
-                <div id="voltageResult" class="result-value text-dark dark:text-white">
+<div class="result-grid">
+<div class="result-item">
+<div class="font-medium text-dark dark:text-white">Tegangan</div>
+<div class="result-value text-dark dark:text-white" id="voltageResult">
                   -
                 </div>
-                <div class="result-unit">Volt (V)</div>
-              </div>
-              <div class="result-item">
-                <div class="font-medium text-dark dark:text-white">Arus</div>
-                <div id="currentResult" class="result-value text-dark dark:text-white">
+<div class="result-unit">Volt (V)</div>
+</div>
+<div class="result-item">
+<div class="font-medium text-dark dark:text-white">Arus</div>
+<div class="result-value text-dark dark:text-white" id="currentResult">
                   -
                 </div>
-                <div class="result-unit">Ampere (A)</div>
-              </div>
-              <div class="result-item">
-                <div class="font-medium text-dark dark:text-white">Hambatan</div>
-                <div id="resistanceResult" class="result-value text-dark dark:text-white">
+<div class="result-unit">Ampere (A)</div>
+</div>
+<div class="result-item">
+<div class="font-medium text-dark dark:text-white">Hambatan</div>
+<div class="result-value text-dark dark:text-white" id="resistanceResult">
                   -
                 </div>
-                <div class="result-unit">Ohm (Ω)</div>
-              </div>
-              <div class="result-item">
-                <div class="font-medium text-dark dark:text-white">Daya</div>
-                <div id="powerResultOhm" class="result-value text-dark dark:text-white">
+<div class="result-unit">Ohm (Ω)</div>
+</div>
+<div class="result-item">
+<div class="font-medium text-dark dark:text-white">Daya</div>
+<div class="result-value text-dark dark:text-white" id="powerResultOhm">
                   -
                 </div>
-                <div class="result-unit">Watt (W)</div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Daya Listrik Tab -->
-        <div id="power" class="tab-content">
-          <div class="input-group">
-            <label class="input-label text-gray-700 dark:text-gray-300"
-              >Hitung Berdasarkan</label
-            >
-            <select id="powerCalcType" class="select-input">
-              <option value="P">Daya (P)</option>
-              <option value="V">Tegangan (V)</option>
-              <option value="I">Arus (I)</option>
-              <option value="R">Hambatan (R)</option>
-            </select>
-          </div>
-
-          <div id="powerInputs">
-            <!-- Input fields will be dynamically generated here -->
-          </div>
-
-          <div class="grid grid-cols-2 gap-4 mt-4">
-            <button
-              class="btn btn-primary hover:bg-blue-600 rounded"
-              onclick="calculatePower()"
-            >
+<div class="result-unit">Watt (W)</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Daya Listrik Tab -->
+<div class="tab-content" id="power">
+<div class="input-group">
+<label class="input-label text-gray-700 dark:text-gray-300">Hitung Berdasarkan</label>
+<select class="select-input" id="powerCalcType">
+<option value="P">Daya (P)</option>
+<option value="V">Tegangan (V)</option>
+<option value="I">Arus (I)</option>
+<option value="R">Hambatan (R)</option>
+</select>
+</div>
+<div id="powerInputs">
+<!-- Input fields will be dynamically generated here -->
+</div>
+<div class="grid grid-cols-2 gap-4 mt-4">
+<button class="btn btn-primary hover:bg-blue-600 rounded" onclick="calculatePower()">
               Hitung
             </button>
-            <button
-              class="btn btn-reset hover:bg-red-600 rounded"
-              onclick="resetPower()"
-            >
+<button class="btn btn-reset hover:bg-red-600 rounded" onclick="resetPower()">
               Reset
             </button>
-          </div>
-
-          <div class="result-box mt-6">
-            <div class="result-title text-gray-800 dark:text-white">
+</div>
+<div class="result-box mt-6">
+<div class="result-title text-gray-800 dark:text-white">
               Hasil Perhitungan:
             </div>
-            <div class="result-grid">
-              <div class="result-item">
-                <div class="font-medium text-dark dark:text-white">Daya</div>
-                <div id="powerResult" class="result-value text-dark dark:text-white">
+<div class="result-grid">
+<div class="result-item">
+<div class="font-medium text-dark dark:text-white">Daya</div>
+<div class="result-value text-dark dark:text-white" id="powerResult">
                   -
                 </div>
-                <div class="result-unit">Watt (W)</div>
-              </div>
-              <div class="result-item">
-                <div class="font-medium text-dark dark:text-white">Tegangan</div>
-                <div id="voltageResultPower" class="result-value text-dark dark:text-white">
+<div class="result-unit">Watt (W)</div>
+</div>
+<div class="result-item">
+<div class="font-medium text-dark dark:text-white">Tegangan</div>
+<div class="result-value text-dark dark:text-white" id="voltageResultPower">
                   -
                 </div>
-                <div class="result-unit">Volt (V)</div>
-              </div>
-              <div class="result-item">
-                <div class="font-medium text-dark dark:text-white">Arus</div>
-                <div id="currentResultPower" class="result-value text-dark dark:text-white">
+<div class="result-unit">Volt (V)</div>
+</div>
+<div class="result-item">
+<div class="font-medium text-dark dark:text-white">Arus</div>
+<div class="result-value text-dark dark:text-white" id="currentResultPower">
                   -
                 </div>
-                <div class="result-unit">Ampere (A)</div>
-              </div>
-              <div class="result-item">
-                <div class="font-medium text-dark dark:text-white">Hambatan</div>
-                <div id="resistanceResultPower" class="result-value text-dark dark:text-white">
+<div class="result-unit">Ampere (A)</div>
+</div>
+<div class="result-item">
+<div class="font-medium text-dark dark:text-white">Hambatan</div>
+<div class="result-value text-dark dark:text-white" id="resistanceResultPower">
                   -
                 </div>
-                <div class="result-unit">Ohm (Ω)</div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Rangkaian Listrik Tab -->
-        <div id="circuit" class="tab-content">
-          <div class="input-group">
-            <label class="input-label text-gray-700 dark:text-gray-300"
-              >Jenis Rangkaian</label
-            >
-            <select id="circuitType" class="select-input">
-              <option value="series">Seri</option>
-              <option value="parallel">Paralel</option>
-            </select>
-          </div>
-
-          <div class="input-group">
-            <label class="input-label text-gray-700 dark:text-gray-300"
-              >Jumlah Resistor</label
-            >
-            <input
-              type="number"
-              id="resistorCount"
-              class="number-input"
-              min="2"
-              max="10"
-              value="2"
-              onchange="generateResistorInputs()"
-            />
-          </div>
-
-          <div id="resistorInputs">
-            <!-- Resistor inputs will be generated here -->
-          </div>
-
-          <div class="input-group">
-            <label class="input-label text-gray-700 dark:text-gray-300"
-              >Tegangan Sumber (V)</label
-            >
-            <input
-              type="number"
-              id="sourceVoltage"
-              class="number-input"
-              placeholder="Masukkan tegangan sumber"
-              value="12"
-            />
-          </div>
-
-          <div class="grid grid-cols-2 gap-4 mt-4">
-            <button
-              class="btn btn-primary hover:bg-blue-600 rounded"
-              onclick="calculateCircuit()"
-            >
+<div class="result-unit">Ohm (Ω)</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Rangkaian Listrik Tab -->
+<div class="tab-content" id="circuit">
+<div class="input-group">
+<label class="input-label text-gray-700 dark:text-gray-300">Jenis Rangkaian</label>
+<select class="select-input" id="circuitType">
+<option value="series">Seri</option>
+<option value="parallel">Paralel</option>
+</select>
+</div>
+<div class="input-group">
+<label class="input-label text-gray-700 dark:text-gray-300">Jumlah Resistor</label>
+<input class="number-input" id="resistorCount" max="10" min="2" onchange="generateResistorInputs()" type="number" value="2"/>
+</div>
+<div id="resistorInputs">
+<!-- Resistor inputs will be generated here -->
+</div>
+<div class="input-group">
+<label class="input-label text-gray-700 dark:text-gray-300">Tegangan Sumber (V)</label>
+<input class="number-input" id="sourceVoltage" placeholder="Masukkan tegangan sumber" type="number" value="12"/>
+</div>
+<div class="grid grid-cols-2 gap-4 mt-4">
+<button class="btn btn-primary hover:bg-blue-600 rounded" onclick="calculateCircuit()">
               Hitung
             </button>
-            <button
-              class="btn btn-reset hover:bg-red-600 rounded"
-              onclick="resetCircuit()"
-            >
+<button class="btn btn-reset hover:bg-red-600 rounded" onclick="resetCircuit()">
               Reset
             </button>
-          </div>
-
-          <div class="result-box mt-6">
-            <div class="result-title text-gray-800 dark:text-white">
+</div>
+<div class="result-box mt-6">
+<div class="result-title text-gray-800 dark:text-white">
               Hasil Perhitungan Rangkaian:
             </div>
-            <div class="result-grid">
-              <div class="result-item">
-                <div class="font-medium text-dark dark:text-white">Hambatan Total</div>
-                <div id="totalResistance" class="result-value text-dark dark:text-white">
+<div class="result-grid">
+<div class="result-item">
+<div class="font-medium text-dark dark:text-white">Hambatan Total</div>
+<div class="result-value text-dark dark:text-white" id="totalResistance">
                   -
                 </div>
-                <div class="result-unit">Ohm (Ω)</div>
-              </div>
-              <div class="result-item">
-                <div class="font-medium text-dark dark:text-white">Arus Total</div>
-                <div id="totalCurrent" class="result-value text-dark dark:text-white">
+<div class="result-unit">Ohm (Ω)</div>
+</div>
+<div class="result-item">
+<div class="font-medium text-dark dark:text-white">Arus Total</div>
+<div class="result-value text-dark dark:text-white" id="totalCurrent">
                   -
                 </div>
-                <div class="result-unit">Ampere (A)</div>
-              </div>
-              <div class="result-item">
-                <div class="font-medium text-dark dark:text-white">Daya Total</div>
-                <div id="totalPower" class="result-value text-dark dark:text-white">
+<div class="result-unit">Ampere (A)</div>
+</div>
+<div class="result-item">
+<div class="font-medium text-dark dark:text-white">Daya Total</div>
+<div class="result-value text-dark dark:text-white" id="totalPower">
                   -
                 </div>
-                <div class="result-unit">Watt (W)</div>
-              </div>
-            </div>
-            <div class="mt-4">
-              <div class="result-title text-gray-800 dark:text-white">
+<div class="result-unit">Watt (W)</div>
+</div>
+</div>
+<div class="mt-4">
+<div class="result-title text-gray-800 dark:text-white">
                 Tegangan dan Arus per Resistor:
               </div>
-              <div id="resistorDetails" class="mt-2">
-                <!-- Resistor details will be generated here -->
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </main>
-
-    <script>
+<div class="mt-2" id="resistorDetails">
+<!-- Resistor details will be generated here -->
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<script>
       // Theme toggle
       const themeToggleBtn = document.getElementById("theme-toggle");
       const themeToggleDarkIcon = document.getElementById(
@@ -852,5 +827,5 @@
         document.getElementById("resistorDetails").innerHTML = "";
       }
     </script>
-  </body>
+<script src="../cursor.js"></script></body>
 </html>

@@ -1,11 +1,12 @@
 <!DOCTYPE html>
+
 <html lang="id">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Kalkulator Logika & Himpunan</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Kalkulator Logika &amp; Himpunan</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
       (function () {
         const savedTheme =
           localStorage.getItem("theme") ||
@@ -42,7 +43,7 @@
         corePlugins: { preflight: false },
       };
     </script>
-    <style>
+<style>
       * {
         margin: 0;
         padding: 0;
@@ -169,125 +170,180 @@
         font-family: monospace;
       }
     </style>
-</head>
+<style>
+@media (hover: hover) and (pointer: fine) {
+  html,
+  body,
+  * {
+    cursor: none !important;
+    margin: 0;
+    padding: 0;
+  }
+
+  .cursor-outer,
+  .cursor-inner {
+    display: block !important;
+  }
+}
+
+@media (hover: none) and (pointer: coarse) {
+  html,
+  body {
+    cursor: auto !important;
+    overflow-x: hidden;
+    margin: 0;
+    padding: 0;
+  }
+
+  .cursor-outer,
+  .cursor-inner {
+    display: none !important;
+  }
+}
+
+.cursor-outer {
+  position: fixed;
+  width: 30px;
+  height: 30px;
+  background-color: rgba(59, 130, 246, 0.2);
+  border-radius: 50%;
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+  transition: transform 0.1s ease-out, background-color 0.1s ease-out;
+  z-index: 9999;
+  will-change: transform;
+}
+
+.cursor-inner {
+  position: fixed;
+  width: 6px;
+  height: 6px;
+  background-color: #fff;
+  border-radius: 50%;
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+  z-index: 9999;
+  transition: transform 0.05s ease-out;
+  mix-blend-mode: difference;
+  will-change: transform;
+}
+</style></head>
 <body class="bg-gray-100 dark:bg-gray-900 min-h-screen">
-    <nav class="bg-white dark:bg-gray-800 shadow-sm">
-      <div class="px-4 py-3 flex justify-between items-center">
-        <a href="../index" class="text-blue-600 dark:text-blue-400 font-semibold">← Kembali</a>
-        <button id="theme-toggle" type="button" class="p-2 border-transparent bg-white dark:bg-dark-light text-dark dark:text-gray-300 rounded-lg focus:outline-none transform hover:rotate-12">
-          <svg id="theme-toggle-dark-icon" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-            <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path>
-          </svg>
-          <svg id="theme-toggle-light-icon" class="w-5 h-5 hidden" fill="currentColor" viewBox="0 0 20 20">
-            <path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" fill-rule="evenodd" clip-rule="evenodd"></path>
-          </svg>
-        </button>
-      </div>
-    </nav>
+<!-- Custom Cursor -->
+<div class="cursor-outer"></div>
+<div class="cursor-inner"></div>
 
-    <main class="container mx-auto px-4 py-8">
-      <h1 class="text-2xl font-bold text-center mb-8 text-gray-800 dark:text-white">
-        Kalkulator Logika & Himpunan
+<nav class="bg-white dark:bg-gray-800 shadow-sm">
+<div class="px-4 py-3 flex justify-between items-center">
+<a class="text-blue-600 dark:text-blue-400 font-semibold" href="../index">← Kembali</a>
+<button class="p-2 border-transparent bg-white dark:bg-dark-light text-dark dark:text-gray-300 rounded-lg focus:outline-none transform hover:rotate-12" id="theme-toggle" type="button">
+<svg class="w-5 h-5" fill="currentColor" id="theme-toggle-dark-icon" viewbox="0 0 20 20">
+<path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path>
+</svg>
+<svg class="w-5 h-5 hidden" fill="currentColor" id="theme-toggle-light-icon" viewbox="0 0 20 20">
+<path clip-rule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" fill-rule="evenodd"></path>
+</svg>
+</button>
+</div>
+</nav>
+<main class="container mx-auto px-4 py-8">
+<h1 class="text-2xl font-bold text-center mb-8 text-gray-800 dark:text-white">
+        Kalkulator Logika &amp; Himpunan
       </h1>
-
-      <div class="calculator bg-white dark:bg-gray-800 p-4 rounded-lg shadow-md">
-        <div class="tab-buttons">
-          <button class="tab-button active" onclick="openTab('proposition')">Logika Proposisi</button>
-          <button class="tab-button" onclick="openTab('set')">Operasi Himpunan</button>
-          <button class="tab-button" onclick="openTab('combinatorics')">Kombinatorik</button>
-        </div>
-
-        <!-- Logika Proposisi Tab -->
-        <div id="proposition" class="tab-content active">
-          <div class="input-group">
-            <label class="input-label text-gray-700 dark:text-gray-300">Proposisi P</label>
-            <select id="propP" class="select-input">
-              <option value="true">True (BENAR)</option>
-              <option value="false">False (SALAH)</option>
-            </select>
-          </div>
-          <div class="input-group">
-            <label class="input-label text-gray-700 dark:text-gray-300">Proposisi Q</label>
-            <select id="propQ" class="select-input">
-              <option value="true">True (BENAR)</option>
-              <option value="false">False (SALAH)</option>
-            </select>
-          </div>
-          <div class="input-group">
-            <label class="input-label text-gray-700 dark:text-gray-300">Operator Logika</label>
-            <select id="logicalOp" class="select-input">
-              <option value="and">AND (∧)</option>
-              <option value="or">OR (∨)</option>
-              <option value="xor">XOR (⊕)</option>
-              <option value="imply">Implikasi (→)</option>
-              <option value="equiv">Ekuivalensi (↔)</option>
-              <option value="notP">NOT P (¬P)</option>
-              <option value="notQ">NOT Q (¬Q)</option>
-            </select>
-          </div>
-          <button onclick="calculateProposition()" class="btn btn-primary hover:bg-blue-600 w-full mt-4">Hitung</button>
-          <div class="result-box mt-4">
-            <div class="result-title text-gray-800 dark:text-white">Hasil:</div>
-            <div id="propositionResult" class="result-content text-dark dark:text-white">Hasil akan muncul di sini...</div>
-          </div>
-        </div>
-
-        <!-- Operasi Himpunan Tab -->
-        <div id="set" class="tab-content">
-          <div class="input-group">
-            <label class="input-label text-gray-700 dark:text-gray-300">Himpunan A (pisahkan dengan koma)</label>
-            <input type="text" id="setA" class="text-input set-input" value="1, 2, 3, 4, 5">
-          </div>
-          <div class="input-group">
-            <label class="input-label text-gray-700 dark:text-gray-300">Himpunan B (pisahkan dengan koma)</label>
-            <input type="text" id="setB" class="text-input set-input" value="4, 5, 6, 7, 8">
-          </div>
-          <div class="input-group">
-            <label class="input-label text-gray-700 dark:text-gray-300">Operasi Himpunan</label>
-            <select id="setOperation" class="select-input">
-              <option value="union">Gabungan (A ∪ B)</option>
-              <option value="intersection">Irisan (A ∩ B)</option>
-              <option value="difference">Selisih (A - B)</option>
-              <option value="symdifference">Selisih Simetris (A Δ B)</option>
-              <option value="cartesian">Produk Kartesian (A × B)</option>
-              <option value="powerset">Power Set A</option>
-            </select>
-          </div>
-          <button onclick="calculateSet()" class="btn btn-primary hover:bg-blue-600 w-full mt-4">Hitung</button>
-          <div class="result-box mt-4">
-            <div class="result-title text-gray-800 dark:text-white">Hasil:</div>
-            <div id="setResult" class="result-content text-dark dark:text-white">Hasil akan muncul di sini...</div>
-          </div>
-        </div>
-
-        <!-- Kombinatorik Tab -->
-        <div id="combinatorics" class="tab-content">
-          <div class="input-group">
-            <label class="input-label text-gray-700 dark:text-gray-300">Jenis Perhitungan</label>
-            <select id="combinatoricsType" class="select-input">
-              <option value="permutation">Permutasi (nPr)</option>
-              <option value="combination">Kombinasi (nCr)</option>
-              <option value="factorial">Faktorial (n!)</option>
-            </select>
-          </div>
-          <div class="input-group">
-            <label class="input-label text-gray-700 dark:text-gray-300">n (total items)</label>
-            <input type="number" id="comboN" class="number-input" value="5" min="1" max="100">
-          </div>
-          <div class="input-group" id="comboRGroup">
-            <label class="input-label text-gray-700 dark:text-gray-300">r (selected items)</label>
-            <input type="number" id="comboR" class="number-input" value="3" min="1" max="100">
-          </div>
-          <button onclick="calculateCombinatorics()" class="btn btn-primary hover:bg-blue-600 w-full mt-4">Hitung</button>
-          <div class="result-box mt-4">
-            <div class="result-title text-gray-800 dark:text-white">Hasil:</div>
-            <div id="combinatoricsResult" class="result-content text-dark dark:text-white">Hasil akan muncul di sini...</div>
-          </div>
-        </div>
-      </div>
-    </main>
-
-    <script>
+<div class="calculator bg-white dark:bg-gray-800 p-4 rounded-lg shadow-md">
+<div class="tab-buttons">
+<button class="tab-button active" onclick="openTab('proposition')">Logika Proposisi</button>
+<button class="tab-button" onclick="openTab('set')">Operasi Himpunan</button>
+<button class="tab-button" onclick="openTab('combinatorics')">Kombinatorik</button>
+</div>
+<!-- Logika Proposisi Tab -->
+<div class="tab-content active" id="proposition">
+<div class="input-group">
+<label class="input-label text-gray-700 dark:text-gray-300">Proposisi P</label>
+<select class="select-input" id="propP">
+<option value="true">True (BENAR)</option>
+<option value="false">False (SALAH)</option>
+</select>
+</div>
+<div class="input-group">
+<label class="input-label text-gray-700 dark:text-gray-300">Proposisi Q</label>
+<select class="select-input" id="propQ">
+<option value="true">True (BENAR)</option>
+<option value="false">False (SALAH)</option>
+</select>
+</div>
+<div class="input-group">
+<label class="input-label text-gray-700 dark:text-gray-300">Operator Logika</label>
+<select class="select-input" id="logicalOp">
+<option value="and">AND (∧)</option>
+<option value="or">OR (∨)</option>
+<option value="xor">XOR (⊕)</option>
+<option value="imply">Implikasi (→)</option>
+<option value="equiv">Ekuivalensi (↔)</option>
+<option value="notP">NOT P (¬P)</option>
+<option value="notQ">NOT Q (¬Q)</option>
+</select>
+</div>
+<button class="btn btn-primary hover:bg-blue-600 w-full mt-4" onclick="calculateProposition()">Hitung</button>
+<div class="result-box mt-4">
+<div class="result-title text-gray-800 dark:text-white">Hasil:</div>
+<div class="result-content text-dark dark:text-white" id="propositionResult">Hasil akan muncul di sini...</div>
+</div>
+</div>
+<!-- Operasi Himpunan Tab -->
+<div class="tab-content" id="set">
+<div class="input-group">
+<label class="input-label text-gray-700 dark:text-gray-300">Himpunan A (pisahkan dengan koma)</label>
+<input class="text-input set-input" id="setA" type="text" value="1, 2, 3, 4, 5"/>
+</div>
+<div class="input-group">
+<label class="input-label text-gray-700 dark:text-gray-300">Himpunan B (pisahkan dengan koma)</label>
+<input class="text-input set-input" id="setB" type="text" value="4, 5, 6, 7, 8"/>
+</div>
+<div class="input-group">
+<label class="input-label text-gray-700 dark:text-gray-300">Operasi Himpunan</label>
+<select class="select-input" id="setOperation">
+<option value="union">Gabungan (A ∪ B)</option>
+<option value="intersection">Irisan (A ∩ B)</option>
+<option value="difference">Selisih (A - B)</option>
+<option value="symdifference">Selisih Simetris (A Δ B)</option>
+<option value="cartesian">Produk Kartesian (A × B)</option>
+<option value="powerset">Power Set A</option>
+</select>
+</div>
+<button class="btn btn-primary hover:bg-blue-600 w-full mt-4" onclick="calculateSet()">Hitung</button>
+<div class="result-box mt-4">
+<div class="result-title text-gray-800 dark:text-white">Hasil:</div>
+<div class="result-content text-dark dark:text-white" id="setResult">Hasil akan muncul di sini...</div>
+</div>
+</div>
+<!-- Kombinatorik Tab -->
+<div class="tab-content" id="combinatorics">
+<div class="input-group">
+<label class="input-label text-gray-700 dark:text-gray-300">Jenis Perhitungan</label>
+<select class="select-input" id="combinatoricsType">
+<option value="permutation">Permutasi (nPr)</option>
+<option value="combination">Kombinasi (nCr)</option>
+<option value="factorial">Faktorial (n!)</option>
+</select>
+</div>
+<div class="input-group">
+<label class="input-label text-gray-700 dark:text-gray-300">n (total items)</label>
+<input class="number-input" id="comboN" max="100" min="1" type="number" value="5"/>
+</div>
+<div class="input-group" id="comboRGroup">
+<label class="input-label text-gray-700 dark:text-gray-300">r (selected items)</label>
+<input class="number-input" id="comboR" max="100" min="1" type="number" value="3"/>
+</div>
+<button class="btn btn-primary hover:bg-blue-600 w-full mt-4" onclick="calculateCombinatorics()">Hitung</button>
+<div class="result-box mt-4">
+<div class="result-title text-gray-800 dark:text-white">Hasil:</div>
+<div class="result-content text-dark dark:text-white" id="combinatoricsResult">Hasil akan muncul di sini...</div>
+</div>
+</div>
+</div>
+</main>
+<script>
       // Theme toggle
       const themeToggleBtn = document.getElementById("theme-toggle");
       const themeToggleDarkIcon = document.getElementById("theme-toggle-dark-icon");
@@ -497,5 +553,5 @@
         openTab('proposition');
       });
     </script>
-</body>
+<script src="../cursor.js"></script></body>
 </html>

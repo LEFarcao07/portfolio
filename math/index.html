@@ -78,6 +78,99 @@
       };
     </script>
     <style type="text/css">
+      @media (hover: hover) and (pointer: fine) {
+        html,
+        body,
+        * {
+          cursor: none !important;
+          margin: 0;
+          padding: 0;
+          -webkit-tap-highlight-color: transparent;
+        -webkit-text-size-adjust: 100%;
+        }
+
+      @layer utilities {
+        /* Scrollbar styling */
+        .scrollbar-linux::-webkit-scrollbar {
+          width: 12px;
+          height: 12px;
+        }
+
+        .scrollbar-linux::-webkit-scrollbar-track {
+          background: #f1f1f1;
+        }
+
+        .scrollbar-linux::-webkit-scrollbar-thumb {
+          background: #c1c1c1;
+          background-clip: content-box;
+        }
+
+        .scrollbar-linux::-webkit-scrollbar-thumb:hover {
+          background: #a8a8a8;
+          background-clip: content-box;
+        }
+
+        /* Dark mode variant */
+        .dark .scrollbar-linux::-webkit-scrollbar-track {
+          background: #2d3748;
+        }
+
+        .dark .scrollbar-linux::-webkit-scrollbar-thumb {
+          background: #4a5568;
+        }
+
+        .dark .scrollbar-linux::-webkit-scrollbar-thumb:hover {
+          background: #718096;
+        }
+      }
+      
+
+        .cursor-outer,
+        .cursor-inner {
+          display: block !important;
+        }
+      }
+
+      @media (hover: none) and (pointer: coarse) {
+        html,
+        body {
+          cursor: auto !important;
+          overflow-x: hidden;
+          margin: 0;
+          padding: 0;
+        }
+
+        .cursor-outer,
+        .cursor-inner {
+          display: none !important;
+        }
+      }
+      .cursor-outer {
+        position: fixed;
+        width: 30px;
+        height: 30px;
+        background-color: rgba(59, 130, 246, 0.2);
+        border-radius: 50%;
+        pointer-events: none;
+        transform: translate(-50%, -50%);
+        transition: transform 0.1s ease-out, background-color 0.1s ease-out;
+        z-index: 9999;
+        will-change: transform;
+      }
+
+      .cursor-inner {
+        position: fixed;
+        width: 6px;
+        height: 6px;
+        background-color: #fff;
+        border-radius: 50%;
+        pointer-events: none;
+        transform: translate(-50%, -50%);
+        z-index: 9999;
+        transition: transform 0.05s ease-out;
+        mix-blend-mode: difference;
+        will-change: transform;
+      }
       * {
         margin: 0;
         padding: 0;
@@ -140,7 +233,10 @@
       }
     </style>
   </head>
-  <body class="min-h-screen flex flex-col transition-colors duration-300">
+  <body class="min-h-screen flex flex-col transition-colors duration-300 scrollbar-linux">
+    <!-- Custom Cursor -->
+    <div class="cursor-outer"></div>
+    <div class="cursor-inner"></div>
     <!-- Navigation -->
     <nav
       id="navbar"
@@ -703,7 +799,8 @@
           >
             <h3 class="text-xl font-semibold mb-2">Aritmetika</h3>
             <p class="text-gray-600 dark:text-gray-300">
-              Operasi dasar bilangan, Pecahan, desimal, persen, bilangan bulat, dan cacah.
+              Operasi dasar bilangan, Pecahan, desimal, persen, bilangan bulat,
+              dan cacah.
             </p>
           </a>
           <a
@@ -712,7 +809,8 @@
           >
             <h3 class="text-xl font-semibold mb-2">Trigonometri</h3>
             <p class="text-gray-600 dark:text-gray-300">
-              Sudut, sinus, cosinus, tangen, Hubungan antar sisi dan sudut dalam segitiga, Identitas trigonometri dan grafiknya.
+              Sudut, sinus, cosinus, tangen, Hubungan antar sisi dan sudut dalam
+              segitiga, Identitas trigonometri dan grafiknya.
             </p>
           </a>
           <a
@@ -782,9 +880,12 @@
             href="modules/persamaan-pertidaksamaan"
             class="card rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow hover:-translate-y-1 block"
           >
-            <h3 class="text-xl font-semibold mb-2">Persamaan & Pertidaksamaan</h3>
+            <h3 class="text-xl font-semibold mb-2">
+              Persamaan & Pertidaksamaan
+            </h3>
             <p class="text-gray-600 dark:text-gray-300">
-              Sistem persamaan linear, pertidaksamaan linear, Persamaan Eksponensial dan Logaritma.
+              Sistem persamaan linear, pertidaksamaan linear, Persamaan
+              Eksponensial dan Logaritma.
             </p>
           </a>
           <a
@@ -1160,5 +1261,6 @@
         document.addEventListener("DOMContentLoaded", initApplication);
       }
     </script>
+    <script src="cursor.js"></script>
   </body>
 </html>

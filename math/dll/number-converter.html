@@ -1,12 +1,13 @@
 <!DOCTYPE html>
+
 <html lang="id">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Kalkulator Konversi Bilangan</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="../../script.js"></script>
-    <script>
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Kalkulator Konversi Bilangan</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="../../script.js"></script>
+<script>
       (function () {
         const savedTheme =
           localStorage.getItem("theme") ||
@@ -73,7 +74,7 @@
         },
       };
     </script>
-    <style>
+<style>
       * {
         margin: 0;
         padding: 0;
@@ -151,147 +152,134 @@
         margin-bottom: 10px;
       }
     </style>
-  </head>
-  <body class="bg-gray-100 dark:bg-gray-900 min-h-screen">
-    <nav class="bg-white dark:bg-gray-800 shadow-sm">
-      <div class="px-4 py-3 flex justify-between items-center">
-        <a
-          href="../index"
-          class="text-blue-600 dark:text-blue-400 font-semibold"
-          >← Kembali</a
-        >
-        <button
-          id="theme-toggle"
-          type="button"
-          class="p-2 border-transparent bg-white dark:bg-dark-light text-dark dark:text-gray-300 rounded-lg focus:outline-none transform hover:rotate-12"
-          aria-label="Toggle dark mode"
-        >
-          <svg
-            id="theme-toggle-dark-icon"
-            class="w-5 h-5"
-            fill="currentColor"
-            viewBox="0 0 20 20"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"
-            ></path>
-          </svg>
-          <svg
-            id="theme-toggle-light-icon"
-            class="w-5 h-5 hidden"
-            fill="currentColor"
-            viewBox="0 0 20 20"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z"
-              fill-rule="evenodd"
-              clip-rule="evenodd"
-            ></path>
-          </svg>
-        </button>
-      </div>
-    </nav>
+<style>
+@media (hover: hover) and (pointer: fine) {
+  html,
+  body,
+  * {
+    cursor: none !important;
+    margin: 0;
+    padding: 0;
+  }
 
-    <main class="container mx-auto px-4 py-8">
-      <h1
-        class="text-2xl font-bold text-center mb-8 text-gray-800 dark:text-white"
-      >
+  .cursor-outer,
+  .cursor-inner {
+    display: block !important;
+  }
+}
+
+@media (hover: none) and (pointer: coarse) {
+  html,
+  body {
+    cursor: auto !important;
+    overflow-x: hidden;
+    margin: 0;
+    padding: 0;
+  }
+
+  .cursor-outer,
+  .cursor-inner {
+    display: none !important;
+  }
+}
+
+.cursor-outer {
+  position: fixed;
+  width: 30px;
+  height: 30px;
+  background-color: rgba(59, 130, 246, 0.2);
+  border-radius: 50%;
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+  transition: transform 0.1s ease-out, background-color 0.1s ease-out;
+  z-index: 9999;
+  will-change: transform;
+}
+
+.cursor-inner {
+  position: fixed;
+  width: 6px;
+  height: 6px;
+  background-color: #fff;
+  border-radius: 50%;
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+  z-index: 9999;
+  transition: transform 0.05s ease-out;
+  mix-blend-mode: difference;
+  will-change: transform;
+}
+</style></head>
+<body class="bg-gray-100 dark:bg-gray-900 min-h-screen">
+<!-- Custom Cursor -->
+<div class="cursor-outer"></div>
+<div class="cursor-inner"></div>
+
+<nav class="bg-white dark:bg-gray-800 shadow-sm">
+<div class="px-4 py-3 flex justify-between items-center">
+<a class="text-blue-600 dark:text-blue-400 font-semibold" href="../index">← Kembali</a>
+<button aria-label="Toggle dark mode" class="p-2 border-transparent bg-white dark:bg-dark-light text-dark dark:text-gray-300 rounded-lg focus:outline-none transform hover:rotate-12" id="theme-toggle" type="button">
+<svg class="w-5 h-5" fill="currentColor" id="theme-toggle-dark-icon" viewbox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+<path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path>
+</svg>
+<svg class="w-5 h-5 hidden" fill="currentColor" id="theme-toggle-light-icon" viewbox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+<path clip-rule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" fill-rule="evenodd"></path>
+</svg>
+</button>
+</div>
+</nav>
+<main class="container mx-auto px-4 py-8">
+<h1 class="text-2xl font-bold text-center mb-8 text-gray-800 dark:text-white">
         Kalkulator Konversi Bilangan
       </h1>
-
-      <div
-        class="calculator bg-white dark:bg-gray-800 p-4 rounded-lg shadow-md"
-      >
-        <div class="input-group">
-          <label class="input-label text-gray-700 dark:text-gray-300"
-            >Biner</label
-          >
-          <input
-            type="text"
-            id="binaryInput"
-            class="number-input"
-            placeholder="Masukkan bilangan biner (contoh: 1010)"
-            oninput="convertFromBinary()"
-          />
-        </div>
-
-        <div class="input-group">
-          <label class="input-label text-gray-700 dark:text-gray-300"
-            >Desimal</label
-          >
-          <input
-            type="text"
-            id="decimalInput"
-            class="number-input"
-            placeholder="Masukkan bilangan desimal (contoh: 42)"
-            oninput="convertFromDecimal()"
-          />
-        </div>
-
-        <div class="input-group">
-          <label class="input-label text-gray-700 dark:text-gray-300"
-            >Hexadesimal</label
-          >
-          <input
-            type="text"
-            id="hexInput"
-            class="number-input"
-            placeholder="Masukkan bilangan hexadesimal (contoh: 2A)"
-            oninput="convertFromHex()"
-          />
-        </div>
-
-        <button
-          class="btn btn-equals hover:bg-green-600 rounded w-full mt-4"
-          onclick="clearAll()"
-        >
+<div class="calculator bg-white dark:bg-gray-800 p-4 rounded-lg shadow-md">
+<div class="input-group">
+<label class="input-label text-gray-700 dark:text-gray-300">Biner</label>
+<input class="number-input" id="binaryInput" oninput="convertFromBinary()" placeholder="Masukkan bilangan biner (contoh: 1010)" type="text"/>
+</div>
+<div class="input-group">
+<label class="input-label text-gray-700 dark:text-gray-300">Desimal</label>
+<input class="number-input" id="decimalInput" oninput="convertFromDecimal()" placeholder="Masukkan bilangan desimal (contoh: 42)" type="text"/>
+</div>
+<div class="input-group">
+<label class="input-label text-gray-700 dark:text-gray-300">Hexadesimal</label>
+<input class="number-input" id="hexInput" oninput="convertFromHex()" placeholder="Masukkan bilangan hexadesimal (contoh: 2A)" type="text"/>
+</div>
+<button class="btn btn-equals hover:bg-green-600 rounded w-full mt-4" onclick="clearAll()">
           Reset
         </button>
-
-        <div class="result-box">
-          <div class="result-title text-gray-800 dark:text-white">
+<div class="result-box">
+<div class="result-title text-gray-800 dark:text-white">
             Hasil Konversi:
           </div>
-          <div class="grid grid-cols-3 gap-4">
-            <div>
-              <div class="text-sm text-gray-600 dark:text-gray-400">Biner:</div>
-              <div
-                id="binaryResult"
-                class="text-lg text-dark dark:text-white font-mono"
-              >
+<div class="grid grid-cols-3 gap-4">
+<div>
+<div class="text-sm text-gray-600 dark:text-gray-400">Biner:</div>
+<div class="text-lg text-dark dark:text-white font-mono" id="binaryResult">
                 -
               </div>
-            </div>
-            <div>
-              <div class="text-sm text-gray-600 dark:text-gray-400">
+</div>
+<div>
+<div class="text-sm text-gray-600 dark:text-gray-400">
                 Desimal:
               </div>
-              <div
-                id="decimalResult"
-                class="text-lg text-dark dark:text-white font-mono"
-              >
+<div class="text-lg text-dark dark:text-white font-mono" id="decimalResult">
                 -
               </div>
-            </div>
-            <div>
-              <div class="text-sm text-gray-600 dark:text-gray-400">
+</div>
+<div>
+<div class="text-sm text-gray-600 dark:text-gray-400">
                 Hexadesimal:
               </div>
-              <div
-                id="hexResult"
-                class="text-lg text-dark dark:text-white font-mono"
-              >
+<div class="text-lg text-dark dark:text-white font-mono" id="hexResult">
                 -
               </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </main>
-
-    <script>
+</div>
+</div>
+</div>
+</div>
+</main>
+<script>
       // Conversion functions
       function convertFromBinary() {
         const binaryInput = document.getElementById("binaryInput").value;
@@ -424,5 +412,5 @@
         document.head.appendChild(style);
       });
     </script>
-  </body>
+<script src="../cursor.js"></script></body>
 </html>

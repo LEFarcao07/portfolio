@@ -1,13 +1,14 @@
 <!DOCTYPE html>
+
 <html lang="id">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Diagram Pencar</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script>
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Diagram Pencar</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
       (function () {
         const savedTheme =
           localStorage.getItem("theme") ||
@@ -74,7 +75,7 @@
         },
       };
     </script>
-    <style>
+<style>
       * {
         margin: 0;
         padding: 0;
@@ -84,107 +85,111 @@
         text-decoration: none;
       }
     </style>
-  </head>
-  <body class="bg-gray-100 dark:bg-gray-900 min-h-screen">
-    <nav class="bg-white dark:bg-gray-800 shadow-sm">
-      <div class="px-4 py-3 flex justify-between items-center">
-        <a
-          href="../index"
-          class="text-blue-600 dark:text-blue-400 font-semibold"
-          >← Kembali</a
-        >
-        <button
-          id="theme-toggle"
-          type="button"
-          class="p-2 border-transparent bg-white dark:bg-dark-light text-dark dark:text-gray-300 rounded-lg focus:outline-none transform hover:rotate-12"
-          aria-label="Toggle dark mode"
-        >
-          <svg
-            id="theme-toggle-dark-icon"
-            class="w-5 h-5"
-            fill="currentColor"
-            viewBox="0 0 20 20"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"
-            ></path>
-          </svg>
-          <svg
-            id="theme-toggle-light-icon"
-            class="w-5 h-5 hidden"
-            fill="currentColor"
-            viewBox="0 0 20 20"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z"
-              fill-rule="evenodd"
-              clip-rule="evenodd"
-            ></path>
-          </svg>
-        </button>
-      </div>
-    </nav>
+<style>
+@media (hover: hover) and (pointer: fine) {
+  html,
+  body,
+  * {
+    cursor: none !important;
+    margin: 0;
+    padding: 0;
+  }
 
-    <main class="container mx-auto px-4 py-8">
-      <h1
-        class="text-2xl font-bold text-center mb-8 text-gray-800 dark:text-white"
-      >
+  .cursor-outer,
+  .cursor-inner {
+    display: block !important;
+  }
+}
+
+@media (hover: none) and (pointer: coarse) {
+  html,
+  body {
+    cursor: auto !important;
+    overflow-x: hidden;
+    margin: 0;
+    padding: 0;
+  }
+
+  .cursor-outer,
+  .cursor-inner {
+    display: none !important;
+  }
+}
+
+.cursor-outer {
+  position: fixed;
+  width: 30px;
+  height: 30px;
+  background-color: rgba(59, 130, 246, 0.2);
+  border-radius: 50%;
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+  transition: transform 0.1s ease-out, background-color 0.1s ease-out;
+  z-index: 9999;
+  will-change: transform;
+}
+
+.cursor-inner {
+  position: fixed;
+  width: 6px;
+  height: 6px;
+  background-color: #fff;
+  border-radius: 50%;
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+  z-index: 9999;
+  transition: transform 0.05s ease-out;
+  mix-blend-mode: difference;
+  will-change: transform;
+}
+</style></head>
+<body class="bg-gray-100 dark:bg-gray-900 min-h-screen">
+<!-- Custom Cursor -->
+<div class="cursor-outer"></div>
+<div class="cursor-inner"></div>
+
+<nav class="bg-white dark:bg-gray-800 shadow-sm">
+<div class="px-4 py-3 flex justify-between items-center">
+<a class="text-blue-600 dark:text-blue-400 font-semibold" href="../index">← Kembali</a>
+<button aria-label="Toggle dark mode" class="p-2 border-transparent bg-white dark:bg-dark-light text-dark dark:text-gray-300 rounded-lg focus:outline-none transform hover:rotate-12" id="theme-toggle" type="button">
+<svg class="w-5 h-5" fill="currentColor" id="theme-toggle-dark-icon" viewbox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+<path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path>
+</svg>
+<svg class="w-5 h-5 hidden" fill="currentColor" id="theme-toggle-light-icon" viewbox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+<path clip-rule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" fill-rule="evenodd"></path>
+</svg>
+</button>
+</div>
+</nav>
+<main class="container mx-auto px-4 py-8">
+<h1 class="text-2xl font-bold text-center mb-8 text-gray-800 dark:text-white">
         Diagram Pencar
       </h1>
-
-      <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg mb-6">
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-          <div>
-            <label
-              class="block text-gray-700 dark:text-gray-300 mb-2"
-              for="x-values"
-              >Nilai X (pisahkan dengan koma):</label
-            >
-            <input
-              type="text"
-              id="x-values"
-              class="w-full p-2 border rounded dark:bg-gray-700 dark:text-white dark:border-gray-600"
-              value="1,2,3,4,5,6,7,8,9,10"
-            />
-          </div>
-          <div>
-            <label
-              class="block text-gray-700 dark:text-gray-300 mb-2"
-              for="y-values"
-              >Nilai Y (pisahkan dengan koma):</label
-            >
-            <input
-              type="text"
-              id="y-values"
-              class="w-full p-2 border rounded dark:bg-gray-700 dark:text-white dark:border-gray-600"
-              value="2,3,5,7,11,13,17,19,23,29"
-            />
-          </div>
-        </div>
-        <div class="flex justify-center">
-          <button
-            onclick="updateChart()"
-            class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded dark:bg-blue-700 dark:hover:bg-blue-800"
-          >
+<div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg mb-6">
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+<div>
+<label class="block text-gray-700 dark:text-gray-300 mb-2" for="x-values">Nilai X (pisahkan dengan koma):</label>
+<input class="w-full p-2 border rounded dark:bg-gray-700 dark:text-white dark:border-gray-600" id="x-values" type="text" value="1,2,3,4,5,6,7,8,9,10"/>
+</div>
+<div>
+<label class="block text-gray-700 dark:text-gray-300 mb-2" for="y-values">Nilai Y (pisahkan dengan koma):</label>
+<input class="w-full p-2 border rounded dark:bg-gray-700 dark:text-white dark:border-gray-600" id="y-values" type="text" value="2,3,5,7,11,13,17,19,23,29"/>
+</div>
+</div>
+<div class="flex justify-center">
+<button class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded dark:bg-blue-700 dark:hover:bg-blue-800" onclick="updateChart()">
             Gambar Diagram
           </button>
-        </div>
-      </div>
-
-      <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg">
-        <div
-          id="correlation-result"
-          class="text-center text-lg font-semibold p-4 rounded-lg mb-4 hidden"
-        >
-          <!-- Hasil korelasi akan ditampilkan di sini -->
-        </div>
-        <canvas id="scatterChart"></canvas>
-      </div>
-    </main>
-
-    <script>
+</div>
+</div>
+<div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg">
+<div class="text-center text-lg font-semibold p-4 rounded-lg mb-4 hidden" id="correlation-result">
+<!-- Hasil korelasi akan ditampilkan di sini -->
+</div>
+<canvas id="scatterChart"></canvas>
+</div>
+</main>
+<script>
       // Theme toggle
       const themeToggleBtn = document.getElementById("theme-toggle");
       const themeToggleDarkIcon = document.getElementById(
@@ -405,5 +410,5 @@
       // Inisialisasi chart saat halaman dimuat
       document.addEventListener("DOMContentLoaded", updateChart);
     </script>
-  </body>
+<script src="../cursor.js"></script></body>
 </html>

@@ -1,12 +1,13 @@
 <!DOCTYPE html>
+
 <html lang="id">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Modul Trigonometri</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/11.6.0/math.js"></script>
-    <script>
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Modul Trigonometri</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/11.6.0/math.js"></script>
+<script>
       (function () {
         const savedTheme =
           localStorage.getItem("theme") ||
@@ -43,7 +44,7 @@
         corePlugins: { preflight: false },
       };
     </script>
-    <style>
+<style>
       * {
         margin: 0;
         padding: 0;
@@ -59,225 +60,169 @@
         transform: translateY(-2px);
       }
     </style>
-  </head>
-  <body class="bg-gray-100 dark:bg-gray-900 min-h-screen">
-    <nav class="bg-white dark:bg-gray-800 shadow-sm">
-      <div class="px-4 py-3 flex justify-between items-center">
-        <a
-          href="../index"
-          class="text-blue-600 dark:text-blue-400 font-semibold"
-          >← Kembali</a
-        >
-        <button
-          id="theme-toggle"
-          type="button"
-          class="p-2 border-transparent bg-white dark:bg-dark-light text-dark dark:text-gray-300 rounded-lg focus:outline-none transform hover:rotate-12"
-          aria-label="Toggle dark mode"
-        >
-          <svg
-            id="theme-toggle-dark-icon"
-            class="w-5 h-5"
-            fill="currentColor"
-            viewBox="0 0 20 20"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"
-            ></path>
-          </svg>
-          <svg
-            id="theme-toggle-light-icon"
-            class="w-5 h-5 hidden"
-            fill="currentColor"
-            viewBox="0 0 20 20"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z"
-              fill-rule="evenodd"
-              clip-rule="evenodd"
-            ></path>
-          </svg>
-        </button>
-      </div>
-    </nav>
+<style>
+@media (hover: hover) and (pointer: fine) {
+  html,
+  body,
+  * {
+    cursor: none !important;
+    margin: 0;
+    padding: 0;
+  }
 
-    <main class="container mx-auto px-4 py-8 max-w-4xl">
-      <h1
-        class="text-2xl font-bold text-center mb-8 text-gray-800 dark:text-white"
-      >
+  .cursor-outer,
+  .cursor-inner {
+    display: block !important;
+  }
+}
+
+@media (hover: none) and (pointer: coarse) {
+  html,
+  body {
+    cursor: auto !important;
+    overflow-x: hidden;
+    margin: 0;
+    padding: 0;
+  }
+
+  .cursor-outer,
+  .cursor-inner {
+    display: none !important;
+  }
+}
+
+.cursor-outer {
+  position: fixed;
+  width: 30px;
+  height: 30px;
+  background-color: rgba(59, 130, 246, 0.2);
+  border-radius: 50%;
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+  transition: transform 0.1s ease-out, background-color 0.1s ease-out;
+  z-index: 9999;
+  will-change: transform;
+}
+
+.cursor-inner {
+  position: fixed;
+  width: 6px;
+  height: 6px;
+  background-color: #fff;
+  border-radius: 50%;
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+  z-index: 9999;
+  transition: transform 0.05s ease-out;
+  mix-blend-mode: difference;
+  will-change: transform;
+}
+</style></head>
+<body class="bg-gray-100 dark:bg-gray-900 min-h-screen">
+<!-- Custom Cursor -->
+<div class="cursor-outer"></div>
+<div class="cursor-inner"></div>
+
+<nav class="bg-white dark:bg-gray-800 shadow-sm">
+<div class="px-4 py-3 flex justify-between items-center">
+<a class="text-blue-600 dark:text-blue-400 font-semibold" href="../index">← Kembali</a>
+<button aria-label="Toggle dark mode" class="p-2 border-transparent bg-white dark:bg-dark-light text-dark dark:text-gray-300 rounded-lg focus:outline-none transform hover:rotate-12" id="theme-toggle" type="button">
+<svg class="w-5 h-5" fill="currentColor" id="theme-toggle-dark-icon" viewbox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+<path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path>
+</svg>
+<svg class="w-5 h-5 hidden" fill="currentColor" id="theme-toggle-light-icon" viewbox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+<path clip-rule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" fill-rule="evenodd"></path>
+</svg>
+</button>
+</div>
+</nav>
+<main class="container mx-auto px-4 py-8 max-w-4xl">
+<h1 class="text-2xl font-bold text-center mb-8 text-gray-800 dark:text-white">
         Modul Pembelajaran Trigonometri
       </h1>
-
-      <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg mb-6">
-        <h2 class="text-xl font-semibold mb-4 text-blue-600 dark:text-blue-400">
+<div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg mb-6">
+<h2 class="text-xl font-semibold mb-4 text-blue-600 dark:text-blue-400">
           Fungsi Trigonometri Dasar
         </h2>
-        <p class="mb-4 text-gray-700 dark:text-gray-300">
+<p class="mb-4 text-gray-700 dark:text-gray-300">
           Hitung nilai sin, cos, tan dari sudut tertentu (dalam derajat atau
           radian).
         </p>
-
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-          <div>
-            <label
-              class="block text-gray-700 dark:text-gray-300 mb-2"
-              for="trig-angle"
-              >Sudut:</label
-            >
-            <input
-              type="number"
-              id="trig-angle"
-              class="w-full p-2 border rounded dark:bg-gray-700 dark:text-white dark:border-gray-600"
-              value="30"
-            />
-          </div>
-          <div>
-            <label
-              class="block text-gray-700 dark:text-gray-300 mb-2"
-              for="trig-unit"
-              >Satuan:</label
-            >
-            <select
-              id="trig-unit"
-              class="w-full p-2 border rounded dark:bg-gray-700 dark:text-white dark:border-gray-600"
-            >
-              <option value="deg">Derajat</option>
-              <option value="rad">Radian</option>
-            </select>
-          </div>
-        </div>
-
-        <div class="grid grid-cols-3 gap-2 mb-4">
-          <button
-            onclick="calculateTrig('sin')"
-            class="operation-btn bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded dark:bg-blue-600 dark:hover:bg-blue-700"
-          >
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+<div>
+<label class="block text-gray-700 dark:text-gray-300 mb-2" for="trig-angle">Sudut:</label>
+<input class="w-full p-2 border rounded dark:bg-gray-700 dark:text-white dark:border-gray-600" id="trig-angle" type="number" value="30"/>
+</div>
+<div>
+<label class="block text-gray-700 dark:text-gray-300 mb-2" for="trig-unit">Satuan:</label>
+<select class="w-full p-2 border rounded dark:bg-gray-700 dark:text-white dark:border-gray-600" id="trig-unit">
+<option value="deg">Derajat</option>
+<option value="rad">Radian</option>
+</select>
+</div>
+</div>
+<div class="grid grid-cols-3 gap-2 mb-4">
+<button class="operation-btn bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded dark:bg-blue-600 dark:hover:bg-blue-700" onclick="calculateTrig('sin')">
             Sin
           </button>
-          <button
-            onclick="calculateTrig('cos')"
-            class="operation-btn bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded dark:bg-green-600 dark:hover:bg-green-700"
-          >
+<button class="operation-btn bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded dark:bg-green-600 dark:hover:bg-green-700" onclick="calculateTrig('cos')">
             Cos
           </button>
-          <button
-            onclick="calculateTrig('tan')"
-            class="operation-btn bg-purple-500 hover:bg-purple-600 text-white font-bold py-2 px-4 rounded dark:bg-purple-600 dark:hover:bg-purple-700"
-          >
+<button class="operation-btn bg-purple-500 hover:bg-purple-600 text-white font-bold py-2 px-4 rounded dark:bg-purple-600 dark:hover:bg-purple-700" onclick="calculateTrig('tan')">
             Tan
           </button>
-        </div>
-
-        <div
-          id="trig-result"
-          class="text-gray-700 dark:text-gray-300 p-3 bg-gray-100 dark:bg-gray-700 rounded"
-        ></div>
-      </div>
-
-      <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg mb-6">
-        <h2 class="text-xl font-semibold mb-4 text-blue-600 dark:text-blue-400">
+</div>
+<div class="text-gray-700 dark:text-gray-300 p-3 bg-gray-100 dark:bg-gray-700 rounded" id="trig-result"></div>
+</div>
+<div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg mb-6">
+<h2 class="text-xl font-semibold mb-4 text-blue-600 dark:text-blue-400">
           Segitiga Siku-Siku
         </h2>
-        <p class="mb-4 text-gray-700 dark:text-gray-300">
+<p class="mb-4 text-gray-700 dark:text-gray-300">
           Hitung sisi atau sudut dalam segitiga siku-siku menggunakan
           trigonometri.
         </p>
-
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-          <div>
-            <label
-              class="block text-gray-700 dark:text-gray-300 mb-2"
-              for="triangle-side-a"
-              >Sisi A (alas):</label
-            >
-            <input
-              type="number"
-              id="triangle-side-a"
-              class="w-full p-2 border rounded dark:bg-gray-700 dark:text-white dark:border-gray-600"
-              placeholder="Masukkan nilai"
-            />
-          </div>
-          <div>
-            <label
-              class="block text-gray-700 dark:text-gray-300 mb-2"
-              for="triangle-side-b"
-              >Sisi B (tinggi):</label
-            >
-            <input
-              type="number"
-              id="triangle-side-b"
-              class="w-full p-2 border rounded dark:bg-gray-700 dark:text-white dark:border-gray-600"
-              placeholder="Masukkan nilai"
-            />
-          </div>
-          <div>
-            <label
-              class="block text-gray-700 dark:text-gray-300 mb-2"
-              for="triangle-side-c"
-              >Sisi C (miring):</label
-            >
-            <input
-              type="number"
-              id="triangle-side-c"
-              class="w-full p-2 border rounded dark:bg-gray-700 dark:text-white dark:border-gray-600"
-              placeholder="Masukkan nilai"
-            />
-          </div>
-        </div>
-
-        <button
-          onclick="solveTriangle()"
-          class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded dark:bg-blue-700 dark:hover:bg-blue-800 mb-4"
-        >
+<div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+<div>
+<label class="block text-gray-700 dark:text-gray-300 mb-2" for="triangle-side-a">Sisi A (alas):</label>
+<input class="w-full p-2 border rounded dark:bg-gray-700 dark:text-white dark:border-gray-600" id="triangle-side-a" placeholder="Masukkan nilai" type="number"/>
+</div>
+<div>
+<label class="block text-gray-700 dark:text-gray-300 mb-2" for="triangle-side-b">Sisi B (tinggi):</label>
+<input class="w-full p-2 border rounded dark:bg-gray-700 dark:text-white dark:border-gray-600" id="triangle-side-b" placeholder="Masukkan nilai" type="number"/>
+</div>
+<div>
+<label class="block text-gray-700 dark:text-gray-300 mb-2" for="triangle-side-c">Sisi C (miring):</label>
+<input class="w-full p-2 border rounded dark:bg-gray-700 dark:text-white dark:border-gray-600" id="triangle-side-c" placeholder="Masukkan nilai" type="number"/>
+</div>
+</div>
+<button class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded dark:bg-blue-700 dark:hover:bg-blue-800 mb-4" onclick="solveTriangle()">
           Hitung Segitiga
         </button>
-
-        <div
-          id="triangle-result"
-          class="text-gray-700 dark:text-gray-300 p-3 bg-gray-100 dark:bg-gray-700 rounded"
-        ></div>
-      </div>
-
-      <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg">
-        <h2 class="text-xl font-semibold mb-4 text-blue-600 dark:text-blue-400">
+<div class="text-gray-700 dark:text-gray-300 p-3 bg-gray-100 dark:bg-gray-700 rounded" id="triangle-result"></div>
+</div>
+<div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg">
+<h2 class="text-xl font-semibold mb-4 text-blue-600 dark:text-blue-400">
           Identitas Trigonometri
         </h2>
-        <p class="mb-4 text-gray-700 dark:text-gray-300">
+<p class="mb-4 text-gray-700 dark:text-gray-300">
           Verifikasi identitas trigonometri umum.
         </p>
-
-        <div class="mb-4">
-          <label
-            class="block text-gray-700 dark:text-gray-300 mb-2"
-            for="trig-identity"
-            >Pilih Identitas:</label
-          >
-          <select
-            id="trig-identity"
-            class="w-full p-2 border rounded dark:bg-gray-700 dark:text-white dark:border-gray-600"
-          >
-            <option value="pythagorean">Sin²θ + Cos²θ = 1</option>
-            <option value="sum">Sin(A+B) = SinACosB + CosASinB</option>
-            <option value="double">Sin(2θ) = 2SinθCosθ</option>
-          </select>
-        </div>
-
-        <button
-          onclick="verifyIdentity()"
-          class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded dark:bg-blue-700 dark:hover:bg-blue-800 mb-4"
-        >
+<div class="mb-4">
+<label class="block text-gray-700 dark:text-gray-300 mb-2" for="trig-identity">Pilih Identitas:</label>
+<select class="w-full p-2 border rounded dark:bg-gray-700 dark:text-white dark:border-gray-600" id="trig-identity">
+<option value="pythagorean">Sin²θ + Cos²θ = 1</option>
+<option value="sum">Sin(A+B) = SinACosB + CosASinB</option>
+<option value="double">Sin(2θ) = 2SinθCosθ</option>
+</select>
+</div>
+<button class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded dark:bg-blue-700 dark:hover:bg-blue-800 mb-4" onclick="verifyIdentity()">
           Verifikasi
         </button>
-
-        <div
-          id="identity-result"
-          class="text-gray-700 dark:text-gray-300 p-3 bg-gray-100 dark:bg-gray-700 rounded"
-        ></div>
-      </div>
-    </main>
-
-    <script>
+<div class="text-gray-700 dark:text-gray-300 p-3 bg-gray-100 dark:bg-gray-700 rounded" id="identity-result"></div>
+</div>
+</main>
+<script>
       // Theme toggle
       const themeToggleBtn = document.getElementById("theme-toggle");
       const themeToggleDarkIcon = document.getElementById(
@@ -433,5 +378,5 @@
         document.getElementById("identity-result").innerHTML = result;
       }
     </script>
-  </body>
+<script src="../cursor.js"></script></body>
 </html>

@@ -1,11 +1,12 @@
 <!DOCTYPE html>
+
 <html lang="id">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Modul Logika Matematika</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Modul Logika Matematika</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
       (function () {
         const savedTheme = localStorage.getItem("theme") || (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
         document.documentElement.classList.toggle("dark", savedTheme === "dark");
@@ -28,7 +29,7 @@
         corePlugins: { preflight: false },
       };
     </script>
-    <style>
+<style>
       * { margin: 0; padding: 0; box-sizing: border-box; }
       a { text-decoration: none; }
       .operation-btn { transition: all 0.2s ease; }
@@ -37,101 +38,148 @@
       .truth-table th, .truth-table td { border: 1px solid #ddd; padding: 8px; text-align: center; }
       .dark .truth-table th, .dark .truth-table td { border-color: #4b5563; }
     </style>
-</head>
+<style>
+@media (hover: hover) and (pointer: fine) {
+  html,
+  body,
+  * {
+    cursor: none !important;
+    margin: 0;
+    padding: 0;
+  }
+
+  .cursor-outer,
+  .cursor-inner {
+    display: block !important;
+  }
+}
+
+@media (hover: none) and (pointer: coarse) {
+  html,
+  body {
+    cursor: auto !important;
+    overflow-x: hidden;
+    margin: 0;
+    padding: 0;
+  }
+
+  .cursor-outer,
+  .cursor-inner {
+    display: none !important;
+  }
+}
+
+.cursor-outer {
+  position: fixed;
+  width: 30px;
+  height: 30px;
+  background-color: rgba(59, 130, 246, 0.2);
+  border-radius: 50%;
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+  transition: transform 0.1s ease-out, background-color 0.1s ease-out;
+  z-index: 9999;
+  will-change: transform;
+}
+
+.cursor-inner {
+  position: fixed;
+  width: 6px;
+  height: 6px;
+  background-color: #fff;
+  border-radius: 50%;
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+  z-index: 9999;
+  transition: transform 0.05s ease-out;
+  mix-blend-mode: difference;
+  will-change: transform;
+}
+</style></head>
 <body class="bg-gray-100 dark:bg-gray-900 min-h-screen">
-    <nav class="bg-white dark:bg-gray-800 shadow-sm">
-      <div class="px-4 py-3 flex justify-between items-center">
-        <a href="../index" class="text-blue-600 dark:text-blue-400 font-semibold">← Kembali</a>
-        <button id="theme-toggle" type="button" class="p-2 border-transparent bg-white dark:bg-dark-light text-dark dark:text-gray-300 rounded-lg focus:outline-none transform hover:rotate-12">
-          <svg id="theme-toggle-dark-icon" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path></svg>
-          <svg id="theme-toggle-light-icon" class="w-5 h-5 hidden" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" fill-rule="evenodd" clip-rule="evenodd"></path></svg>
-        </button>
-      </div>
-    </nav>
+<!-- Custom Cursor -->
+<div class="cursor-outer"></div>
+<div class="cursor-inner"></div>
 
-    <main class="container mx-auto px-4 py-8 max-w-4xl">
-      <h1 class="text-2xl font-bold text-center mb-8 text-gray-800 dark:text-white">Modul Pembelajaran Logika Matematika</h1>
-
-      <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg mb-6">
-        <h2 class="text-xl font-semibold mb-4 text-blue-600 dark:text-blue-400">Operator Logika Dasar</h2>
-        <p class="mb-4 text-gray-700 dark:text-gray-300">Evaluasi pernyataan logika dengan operator AND, OR, NOT.</p>
-
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-          <div>
-            <label class="block text-gray-700 dark:text-gray-300 mb-2" for="logic-p">Pernyataan p:</label>
-            <select id="logic-p" class="w-full p-2 border rounded dark:bg-gray-700 dark:text-white dark:border-gray-600">
-              <option value="true">Benar (True)</option>
-              <option value="false">Salah (False)</option>
-            </select>
-          </div>
-          <div>
-            <label class="block text-gray-700 dark:text-gray-300 mb-2" for="logic-q">Pernyataan q:</label>
-            <select id="logic-q" class="w-full p-2 border rounded dark:bg-gray-700 dark:text-white dark:border-gray-600">
-              <option value="true">Benar (True)</option>
-              <option value="false">Salah (False)</option>
-            </select>
-          </div>
-        </div>
-
-        <div class="grid grid-cols-3 gap-2 mb-4">
-          <button onclick="evaluateLogic('and')" class="operation-btn bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded dark:bg-blue-600 dark:hover:bg-blue-700">AND (∧)</button>
-          <button onclick="evaluateLogic('or')" class="operation-btn bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded dark:bg-green-600 dark:hover:bg-green-700">OR (∨)</button>
-          <button onclick="evaluateLogic('not')" class="operation-btn bg-purple-500 hover:bg-purple-600 text-white font-bold py-2 px-4 rounded dark:bg-purple-600 dark:hover:bg-purple-700">NOT (¬)</button>
-        </div>
-
-        <div id="logic-result" class="text-gray-700 dark:text-gray-300 p-3 bg-gray-100 dark:bg-gray-700 rounded"></div>
-      </div>
-
-      <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg mb-6">
-        <h2 class="text-xl font-semibold mb-4 text-blue-600 dark:text-blue-400">Implikasi dan Biimplikasi</h2>
-        <p class="mb-4 text-gray-700 dark:text-gray-300">Evaluasi implikasi (jika-maka) dan biimplikasi (jika-dan-hanya-jika).</p>
-
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-          <div>
-            <label class="block text-gray-700 dark:text-gray-300 mb-2" for="implication-p">Pernyataan p:</label>
-            <select id="implication-p" class="w-full p-2 border rounded dark:bg-gray-700 dark:text-white dark:border-gray-600">
-              <option value="true">Benar (True)</option>
-              <option value="false">Salah (False)</option>
-            </select>
-          </div>
-          <div>
-            <label class="block text-gray-700 dark:text-gray-300 mb-2" for="implication-q">Pernyataan q:</label>
-            <select id="implication-q" class="w-full p-2 border rounded dark:bg-gray-700 dark:text-white dark:border-gray-600">
-              <option value="true">Benar (True)</option>
-              <option value="false">Salah (False)</option>
-            </select>
-          </div>
-        </div>
-
-        <div class="grid grid-cols-2 gap-2 mb-4">
-          <button onclick="evaluateImplication('implies')" class="operation-btn bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-4 rounded dark:bg-yellow-600 dark:hover:bg-yellow-700">Implikasi (p→q)</button>
-          <button onclick="evaluateImplication('iff')" class="operation-btn bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-2 px-4 rounded dark:bg-indigo-600 dark:hover:bg-indigo-700">Biimplikasi (p↔q)</button>
-        </div>
-
-        <div id="implication-result" class="text-gray-700 dark:text-gray-300 p-3 bg-gray-100 dark:bg-gray-700 rounded"></div>
-      </div>
-
-      <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg">
-        <h2 class="text-xl font-semibold mb-4 text-blue-600 dark:text-blue-400">Tabel Kebenaran</h2>
-        <p class="mb-4 text-gray-700 dark:text-gray-300">Tampilkan tabel kebenaran untuk operator logika.</p>
-
-        <div class="mb-4">
-          <label class="block text-gray-700 dark:text-gray-300 mb-2" for="truth-table-operator">Pilih Operator:</label>
-          <select id="truth-table-operator" class="w-full p-2 border rounded dark:bg-gray-700 dark:text-white dark:border-gray-600">
-            <option value="and">AND (∧)</option>
-            <option value="or">OR (∨)</option>
-            <option value="implies">Implikasi (→)</option>
-            <option value="iff">Biimplikasi (↔)</option>
-          </select>
-        </div>
-
-        <button onclick="generateTruthTable()" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded dark:bg-blue-700 dark:hover:bg-blue-800 mb-4">Tampilkan Tabel Kebenaran</button>
-
-        <div id="truth-table-result" class="text-gray-700 dark:text-gray-300 p-3 bg-gray-100 dark:bg-gray-700 rounded overflow-x-auto"></div>
-      </div>
-    </main>
-
-    <script>
+<nav class="bg-white dark:bg-gray-800 shadow-sm">
+<div class="px-4 py-3 flex justify-between items-center">
+<a class="text-blue-600 dark:text-blue-400 font-semibold" href="../index">← Kembali</a>
+<button class="p-2 border-transparent bg-white dark:bg-dark-light text-dark dark:text-gray-300 rounded-lg focus:outline-none transform hover:rotate-12" id="theme-toggle" type="button">
+<svg class="w-5 h-5" fill="currentColor" id="theme-toggle-dark-icon" viewbox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path></svg>
+<svg class="w-5 h-5 hidden" fill="currentColor" id="theme-toggle-light-icon" viewbox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path clip-rule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" fill-rule="evenodd"></path></svg>
+</button>
+</div>
+</nav>
+<main class="container mx-auto px-4 py-8 max-w-4xl">
+<h1 class="text-2xl font-bold text-center mb-8 text-gray-800 dark:text-white">Modul Pembelajaran Logika Matematika</h1>
+<div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg mb-6">
+<h2 class="text-xl font-semibold mb-4 text-blue-600 dark:text-blue-400">Operator Logika Dasar</h2>
+<p class="mb-4 text-gray-700 dark:text-gray-300">Evaluasi pernyataan logika dengan operator AND, OR, NOT.</p>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+<div>
+<label class="block text-gray-700 dark:text-gray-300 mb-2" for="logic-p">Pernyataan p:</label>
+<select class="w-full p-2 border rounded dark:bg-gray-700 dark:text-white dark:border-gray-600" id="logic-p">
+<option value="true">Benar (True)</option>
+<option value="false">Salah (False)</option>
+</select>
+</div>
+<div>
+<label class="block text-gray-700 dark:text-gray-300 mb-2" for="logic-q">Pernyataan q:</label>
+<select class="w-full p-2 border rounded dark:bg-gray-700 dark:text-white dark:border-gray-600" id="logic-q">
+<option value="true">Benar (True)</option>
+<option value="false">Salah (False)</option>
+</select>
+</div>
+</div>
+<div class="grid grid-cols-3 gap-2 mb-4">
+<button class="operation-btn bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded dark:bg-blue-600 dark:hover:bg-blue-700" onclick="evaluateLogic('and')">AND (∧)</button>
+<button class="operation-btn bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded dark:bg-green-600 dark:hover:bg-green-700" onclick="evaluateLogic('or')">OR (∨)</button>
+<button class="operation-btn bg-purple-500 hover:bg-purple-600 text-white font-bold py-2 px-4 rounded dark:bg-purple-600 dark:hover:bg-purple-700" onclick="evaluateLogic('not')">NOT (¬)</button>
+</div>
+<div class="text-gray-700 dark:text-gray-300 p-3 bg-gray-100 dark:bg-gray-700 rounded" id="logic-result"></div>
+</div>
+<div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg mb-6">
+<h2 class="text-xl font-semibold mb-4 text-blue-600 dark:text-blue-400">Implikasi dan Biimplikasi</h2>
+<p class="mb-4 text-gray-700 dark:text-gray-300">Evaluasi implikasi (jika-maka) dan biimplikasi (jika-dan-hanya-jika).</p>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+<div>
+<label class="block text-gray-700 dark:text-gray-300 mb-2" for="implication-p">Pernyataan p:</label>
+<select class="w-full p-2 border rounded dark:bg-gray-700 dark:text-white dark:border-gray-600" id="implication-p">
+<option value="true">Benar (True)</option>
+<option value="false">Salah (False)</option>
+</select>
+</div>
+<div>
+<label class="block text-gray-700 dark:text-gray-300 mb-2" for="implication-q">Pernyataan q:</label>
+<select class="w-full p-2 border rounded dark:bg-gray-700 dark:text-white dark:border-gray-600" id="implication-q">
+<option value="true">Benar (True)</option>
+<option value="false">Salah (False)</option>
+</select>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-2 mb-4">
+<button class="operation-btn bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-4 rounded dark:bg-yellow-600 dark:hover:bg-yellow-700" onclick="evaluateImplication('implies')">Implikasi (p→q)</button>
+<button class="operation-btn bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-2 px-4 rounded dark:bg-indigo-600 dark:hover:bg-indigo-700" onclick="evaluateImplication('iff')">Biimplikasi (p↔q)</button>
+</div>
+<div class="text-gray-700 dark:text-gray-300 p-3 bg-gray-100 dark:bg-gray-700 rounded" id="implication-result"></div>
+</div>
+<div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg">
+<h2 class="text-xl font-semibold mb-4 text-blue-600 dark:text-blue-400">Tabel Kebenaran</h2>
+<p class="mb-4 text-gray-700 dark:text-gray-300">Tampilkan tabel kebenaran untuk operator logika.</p>
+<div class="mb-4">
+<label class="block text-gray-700 dark:text-gray-300 mb-2" for="truth-table-operator">Pilih Operator:</label>
+<select class="w-full p-2 border rounded dark:bg-gray-700 dark:text-white dark:border-gray-600" id="truth-table-operator">
+<option value="and">AND (∧)</option>
+<option value="or">OR (∨)</option>
+<option value="implies">Implikasi (→)</option>
+<option value="iff">Biimplikasi (↔)</option>
+</select>
+</div>
+<button class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded dark:bg-blue-700 dark:hover:bg-blue-800 mb-4" onclick="generateTruthTable()">Tampilkan Tabel Kebenaran</button>
+<div class="text-gray-700 dark:text-gray-300 p-3 bg-gray-100 dark:bg-gray-700 rounded overflow-x-auto" id="truth-table-result"></div>
+</div>
+</main>
+<script>
       // Theme toggle
       const themeToggleBtn = document.getElementById("theme-toggle");
       const themeToggleDarkIcon = document.getElementById(
@@ -261,5 +309,5 @@
         document.getElementById("truth-table-result").innerHTML = tableHTML;
       }
     </script>
-</body>
+<script src="../cursor.js"></script></body>
 </html>
