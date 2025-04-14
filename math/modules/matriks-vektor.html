@@ -1,16 +1,28 @@
 <!DOCTYPE html>
-
 <html lang="id">
-<head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>Modul Matriks dan Vektor</title>
-<script src="https://cdn.tailwindcss.com"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/11.6.0/math.js"></script>
-<script>
+  <head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Modul Matriks dan Vektor Lengkap</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/11.6.0/math.js"></script>
+    <!-- SweetAlert CSS & JS -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
       (function () {
-        const savedTheme = localStorage.getItem("theme") || (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
-        document.documentElement.classList.toggle("dark", savedTheme === "dark");
+        const savedTheme =
+          localStorage.getItem("theme") ||
+          (window.matchMedia("(prefers-color-scheme: dark)").matches
+            ? "dark"
+            : "light");
+        document.documentElement.classList.toggle(
+          "dark",
+          savedTheme === "dark"
+        );
       })();
 
       tailwind.config = {
@@ -18,7 +30,14 @@
         theme: {
           extend: {
             fontFamily: {
-              sans: ["Inter", "Segoe UI", "Tahoma", "Geneva", "Verdana", "sans-serif"],
+              sans: [
+                "Inter",
+                "Segoe UI",
+                "Tahoma",
+                "Geneva",
+                "Verdana",
+                "sans-serif",
+              ],
             },
             colors: {
               primary: { light: "#3B82F6", dark: "#60A5FA" },
@@ -30,167 +49,547 @@
         corePlugins: { preflight: false },
       };
     </script>
-<style>
-      * { margin: 0; padding: 0; box-sizing: border-box; }
-      a { text-decoration: none; }
-      .operation-btn { transition: all 0.2s ease; }
-      .operation-btn:hover { transform: translateY(-2px); }
-      .matrix-input { width: 50px; text-align: center; margin: 2px; }
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      a {
+        text-decoration: none;
+      }
+      .operation-btn {
+        transition: all 0.2s ease;
+      }
+      .operation-btn:hover {
+        transform: translateY(-2px);
+      }
+      .matrix-input {
+        width: 60px;
+        text-align: center;
+        margin: 2px;
+        padding: 4px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+      }
+      .matrix-input.dark {
+        background-color: #374151;
+        color: white;
+        border-color: #4b5563;
+      }
+      .math-formula {
+        background-color: rgba(59, 130, 246, 0.1);
+        padding: 8px;
+        border-radius: 4px;
+        margin: 8px 0;
+      }
+      .matrix-container {
+        display: inline-block;
+        border: 1px solid #ddd;
+        padding: 8px;
+        border-radius: 4px;
+        margin: 8px 0;
+      }
+      .matrix-container.dark {
+        border-color: #4b5563;
+      }
+      .matrix-row {
+        display: flex;
+      }
+      .matrix-cell {
+        padding: 4px;
+        text-align: center;
+        min-width: 40px;
+      }
     </style>
-<style>
-@media (hover: hover) and (pointer: fine) {
-  html,
-  body,
-  * {
-    cursor: none !important;
-    margin: 0;
-    padding: 0;
-  }
+  </head>
+  <body class="bg-gray-100 dark:bg-gray-900 min-h-screen">
+    <!-- Custom Cursor -->
+    <div class="cursor-outer"></div>
+    <div class="cursor-inner"></div>
 
-  .cursor-outer,
-  .cursor-inner {
-    display: block !important;
-  }
-}
+    <nav class="bg-white dark:bg-gray-800 shadow-sm">
+      <div class="px-4 py-3 flex justify-between items-center">
+        <a
+          class="text-blue-600 dark:text-blue-400 font-semibold"
+          href="../index"
+          >← Kembali</a
+        >
+        <button
+          class="p-2 border-transparent bg-white dark:bg-dark-light text-dark dark:text-gray-300 rounded-lg focus:outline-none transform hover:rotate-12"
+          id="theme-toggle"
+          type="button"
+        >
+          <svg
+            class="w-5 h-5"
+            fill="currentColor"
+            id="theme-toggle-dark-icon"
+            viewbox="0 0 20 20"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"
+            ></path>
+          </svg>
+          <svg
+            class="w-5 h-5 hidden"
+            fill="currentColor"
+            id="theme-toggle-light-icon"
+            viewbox="0 0 20 20"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              clip-rule="evenodd"
+              d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z"
+              fill-rule="evenodd"
+            ></path>
+          </svg>
+        </button>
+      </div>
+    </nav>
 
-@media (hover: none) and (pointer: coarse) {
-  html,
-  body {
-    cursor: auto !important;
-    overflow-x: hidden;
-    margin: 0;
-    padding: 0;
-  }
+    <main class="container mx-auto px-4 py-8 max-w-6xl">
+      <h1
+        class="text-2xl font-bold text-center mb-8 text-gray-800 dark:text-white"
+      >
+        Modul Matriks & Vektor
+      </h1>
 
-  .cursor-outer,
-  .cursor-inner {
-    display: none !important;
-  }
-}
+      <!-- Matriks Dinamis -->
+      <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg mb-6">
+        <h2 class="text-xl font-semibold mb-4 text-blue-600 dark:text-blue-400">
+          Matriks Dinamis
+        </h2>
 
-.cursor-outer {
-  position: fixed;
-  width: 30px;
-  height: 30px;
-  background-color: rgba(59, 130, 246, 0.2);
-  border-radius: 50%;
-  pointer-events: none;
-  transform: translate(-50%, -50%);
-  transition: transform 0.1s ease-out, background-color 0.1s ease-out;
-  z-index: 9999;
-  will-change: transform;
-}
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+          <div>
+            <label class="block text-gray-700 dark:text-gray-300 mb-2"
+              >Jumlah Baris</label
+            >
+            <input
+              type="number"
+              min="1"
+              max="6"
+              value="3"
+              id="rows"
+              class="w-full p-2 border rounded dark:bg-gray-700 dark:text-white dark:border-gray-600"
+            />
+          </div>
+          <div>
+            <label class="block text-gray-700 dark:text-gray-300 mb-2"
+              >Jumlah Kolom</label
+            >
+            <input
+              type="number"
+              min="1"
+              max="6"
+              value="3"
+              id="cols"
+              class="w-full p-2 border rounded dark:bg-gray-700 dark:text-white dark:border-gray-600"
+            />
+          </div>
+          <div class="flex items-end">
+            <button
+              onclick="generateMatrix()"
+              class="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded"
+            >
+              Buat Matriks
+            </button>
+          </div>
+        </div>
 
-.cursor-inner {
-  position: fixed;
-  width: 6px;
-  height: 6px;
-  background-color: #fff;
-  border-radius: 50%;
-  pointer-events: none;
-  transform: translate(-50%, -50%);
-  z-index: 9999;
-  transition: transform 0.05s ease-out;
-  mix-blend-mode: difference;
-  will-change: transform;
-}
-</style></head>
-<body class="bg-gray-100 dark:bg-gray-900 min-h-screen">
-<!-- Custom Cursor -->
-<div class="cursor-outer"></div>
-<div class="cursor-inner"></div>
+        <div class="mb-4">
+          <label class="block text-gray-700 dark:text-gray-300 mb-2"
+            >Nama Matriks</label
+          >
+          <input
+            type="text"
+            id="matrix-name"
+            value="P"
+            class="w-16 p-2 border rounded dark:bg-gray-700 dark:text-white dark:border-gray-600"
+          />
+        </div>
 
-<nav class="bg-white dark:bg-gray-800 shadow-sm">
-<div class="px-4 py-3 flex justify-between items-center">
-<a class="text-blue-600 dark:text-blue-400 font-semibold" href="../index">← Kembali</a>
-<button class="p-2 border-transparent bg-white dark:bg-dark-light text-dark dark:text-gray-300 rounded-lg focus:outline-none transform hover:rotate-12" id="theme-toggle" type="button">
-<svg class="w-5 h-5" fill="currentColor" id="theme-toggle-dark-icon" viewbox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path></svg>
-<svg class="w-5 h-5 hidden" fill="currentColor" id="theme-toggle-light-icon" viewbox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path clip-rule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" fill-rule="evenodd"></path></svg>
-</button>
-</div>
-</nav>
-<main class="container mx-auto px-4 py-8 max-w-4xl">
-<h1 class="text-2xl font-bold text-center mb-8 text-gray-800 dark:text-white">Modul Pembelajaran Matriks dan Vektor</h1>
-<div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg mb-6">
-<h2 class="text-xl font-semibold mb-4 text-blue-600 dark:text-blue-400">Operasi Matriks</h2>
-<p class="mb-4 text-gray-700 dark:text-gray-300">Lakukan operasi dasar pada matriks 2x2: penjumlahan, pengurangan, dan perkalian.</p>
-<div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-<div>
-<h3 class="text-lg font-medium mb-2 text-gray-700 dark:text-gray-300">Matriks A</h3>
-<div class="grid grid-cols-2 gap-1">
-<input class="matrix-input p-1 border rounded dark:bg-gray-700 dark:text-white dark:border-gray-600" id="a11" type="number" value="1"/>
-<input class="matrix-input p-1 border rounded dark:bg-gray-700 dark:text-white dark:border-gray-600" id="a12" type="number" value="2"/>
-<input class="matrix-input p-1 border rounded dark:bg-gray-700 dark:text-white dark:border-gray-600" id="a21" type="number" value="3"/>
-<input class="matrix-input p-1 border rounded dark:bg-gray-700 dark:text-white dark:border-gray-600" id="a22" type="number" value="4"/>
-</div>
-</div>
-<div>
-<h3 class="text-lg font-medium mb-2 text-gray-700 dark:text-gray-300">Matriks B</h3>
-<div class="grid grid-cols-2 gap-1">
-<input class="matrix-input p-1 border rounded dark:bg-gray-700 dark:text-white dark:border-gray-600" id="b11" type="number" value="5"/>
-<input class="matrix-input p-1 border rounded dark:bg-gray-700 dark:text-white dark:border-gray-600" id="b12" type="number" value="6"/>
-<input class="matrix-input p-1 border rounded dark:bg-gray-700 dark:text-white dark:border-gray-600" id="b21" type="number" value="7"/>
-<input class="matrix-input p-1 border rounded dark:bg-gray-700 dark:text-white dark:border-gray-600" id="b22" type="number" value="8"/>
-</div>
-</div>
-</div>
-<div class="grid grid-cols-3 gap-2 mb-4">
-<button class="operation-btn bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded dark:bg-blue-600 dark:hover:bg-blue-700" onclick="matrixOperation('add')">A + B</button>
-<button class="operation-btn bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded dark:bg-green-600 dark:hover:bg-green-700" onclick="matrixOperation('subtract')">A - B</button>
-<button class="operation-btn bg-purple-500 hover:bg-purple-600 text-white font-bold py-2 px-4 rounded dark:bg-purple-600 dark:hover:bg-purple-700" onclick="matrixOperation('multiply')">A × B</button>
-</div>
-<div class="text-gray-700 dark:text-gray-300 p-3 bg-gray-100 dark:bg-gray-700 rounded" id="matrix-result"></div>
-</div>
-<div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg mb-6">
-<h2 class="text-xl font-semibold mb-4 text-blue-600 dark:text-blue-400">Determinan dan Invers Matriks</h2>
-<p class="mb-4 text-gray-700 dark:text-gray-300">Hitung determinan dan invers matriks 2x2.</p>
-<div class="mb-4">
-<h3 class="text-lg font-medium mb-2 text-gray-700 dark:text-gray-300">Matriks</h3>
-<div class="grid grid-cols-2 gap-1 w-min mx-auto">
-<input class="matrix-input p-1 border rounded dark:bg-gray-700 dark:text-white dark:border-gray-600" id="m11" type="number" value="1"/>
-<input class="matrix-input p-1 border rounded dark:bg-gray-700 dark:text-white dark:border-gray-600" id="m12" type="number" value="2"/>
-<input class="matrix-input p-1 border rounded dark:bg-gray-700 dark:text-white dark:border-gray-600" id="m21" type="number" value="3"/>
-<input class="matrix-input p-1 border rounded dark:bg-gray-700 dark:text-white dark:border-gray-600" id="m22" type="number" value="4"/>
-</div>
-</div>
-<div class="grid grid-cols-2 gap-2 mb-4">
-<button class="operation-btn bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-4 rounded dark:bg-yellow-600 dark:hover:bg-yellow-700" onclick="matrixDetInv('determinant')">Determinan</button>
-<button class="operation-btn bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-2 px-4 rounded dark:bg-indigo-600 dark:hover:bg-indigo-700" onclick="matrixDetInv('inverse')">Invers</button>
-</div>
-<div class="text-gray-700 dark:text-gray-300 p-3 bg-gray-100 dark:bg-gray-700 rounded" id="det-inv-result"></div>
-</div>
-<div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg">
-<h2 class="text-xl font-semibold mb-4 text-blue-600 dark:text-blue-400">Operasi Vektor</h2>
-<p class="mb-4 text-gray-700 dark:text-gray-300">Lakukan operasi dasar pada vektor 2D: penjumlahan, perkalian dot, dan perkalian skalar.</p>
-<div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-<div>
-<h3 class="text-lg font-medium mb-2 text-gray-700 dark:text-gray-300">Vektor v</h3>
-<div class="flex">
-<input class="matrix-input p-1 border rounded dark:bg-gray-700 dark:text-white dark:border-gray-600" id="vx" type="number" value="1"/>
-<input class="matrix-input p-1 border rounded dark:bg-gray-700 dark:text-white dark:border-gray-600" id="vy" type="number" value="2"/>
-</div>
-</div>
-<div>
-<h3 class="text-lg font-medium mb-2 text-gray-700 dark:text-gray-300">Vektor w</h3>
-<div class="flex">
-<input class="matrix-input p-1 border rounded dark:bg-gray-700 dark:text-white dark:border-gray-600" id="wx" type="number" value="3"/>
-<input class="matrix-input p-1 border rounded dark:bg-gray-700 dark:text-white dark:border-gray-600" id="wy" type="number" value="4"/>
-</div>
-</div>
-</div>
-<div class="grid grid-cols-3 gap-2 mb-4">
-<button class="operation-btn bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded dark:bg-blue-600 dark:hover:bg-blue-700" onclick="vectorOperation('add')">v + w</button>
-<button class="operation-btn bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded dark:bg-green-600 dark:hover:bg-green-700" onclick="vectorOperation('dot')">v · w</button>
-<button class="operation-btn bg-purple-500 hover:bg-purple-600 text-white font-bold py-2 px-4 rounded dark:bg-purple-600 dark:hover:bg-purple-700" onclick="vectorOperation('scalar')">k × v</button>
-</div>
-<div class="mb-4" id="scalar-input-container" style="display: none;">
-<label class="block text-gray-700 dark:text-gray-300 mb-2" for="scalar-k">Nilai skalar k:</label>
-<input class="w-full p-2 border rounded dark:bg-gray-700 dark:text-white dark:border-gray-600" id="scalar-k" type="number" value="2"/>
-</div>
-<div class="text-gray-700 dark:text-gray-300 p-3 bg-gray-100 dark:bg-gray-700 rounded" id="vector-result"></div>
-</div>
-</main>
-<script>
+        <div id="dynamic-matrix-container" class="mb-4">
+          <!-- Matriks akan digenerate di sini -->
+          <div class="matrix-container dark:border-gray-600">
+            <div class="matrix-row">
+              <input
+                class="matrix-input dark:bg-gray-700 dark:text-white dark:border-gray-600"
+                id="p11"
+                type="number"
+                value="1"
+              />
+              <input
+                class="matrix-input dark:bg-gray-700 dark:text-white dark:border-gray-600"
+                id="p12"
+                type="number"
+                value="2"
+              />
+              <input
+                class="matrix-input dark:bg-gray-700 dark:text-white dark:border-gray-600"
+                id="p13"
+                type="number"
+                value="3"
+              />
+            </div>
+            <div class="matrix-row">
+              <input
+                class="matrix-input dark:bg-gray-700 dark:text-white dark:border-gray-600"
+                id="p21"
+                type="number"
+                value="4"
+              />
+              <input
+                class="matrix-input dark:bg-gray-700 dark:text-white dark:border-gray-600"
+                id="p22"
+                type="number"
+                value="5"
+              />
+              <input
+                class="matrix-input dark:bg-gray-700 dark:text-white dark:border-gray-600"
+                id="p23"
+                type="number"
+                value="6"
+              />
+            </div>
+            <div class="matrix-row">
+              <input
+                class="matrix-input dark:bg-gray-700 dark:text-white dark:border-gray-600"
+                id="p31"
+                type="number"
+                value="7"
+              />
+              <input
+                class="matrix-input dark:bg-gray-700 dark:text-white dark:border-gray-600"
+                id="p32"
+                type="number"
+                value="8"
+              />
+              <input
+                class="matrix-input dark:bg-gray-700 dark:text-white dark:border-gray-600"
+                id="p33"
+                type="number"
+                value="9"
+              />
+            </div>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+          <button
+            onclick="getMatrixInfo()"
+            class="operation-btn bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded"
+          >
+            Info Matriks
+          </button>
+          <button
+            onclick="findElement()"
+            class="operation-btn bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-4 rounded"
+          >
+            Cari Elemen p<sub>ij</sub>
+          </button>
+          <button
+            onclick="solveForX()"
+            class="operation-btn bg-purple-500 hover:bg-purple-600 text-white font-bold py-2 px-4 rounded"
+          >
+            Cari Nilai X
+          </button>
+        </div>
+
+        <div
+          class="text-gray-700 dark:text-gray-300 p-3 bg-gray-100 dark:bg-gray-700 rounded"
+          id="matrix-info-result"
+        >
+          <p>Informasi matriks akan muncul di sini</p>
+        </div>
+      </div>
+
+      <!-- Operasi Matriks Dasar -->
+      <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg mb-6">
+        <h2 class="text-xl font-semibold mb-4 text-blue-600 dark:text-blue-400">
+          Operasi Matriks Dasar
+        </h2>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+          <div>
+            <h3
+              class="text-lg font-medium mb-2 text-gray-700 dark:text-gray-300"
+            >
+              Matriks A
+            </h3>
+            <div class="matrix-container dark:border-gray-600">
+              <div class="matrix-row">
+                <input
+                  class="matrix-input dark:bg-gray-700 dark:text-white dark:border-gray-600"
+                  id="a11"
+                  type="number"
+                  value="1"
+                />
+                <input
+                  class="matrix-input dark:bg-gray-700 dark:text-white dark:border-gray-600"
+                  id="a12"
+                  type="number"
+                  value="2"
+                />
+              </div>
+              <div class="matrix-row">
+                <input
+                  class="matrix-input dark:bg-gray-700 dark:text-white dark:border-gray-600"
+                  id="a21"
+                  type="number"
+                  value="3"
+                />
+                <input
+                  class="matrix-input dark:bg-gray-700 dark:text-white dark:border-gray-600"
+                  id="a22"
+                  type="number"
+                  value="4"
+                />
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <h3
+              class="text-lg font-medium mb-2 text-gray-700 dark:text-gray-300"
+            >
+              Matriks B
+            </h3>
+            <div class="matrix-container dark:border-gray-600">
+              <div class="matrix-row">
+                <input
+                  class="matrix-input dark:bg-gray-700 dark:text-white dark:border-gray-600"
+                  id="b11"
+                  type="number"
+                  value="5"
+                />
+                <input
+                  class="matrix-input dark:bg-gray-700 dark:text-white dark:border-gray-600"
+                  id="b12"
+                  type="number"
+                  value="6"
+                />
+              </div>
+              <div class="matrix-row">
+                <input
+                  class="matrix-input dark:bg-gray-700 dark:text-white dark:border-gray-600"
+                  id="b21"
+                  type="number"
+                  value="7"
+                />
+                <input
+                  class="matrix-input dark:bg-gray-700 dark:text-white dark:border-gray-600"
+                  id="b22"
+                  type="number"
+                  value="8"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-2 mb-4">
+          <button
+            onclick="matrixOperation('add')"
+            class="operation-btn bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded"
+          >
+            A + B
+          </button>
+          <button
+            onclick="matrixOperation('subtract')"
+            class="operation-btn bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded"
+          >
+            A - B
+          </button>
+          <button
+            onclick="matrixOperation('multiply')"
+            class="operation-btn bg-purple-500 hover:bg-purple-600 text-white font-bold py-2 px-4 rounded"
+          >
+            A × B
+          </button>
+          <button
+            onclick="matrixOperation('transpose')"
+            class="operation-btn bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-4 rounded"
+          >
+            A<sup>T</sup>
+          </button>
+        </div>
+
+        <div
+          class="text-gray-700 dark:text-gray-300 p-3 bg-gray-100 dark:bg-gray-700 rounded"
+          id="matrix-result"
+        >
+          <p>Hasil operasi akan ditampilkan di sini</p>
+        </div>
+      </div>
+
+      <!-- Determinan dan Invers -->
+      <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg mb-6">
+        <h2 class="text-xl font-semibold mb-4 text-blue-600 dark:text-blue-400">
+          Determinan dan Invers
+        </h2>
+
+        <div class="mb-4">
+          <h3 class="text-lg font-medium mb-2 text-gray-700 dark:text-gray-300">
+            Matriks
+          </h3>
+          <div class="matrix-container dark:border-gray-600">
+            <div class="matrix-row">
+              <input
+                class="matrix-input dark:bg-gray-700 dark:text-white dark:border-gray-600"
+                id="m11"
+                type="number"
+                value="1"
+              />
+              <input
+                class="matrix-input dark:bg-gray-700 dark:text-white dark:border-gray-600"
+                id="m12"
+                type="number"
+                value="2"
+              />
+            </div>
+            <div class="matrix-row">
+              <input
+                class="matrix-input dark:bg-gray-700 dark:text-white dark:border-gray-600"
+                id="m21"
+                type="number"
+                value="3"
+              />
+              <input
+                class="matrix-input dark:bg-gray-700 dark:text-white dark:border-gray-600"
+                id="m22"
+                type="number"
+                value="4"
+              />
+            </div>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-2 mb-4">
+          <button
+            onclick="matrixDetInv('determinant')"
+            class="operation-btn bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-4 rounded"
+          >
+            Determinan
+          </button>
+          <button
+            onclick="matrixDetInv('inverse')"
+            class="operation-btn bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-2 px-4 rounded"
+          >
+            Invers
+          </button>
+        </div>
+
+        <div
+          class="text-gray-700 dark:text-gray-300 p-3 bg-gray-100 dark:bg-gray-700 rounded"
+          id="det-inv-result"
+        >
+          <p>Hasil perhitungan akan ditampilkan di sini</p>
+        </div>
+      </div>
+
+      <!-- Operasi Vektor -->
+      <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg">
+        <h2 class="text-xl font-semibold mb-4 text-blue-600 dark:text-blue-400">
+          Operasi Vektor
+        </h2>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+          <div>
+            <h3
+              class="text-lg font-medium mb-2 text-gray-700 dark:text-gray-300"
+            >
+              Vektor v
+            </h3>
+            <div class="matrix-container dark:border-gray-600">
+              <div class="matrix-row">
+                <input
+                  class="matrix-input dark:bg-gray-700 dark:text-white dark:border-gray-600"
+                  id="vx"
+                  type="number"
+                  value="1"
+                />
+                <input
+                  class="matrix-input dark:bg-gray-700 dark:text-white dark:border-gray-600"
+                  id="vy"
+                  type="number"
+                  value="2"
+                />
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <h3
+              class="text-lg font-medium mb-2 text-gray-700 dark:text-gray-300"
+            >
+              Vektor w
+            </h3>
+            <div class="matrix-container dark:border-gray-600">
+              <div class="matrix-row">
+                <input
+                  class="matrix-input dark:bg-gray-700 dark:text-white dark:border-gray-600"
+                  id="wx"
+                  type="number"
+                  value="3"
+                />
+                <input
+                  class="matrix-input dark:bg-gray-700 dark:text-white dark:border-gray-600"
+                  id="wy"
+                  type="number"
+                  value="4"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-3 gap-2 mb-4">
+          <button
+            onclick="vectorOperation('add')"
+            class="operation-btn bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded"
+          >
+            v + w
+          </button>
+          <button
+            onclick="vectorOperation('dot')"
+            class="operation-btn bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded"
+          >
+            v · w
+          </button>
+          <button
+            onclick="vectorOperation('scalar')"
+            class="operation-btn bg-purple-500 hover:bg-purple-600 text-white font-bold py-2 px-4 rounded"
+          >
+            k × v
+          </button>
+        </div>
+
+        <div class="mb-4" id="scalar-input-container" style="display: none">
+          <label
+            class="block text-gray-700 dark:text-gray-300 mb-2"
+            for="scalar-k"
+            >Nilai skalar k:</label
+          >
+          <input
+            class="w-full p-2 border rounded dark:bg-gray-700 dark:text-white dark:border-gray-600"
+            id="scalar-k"
+            type="number"
+            value="2"
+          />
+        </div>
+
+        <div
+          class="text-gray-700 dark:text-gray-300 p-3 bg-gray-100 dark:bg-gray-700 rounded"
+          id="vector-result"
+        >
+          <p>Hasil operasi akan ditampilkan di sini</p>
+        </div>
+      </div>
+    </main>
+
+    <script>
       // Theme toggle
       const themeToggleBtn = document.getElementById("theme-toggle");
       const themeToggleDarkIcon = document.getElementById(
@@ -224,128 +623,404 @@
         }
       });
 
-      // Matrix operations
+      // Generate matriks dinamis
+      function generateMatrix() {
+        const rows = parseInt(document.getElementById("rows").value);
+        const cols = parseInt(document.getElementById("cols").value);
+        const matrixName = document.getElementById("matrix-name").value || "P";
+
+        if (rows < 1 || cols < 1 || rows > 6 || cols > 6) {
+          Swal.fire({
+            icon: "error",
+            title: "Invalid Input",
+            text: "Jumlah baris dan kolom harus antara 1 dan 6",
+          });
+          return;
+        }
+
+        let html = `<div class="matrix-container dark:border-gray-600">`;
+
+        for (let i = 1; i <= rows; i++) {
+          html += '<div class="matrix-row">';
+          for (let j = 1; j <= cols; j++) {
+            html += `<input class="matrix-input dark:bg-gray-700 dark:text-white dark:border-gray-600" 
+                id="${matrixName.toLowerCase()}${i}${j}" type="number" placeholder="${matrixName}${i}${j}" value="${i}${j}">`;
+          }
+          html += "</div>";
+        }
+        html += "</div>";
+
+        document.getElementById("dynamic-matrix-container").innerHTML = html;
+
+        Swal.fire({
+          position: "top-end",
+          icon: "success",
+          title: `Matriks ${matrixName} ${rows}x${cols} berhasil dibuat`,
+          showConfirmButton: false,
+          timer: 1500,
+        });
+      }
+
+      // Dapatkan informasi matriks
+      function getMatrixInfo() {
+        const rows = parseInt(document.getElementById("rows").value);
+        const cols = parseInt(document.getElementById("cols").value);
+        const matrixName = document.getElementById("matrix-name").value || "P";
+
+        Swal.fire({
+          title: `Informasi Matriks ${matrixName}`,
+          html: `
+          <p>Ordo: ${rows} × ${cols}</p>
+          <p>Jumlah Elemen: ${rows * cols}</p>
+          <p>Elemen diagonal utama: ${getDiagonalElements(
+            matrixName,
+            rows,
+            cols
+          )}</p>
+        `,
+          icon: "info",
+        });
+      }
+
+      function getDiagonalElements(name, rows, cols) {
+        const size = Math.min(rows, cols);
+        let elements = [];
+        for (let i = 1; i <= size; i++) {
+          const element = document.getElementById(
+            `${name.toLowerCase()}${i}${i}`
+          );
+          elements.push(element ? element.value || "null" : "null");
+        }
+        return elements.join(", ");
+      }
+
+      // Cari elemen tertentu
+      async function findElement() {
+        const matrixName = document.getElementById("matrix-name").value || "p";
+        const { value: row } = await Swal.fire({
+          title: "Cari Elemen Matriks",
+          input: "number",
+          inputLabel: "Masukkan baris (i)",
+          inputPlaceholder: "Nomor baris",
+          inputAttributes: {
+            min: 1,
+            max: 6,
+          },
+        });
+
+        if (!row) return;
+
+        const { value: col } = await Swal.fire({
+          title: "Cari Elemen Matriks",
+          input: "number",
+          inputLabel: "Masukkan kolom (j)",
+          inputPlaceholder: "Nomor kolom",
+          inputAttributes: {
+            min: 1,
+            max: 6,
+          },
+        });
+
+        if (!col) return;
+
+        const element = document.getElementById(
+          `${matrixName.toLowerCase()}${row}${col}`
+        );
+        if (element) {
+          Swal.fire({
+            title: `Elemen ${matrixName}<sub>${row}${col}</sub>`,
+            text: `Nilai: ${element.value || "kosong"}`,
+            icon: "success",
+          });
+        } else {
+          Swal.fire({
+            title: "Error",
+            text: `Elemen ${matrixName}<sub>${row}${col}</sub> tidak ditemukan`,
+            icon: "error",
+          });
+        }
+      }
+
+      // Cari nilai X jika pij = nilai tertentu
+      async function solveForX() {
+        const matrixName = document.getElementById("matrix-name").value || "p";
+
+        const { value: row } = await Swal.fire({
+          title: "Cari Nilai X",
+          input: "number",
+          inputLabel: "Masukkan baris (i)",
+          inputPlaceholder: "Nomor baris",
+          inputAttributes: {
+            min: 1,
+            max: 6,
+          },
+        });
+
+        if (!row) return;
+
+        const { value: col } = await Swal.fire({
+          title: "Cari Nilai X",
+          input: "number",
+          inputLabel: "Masukkan kolom (j)",
+          inputPlaceholder: "Nomor kolom",
+          inputAttributes: {
+            min: 1,
+            max: 6,
+          },
+        });
+
+        if (!col) return;
+
+        const { value: newValue } = await Swal.fire({
+          title: "Masukkan Nilai Baru",
+          input: "number",
+          inputLabel: `Nilai baru untuk ${matrixName}<sub>${row}${col}</sub>`,
+          inputPlaceholder: "Masukkan nilai",
+        });
+
+        if (newValue === undefined) return;
+
+        const element = document.getElementById(
+          `${matrixName.toLowerCase()}${row}${col}`
+        );
+        if (element) {
+          element.value = newValue;
+          Swal.fire({
+            position: "top-end",
+            title: "Berhasil!",
+            text: `Elemen ${matrixName}<sub>${row}${col}</sub> diubah menjadi ${newValue}`,
+            icon: "success",
+            showConfirmButton: false,
+            timer: 1500,
+          });
+        } else {
+          Swal.fire({
+            title: "Error",
+            text: `Elemen ${matrixName}<sub>${row}${col}</sub> tidak ditemukan`,
+            icon: "error",
+          });
+        }
+      }
+
+      // Operasi matriks dasar
       function matrixOperation(operation) {
-        // Get matrix A values
-        const a11 = parseFloat(document.getElementById("a11").value);
-        const a12 = parseFloat(document.getElementById("a12").value);
-        const a21 = parseFloat(document.getElementById("a21").value);
-        const a22 = parseFloat(document.getElementById("a22").value);
-        
-        // Get matrix B values
-        const b11 = parseFloat(document.getElementById("b11").value);
-        const b12 = parseFloat(document.getElementById("b12").value);
-        const b21 = parseFloat(document.getElementById("b21").value);
-        const b22 = parseFloat(document.getElementById("b22").value);
-        
+        if (operation === "transpose") {
+          // Transpose matriks dinamis
+          const matrixName =
+            document.getElementById("matrix-name").value || "p";
+          const rows = parseInt(document.getElementById("rows").value);
+          const cols = parseInt(document.getElementById("cols").value);
+
+          // Dapatkan nilai matriks saat ini
+          let matrix = [];
+          for (let i = 1; i <= rows; i++) {
+            let row = [];
+            for (let j = 1; j <= cols; j++) {
+              const element = document.getElementById(
+                `${matrixName.toLowerCase()}${i}${j}`
+              );
+              row.push(element ? element.value || 0 : 0);
+            }
+            matrix.push(row);
+          }
+
+          // Hitung transpose
+          let transposed = [];
+          for (let j = 0; j < cols; j++) {
+            let newRow = [];
+            for (let i = 0; i < rows; i++) {
+              newRow.push(matrix[i][j]);
+            }
+            transposed.push(newRow);
+          }
+
+          // Tampilkan hasil
+          let resultHtml = `<p>Hasil Transpose Matriks ${matrixName}:</p><div class="matrix-container dark:border-gray-600">`;
+
+          for (let i = 0; i < transposed.length; i++) {
+            resultHtml += '<div class="matrix-row">';
+            for (let j = 0; j < transposed[i].length; j++) {
+              resultHtml += `<span class="matrix-cell">${transposed[i][j]}</span>`;
+            }
+            resultHtml += "</div>";
+          }
+
+          resultHtml += "</div>";
+          resultHtml +=
+            '<p class="mt-2">Rumus: (A<sup>T</sup>)<sub>ij</sub> = A<sub>ji</sub></p>';
+
+          document.getElementById("matrix-result").innerHTML = resultHtml;
+          return;
+        }
+
+        // Operasi matriks 2x2
+        const a11 = parseFloat(document.getElementById("a11").value) || 0;
+        const a12 = parseFloat(document.getElementById("a12").value) || 0;
+        const a21 = parseFloat(document.getElementById("a21").value) || 0;
+        const a22 = parseFloat(document.getElementById("a22").value) || 0;
+
+        const b11 = parseFloat(document.getElementById("b11").value) || 0;
+        const b12 = parseFloat(document.getElementById("b12").value) || 0;
+        const b21 = parseFloat(document.getElementById("b21").value) || 0;
+        const b22 = parseFloat(document.getElementById("b22").value) || 0;
+
         let result11, result12, result21, result22;
-        
-        switch(operation) {
-          case 'add':
+        let operationSymbol = "";
+        let operationName = "";
+        let formula = "";
+
+        switch (operation) {
+          case "add":
             result11 = a11 + b11;
             result12 = a12 + b12;
             result21 = a21 + b21;
             result22 = a22 + b22;
+            operationSymbol = "+";
+            operationName = "Penjumlahan";
+            formula = "A + B = [a<sub>ij</sub> + b<sub>ij</sub>]";
             break;
-          case 'subtract':
+          case "subtract":
             result11 = a11 - b11;
             result12 = a12 - b12;
             result21 = a21 - b21;
             result22 = a22 - b22;
+            operationSymbol = "-";
+            operationName = "Pengurangan";
+            formula = "A - B = [a<sub>ij</sub> - b<sub>ij</sub>]";
             break;
-          case 'multiply':
+          case "multiply":
             result11 = a11 * b11 + a12 * b21;
             result12 = a11 * b12 + a12 * b22;
             result21 = a21 * b11 + a22 * b21;
             result22 = a21 * b12 + a22 * b22;
+            operationSymbol = "×";
+            operationName = "Perkalian";
+            formula = "(AB)<sub>ij</sub> = Σ a<sub>ik</sub>b<sub>kj</sub>";
             break;
         }
-        
-        document.getElementById("matrix-result").innerHTML = `
-          <p>Hasil:</p>
-          <table class="mx-auto">
-            <tr>
-              <td class="p-2">${result11.toFixed(2)}</td>
-              <td class="p-2">${result12.toFixed(2)}</td>
-            </tr>
-            <tr>
-              <td class="p-2">${result21.toFixed(2)}</td>
-              <td class="p-2">${result22.toFixed(2)}</td>
-            </tr>
-          </table>
-        `;
+
+        const resultHtml = `
+        <p>Hasil ${operationName} Matriks A ${operationSymbol} B:</p>
+        <div class="matrix-container dark:border-gray-600">
+          <div class="matrix-row">
+            <span class="matrix-cell">${result11.toFixed(2)}</span>
+            <span class="matrix-cell">${result12.toFixed(2)}</span>
+          </div>
+          <div class="matrix-row">
+            <span class="matrix-cell">${result21.toFixed(2)}</span>
+            <span class="matrix-cell">${result22.toFixed(2)}</span>
+          </div>
+        </div>
+        <p class="mt-2">Rumus: ${formula}</p>
+      `;
+
+        document.getElementById("matrix-result").innerHTML = resultHtml;
       }
 
-      // Matrix determinant and inverse
+      // Determinan dan invers matriks
       function matrixDetInv(operation) {
-        const m11 = parseFloat(document.getElementById("m11").value);
-        const m12 = parseFloat(document.getElementById("m12").value);
-        const m21 = parseFloat(document.getElementById("m21").value);
-        const m22 = parseFloat(document.getElementById("m22").value);
-        
-        if(operation === 'determinant') {
-          const det = m11 * m22 - m12 * m21;
+        const m11 = parseFloat(document.getElementById("m11").value) || 0;
+        const m12 = parseFloat(document.getElementById("m12").value) || 0;
+        const m21 = parseFloat(document.getElementById("m21").value) || 0;
+        const m22 = parseFloat(document.getElementById("m22").value) || 0;
+
+        const det = m11 * m22 - m12 * m21;
+
+        if (operation === "determinant") {
           document.getElementById("det-inv-result").innerHTML = `
-            <p>Determinan = (${m11} × ${m22}) - (${m12} × ${m21}) = ${det}</p>
+          <p>Determinan Matriks:</p>
+          <p class="text-center">det(A) = (${m11} × ${m22}) - (${m12} × ${m21}) = ${det}</p>
+          <p class="mt-2">Rumus: det(A) = a<sub>11</sub>a<sub>22</sub> - a<sub>12</sub>a<sub>21</sub></p>
+        `;
+        } else if (operation === "inverse") {
+          if (det === 0) {
+            Swal.fire({
+              icon: "error",
+              title: "Error",
+              text: "Matriks tidak memiliki invers karena determinannya 0",
+            });
+            document.getElementById("det-inv-result").innerHTML = `
+            <p class="text-red-500">Matriks tidak memiliki invers karena determinannya 0</p>
+            <p class="mt-2">Rumus: A<sup>-1</sup> = (1/det(A)) × [a<sub>22</sub> -a<sub>12</sub><br>-a<sub>21</sub> a<sub>11</sub>]</p>
           `;
-        } else if(operation === 'inverse') {
-          const det = m11 * m22 - m12 * m21;
-          if(det === 0) {
-            document.getElementById("det-inv-result").innerHTML = "Matriks tidak memiliki invers karena determinannya 0";
             return;
           }
-          
+
           const inv11 = m22 / det;
           const inv12 = -m12 / det;
           const inv21 = -m21 / det;
           const inv22 = m11 / det;
-          
+
           document.getElementById("det-inv-result").innerHTML = `
-            <p>Invers Matriks:</p>
-            <table class="mx-auto">
-              <tr>
-                <td class="p-2">${inv11.toFixed(2)}</td>
-                <td class="p-2">${inv12.toFixed(2)}</td>
-              </tr>
-              <tr>
-                <td class="p-2">${inv21.toFixed(2)}</td>
-                <td class="p-2">${inv22.toFixed(2)}</td>
-              </tr>
-            </table>
-            <p class="mt-2">Determinan = ${det}</p>
-          `;
+          <p>Invers Matriks:</p>
+          <div class="matrix-container dark:border-gray-600">
+            <div class="matrix-row">
+              <span class="matrix-cell">${inv11.toFixed(2)}</span>
+              <span class="matrix-cell">${inv12.toFixed(2)}</span>
+            </div>
+            <div class="matrix-row">
+              <span class="matrix-cell">${inv21.toFixed(2)}</span>
+              <span class="matrix-cell">${inv22.toFixed(2)}</span>
+            </div>
+          </div>
+          <p class="mt-2">Determinan = ${det}</p>
+          <p class="mt-2">Rumus: A<sup>-1</sup> = (1/det(A)) × [a<sub>22</sub> -a<sub>12</sub><br>-a<sub>21</sub> a<sub>11</sub>]</p>
+        `;
+
+          Swal.fire({
+            position: "top-end",
+            title: "Invers Ditemukan!",
+            icon: "success",
+            showConfirmButton: false,
+            timer: 1500,
+          });
         }
       }
 
-      // Vector operations
+      // Operasi vektor
       function vectorOperation(operation) {
-        const vx = parseFloat(document.getElementById("vx").value);
-        const vy = parseFloat(document.getElementById("vy").value);
-        const wx = parseFloat(document.getElementById("wx").value);
-        const wy = parseFloat(document.getElementById("wy").value);
-        
+        const vx = parseFloat(document.getElementById("vx").value) || 0;
+        const vy = parseFloat(document.getElementById("vy").value) || 0;
+        const wx = parseFloat(document.getElementById("wx").value) || 0;
+        const wy = parseFloat(document.getElementById("wy").value) || 0;
+
         const scalarInput = document.getElementById("scalar-input-container");
-        scalarInput.style.display = operation === 'scalar' ? 'block' : 'none';
-        
+        scalarInput.style.display = operation === "scalar" ? "block" : "none";
+
         let result;
-        
-        switch(operation) {
-          case 'add':
-            result = `(${vx + wx}, ${vy + wy})`;
+        let operationName = "";
+        let formula = "";
+
+        switch (operation) {
+          case "add":
+            result = `(${(vx + wx).toFixed(2)}, ${(vy + wy).toFixed(2)})`;
+            operationName = "Penjumlahan Vektor";
+            formula =
+              "v + w = (v<sub>x</sub>+w<sub>x</sub>, v<sub>y</sub>+w<sub>y</sub>)";
             break;
-          case 'dot':
-            result = vx * wx + vy * wy;
+          case "dot":
+            result = (vx * wx + vy * wy).toFixed(2);
+            operationName = "Dot Product Vektor";
+            formula =
+              "v · w = v<sub>x</sub>w<sub>x</sub> + v<sub>y</sub>w<sub>y</sub>";
             break;
-          case 'scalar':
-            const k = parseFloat(document.getElementById("scalar-k").value);
-            result = `(${k * vx}, ${k * vy})`;
+          case "scalar":
+            const k =
+              parseFloat(document.getElementById("scalar-k").value) || 1;
+            result = `(${(k * vx).toFixed(2)}, ${(k * vy).toFixed(2)})`;
+            operationName = "Perkalian Skalar Vektor";
+            formula = "k × v = (k·v<sub>x</sub>, k·v<sub>y</sub>)";
             break;
         }
-        
+
         document.getElementById("vector-result").innerHTML = `
-          <p>Hasil: ${result}</p>
-        `;
+        <p>Hasil ${operationName}: ${result}</p>
+        <p class="mt-2">Rumus: ${formula}</p>
+      `;
       }
+
+      // Generate matriks awal
+      generateMatrix();
     </script>
-<script src="../cursor.js"></script></body>
+  </body>
 </html>
