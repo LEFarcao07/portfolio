@@ -1,0 +1,704 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flappy Bird</title>
+    <style>
+        :root {
+            --primary-color: #4CAF50;
+            --secondary-color: #2E7D32;
+            --accent-color: #FFC107;
+            --text-color: #333;
+            --bg-color: #87CEEB;
+            --pipe-color: #4CAF50;
+            --ground-color: #8B4513;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            overflow: hidden;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #game-container {
+            position: relative;
+            width: 100%;
+            max-width: 400px;
+            height: 100vh;
+            max-height: 600px;
+            margin: 0 auto;
+            overflow: hidden;
+            background: linear-gradient(to bottom, #87CEEB, #E0F7FA);
+            border: 3px solid var(--secondary-color);
+            border-radius: 10px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        @media (min-width: 768px) {
+            #game-container {
+                height: 600px;
+                margin: 20px auto;
+            }
+        }
+
+        #game-canvas {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+
+        #menu-screen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+            color: white;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        #game-over-screen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+            color: white;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        #cheat-modal {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 20;
+            color: white;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .cheat-input {
+            padding: 10px;
+            margin: 10px 0;
+            width: 200px;
+            border-radius: 5px;
+            border: none;
+            font-size: 1rem;
+        }
+
+        .back-button {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background-color: var(--accent-color);
+            color: #333;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 50px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            z-index: 15;
+            text-decoration: none;
+        }
+
+        .title {
+            font-size: clamp(2rem, 8vw, 3rem);
+            margin-bottom: 20px;
+            color: var(--accent-color);
+            text-shadow: 3px 3px 0 rgba(0, 0, 0, 0.5);
+            animation: bounce 1.5s infinite;
+            text-align: center;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        button {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            margin: 10px;
+            border-radius: 50px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            width: 200px;
+            max-width: 100%;
+        }
+
+        .cheat-btn {
+            background-color: #9C27B0;
+        }
+
+        button:hover {
+            background-color: var(--secondary-color);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        .cheat-btn:hover {
+            background-color: #7B1FA2;
+        }
+
+        button:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .score-display {
+            font-size: 2rem;
+            margin: 10px 0;
+            font-weight: bold;
+            text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.5);
+            text-align: center;
+        }
+
+        .high-score {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            color: var(--accent-color);
+            text-align: center;
+        }
+
+        .character-selection {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin: 20px 0;
+            max-width: 300px;
+            gap: 10px;
+        }
+
+        .character-option {
+            width: 60px;
+            height: 60px;
+            border: 3px solid transparent;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .character-option:hover {
+            transform: scale(1.1);
+        }
+
+        .character-option.selected {
+            border-color: var(--accent-color);
+            box-shadow: 0 0 15px var(--accent-color);
+            transform: scale(1.1);
+        }
+
+        .instructions {
+            margin-top: 20px;
+            font-size: 1rem;
+            text-align: center;
+            max-width: 80%;
+            line-height: 1.5;
+            opacity: 0.8;
+        }
+
+        #score-display {
+            position: absolute;
+            top: 20px;
+            left: 0;
+            width: 100%;
+            text-align: center;
+            font-size: 2rem;
+            color: white;
+            text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.5);
+            z-index: 5;
+            pointer-events: none;
+        }
+
+        .ground {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            height: 60px;
+            background-color: var(--ground-color);
+            z-index: 3;
+            background-image: linear-gradient(to right, #8B4513, #A0522D, #8B4513);
+        }
+
+        @media (max-width: 500px) {
+            #game-container {
+                border: none;
+                border-radius: 0;
+                max-width: 100%;
+                max-height: 100vh;
+            }
+            
+            .title {
+                font-size: 2rem;
+            }
+            
+            button {
+                padding: 10px 20px;
+                font-size: 1rem;
+                width: 180px;
+            }
+
+            .character-option {
+                width: 50px;
+                height: 50px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="game-container">
+        <a href="../" class="back-button">Back</a>
+        <canvas id="game-canvas"></canvas>
+        <div id="score-display">0</div>
+        <div class="ground"></div>
+        
+        <div id="menu-screen">
+            <h1 class="title">Flappy Bird</h1>
+            <div class="character-selection">
+                <div class="character-option selected" data-character="bird" style="background-image: url('https://raw.githubusercontent.com/LEFarcao07/discord-theme_-/refs/heads/main/img/icontol.png')"></div>
+                <div class="character-option" data-character="bat" style="background-image: url('https://svgshare.com/i/12Jv.svg')"></div>
+                <div class="character-option" data-character="rocket" style="background-image: url('https://svgshare.com/i/12Jx.svg')"></div>
+                <div class="character-option" data-character="ufo" style="background-image: url('https://svgshare.com/i/12Jy.svg')"></div>
+                <div class="character-option" data-character="dragon" style="background-image: url('https://svgshare.com/i/12Jz.svg')"></div>
+                <div class="character-option" data-character="ghost" style="background-image: url('https://svgshare.com/i/12KB.svg')"></div>
+            </div>
+            <div class="high-score">High Score: <span id="high-score">0</span></div>
+            <button id="start-button">Start Game</button>
+            <button id="cheat-button" class="cheat-btn">Cheat Mode</button>
+            <p class="instructions">Click, tap, or press space to make the character fly. Avoid the pipes!</p>
+        </div>
+        
+        <div id="game-over-screen">
+            <h1 class="title">Game Over</h1>
+            <div class="score-display">Score: <span id="final-score">0</span></div>
+            <div class="high-score">High Score: <span id="final-high-score">0</span></div>
+            <button id="restart-button">Play Again</button>
+            <button id="menu-button">Main Menu</button>
+        </div>
+
+        <div id="cheat-modal">
+            <h2 class="title">Enter Cheat Code</h2>
+            <input type="password" class="cheat-input" id="cheat-code" placeholder="Enter password">
+            <button id="submit-cheat">Submit</button>
+            <button id="cancel-cheat">Cancel</button>
+            <p class="instructions">Hint: inspect</p>
+        </div>
+    </div>
+
+    <script>
+        // Game variables
+        let canvas, ctx;
+        let gameRunning = false;
+        let selectedCharacter = 'bird';
+        let score = 0;
+        let highScore = localStorage.getItem('flappyHighScore') || 0;
+        let cheatMode = false;
+        const CHEAT_PASSWORD = "admin123";
+        
+        // Game objects
+        let bird = {
+            x: 100,
+            y: 250,
+            width: 40,
+            height: 30,
+            velocity: 0,
+            gravity: 0.35,
+            jumpForce: -8,
+            rotation: 0
+        };
+        
+        let pipes = [];
+        let pipeWidth = 60;
+        let pipeGap = 180;
+        let pipeFrequency = 2000;
+        let lastPipeTime = 0;
+        let groundHeight = 60;
+        let scrollSpeed = 1.5;
+        let touchStartY = 0;
+        let touchEndY = 0;
+        const touchThreshold = 50;
+
+        // Character images
+        const characterImages = {
+            bird: 'https://raw.githubusercontent.com/LEFarcao07/discord-theme_-/refs/heads/main/img/icontol.png',
+            bat: 'https://svgshare.com/i/12Jv.svg',
+            rocket: 'https://svgshare.com/i/12Jx.svg',
+            ufo: 'https://svgshare.com/i/12Jy.svg',
+            dragon: 'https://svgshare.com/i/12Jz.svg',
+            ghost: 'https://svgshare.com/i/12KB.svg'
+        };
+
+        // Preload images
+        const preloadedImages = {};
+        for (const [key, value] of Object.entries(characterImages)) {
+            const img = new Image();
+            img.src = value;
+            preloadedImages[key] = img;
+        }
+
+        function drawCharacterImage(img) {
+            ctx.save();
+            ctx.translate(bird.x + bird.width/2, bird.y + bird.height/2);
+            ctx.rotate(bird.rotation * Math.PI/180);
+            ctx.drawImage(img, -bird.width/2, -bird.height/2, bird.width, bird.height);
+            ctx.restore();
+        }
+
+        function isMobileDevice() {
+            return (typeof window.orientation !== "undefined") || (navigator.userAgent.indexOf('IEMobile') !== -1);
+        }
+
+        // Initialize game
+        function init() {
+            canvas = document.getElementById('game-canvas');
+            ctx = canvas.getContext('2d');
+            
+            function resizeCanvas() {
+                const container = document.getElementById('game-container');
+                canvas.width = container.clientWidth;
+                canvas.height = container.clientHeight;
+                
+                const baseSize = Math.min(canvas.width, canvas.height);
+                bird.width = baseSize / 10;
+                bird.height = bird.width * 0.75;
+                groundHeight = canvas.height / 10;
+                pipeWidth = canvas.width / 6;
+                pipeGap = canvas.height / 3.5;
+                
+                // Reset bird position
+                bird.x = canvas.width / 5;
+                bird.y = canvas.height / 2;
+            }
+            
+            window.addEventListener('resize', resizeCanvas);
+            resizeCanvas();
+            
+            document.getElementById('high-score').textContent = highScore;
+            
+            document.getElementById('start-button').addEventListener('click', startGame);
+            document.getElementById('restart-button').addEventListener('click', startGame);
+            document.getElementById('menu-button').addEventListener('click', showMenu);
+            document.getElementById('cheat-button').addEventListener('click', showCheatModal);
+            document.getElementById('submit-cheat').addEventListener('click', activateCheatMode);
+            document.getElementById('cancel-cheat').addEventListener('click', hideCheatModal);
+            
+            const characterOptions = document.querySelectorAll('.character-option');
+            characterOptions.forEach(option => {
+                option.addEventListener('click', function() {
+                    characterOptions.forEach(opt => opt.classList.remove('selected'));
+                    this.classList.add('selected');
+                    selectedCharacter = this.getAttribute('data-character');
+                });
+            });
+            
+            // Controls
+            canvas.addEventListener('click', jump);
+            canvas.addEventListener('touchstart', function(e) {
+                touchStartY = e.touches[0].clientY;
+            });
+            canvas.addEventListener('touchend', function(e) {
+                touchEndY = e.changedTouches[0].clientY;
+                if (touchStartY - touchEndY > touchThreshold) {
+                    jump();
+                }
+            });
+            document.addEventListener('keydown', function(e) {
+                if (e.code === 'Space') {
+                    jump();
+                    e.preventDefault();
+                }
+            });
+            
+            requestAnimationFrame(gameLoop);
+        }
+        
+        function showCheatModal() {
+            document.getElementById('cheat-modal').style.display = 'flex';
+            document.getElementById('cheat-code').value = '';
+            document.getElementById('cheat-code').focus();
+        }
+        
+        function hideCheatModal() {
+            document.getElementById('cheat-modal').style.display = 'none';
+        }
+        
+        function activateCheatMode() {
+            const enteredPassword = document.getElementById('cheat-code').value;
+            if (enteredPassword === CHEAT_PASSWORD) {
+                cheatMode = true;
+                hideCheatModal();
+                startGame();
+            } else {
+                alert('Wrong password! Try again.');
+                document.getElementById('cheat-code').value = '';
+                document.getElementById('cheat-code').focus();
+            }
+        }
+        
+        function gameLoop(timestamp) {
+            if (gameRunning) {
+                update(timestamp);
+            }
+            draw();
+            requestAnimationFrame(gameLoop);
+        }
+        
+        function update(timestamp) {
+            // Update bird
+            bird.velocity += bird.gravity;
+            bird.y += bird.velocity;
+            bird.rotation = Math.min(bird.velocity * 5, 90);
+            
+            // Check collisions with ground or ceiling
+            if (bird.y + bird.height > canvas.height - groundHeight) {
+                bird.y = canvas.height - groundHeight - bird.height;
+                if (!cheatMode) gameOver();
+            }
+            
+            if (bird.y < 0) {
+                bird.y = 0;
+                bird.velocity = 0;
+            }
+            
+            // Generate new pipes
+            if (timestamp - lastPipeTime > pipeFrequency) {
+                createPipe();
+                lastPipeTime = timestamp;
+            }
+            
+            // Update pipes
+            for (let i = pipes.length - 1; i >= 0; i--) {
+                pipes[i].x -= scrollSpeed;
+                
+                if (pipes[i].x + pipeWidth < 0) {
+                    pipes.splice(i, 1);
+                    continue;
+                }
+                
+                if (!cheatMode && checkCollision(bird, pipes[i])) {
+                    gameOver();
+                    break;
+                }
+                
+                if (!pipes[i].scored && pipes[i].x + pipeWidth < bird.x) {
+                    pipes[i].scored = true;
+                    score++;
+                    document.getElementById('score-display').textContent = score;
+                    
+                    // Gradually increase difficulty (unless in cheat mode)
+                    if (!cheatMode) {
+                        scrollSpeed += 0.01;
+                        pipeFrequency = Math.max(1500, pipeFrequency - 10);
+                    }
+                }
+            }
+        }
+        
+        function draw() {
+            // Clear canvas
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // Draw sky gradient
+            const skyGradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
+            skyGradient.addColorStop(0, '#87CEEB');
+            skyGradient.addColorStop(1, '#E0F7FA');
+            ctx.fillStyle = skyGradient;
+            ctx.fillRect(0, 0, canvas.width, canvas.height - groundHeight);
+            
+            // Draw pipes
+            pipes.forEach(pipe => {
+                ctx.fillStyle = pipe.color || '#4CAF50';
+                ctx.fillRect(pipe.x, 0, pipeWidth, pipe.topHeight);
+                ctx.fillRect(pipe.x, pipe.bottomY, pipeWidth, canvas.height - pipe.bottomY - groundHeight);
+                
+                ctx.fillStyle = '#2E7D32';
+                ctx.fillRect(pipe.x - 5, pipe.topHeight - 20, pipeWidth + 10, 20);
+                ctx.fillRect(pipe.x - 5, pipe.bottomY, pipeWidth + 10, 20);
+            });
+            
+            // Draw character
+            drawCharacterImage(preloadedImages[selectedCharacter]);
+            
+            // Draw ground
+            ctx.fillStyle = '#8B4513';
+            ctx.fillRect(0, canvas.height - groundHeight, canvas.width, groundHeight);
+            
+            // Draw ground pattern
+            ctx.fillStyle = '#A0522D';
+            for (let i = 0; i < canvas.width; i += 40) {
+                ctx.beginPath();
+                ctx.arc(i, canvas.height - groundHeight + 10, 5, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+        
+        function createPipe() {
+            const minHeight = 50;
+            const maxHeight = canvas.height - groundHeight - pipeGap - minHeight;
+            const topHeight = Math.floor(Math.random() * (maxHeight - minHeight + 1)) + minHeight;
+            
+            const pipe = {
+                x: canvas.width,
+                topHeight: topHeight,
+                bottomY: topHeight + pipeGap,
+                scored: false,
+                color: getRandomPipeColor()
+            };
+            
+            pipes.push(pipe);
+        }
+        
+        function getRandomPipeColor() {
+            const colors = ['#4CAF50', '#2196F3', '#FF9800', '#9C27B0', '#F44336'];
+            return colors[Math.floor(Math.random() * colors.length)];
+        }
+        
+        function checkCollision(bird, pipe) {
+            if (bird.x + bird.width > pipe.x && bird.x < pipe.x + pipeWidth) {
+                if (bird.y < pipe.topHeight || bird.y + bird.height > pipe.bottomY) {
+                    return true;
+                }
+            }
+            return false;
+        }
+        
+        function jump() {
+            if (!gameRunning) return;
+            
+            bird.velocity = bird.jumpForce;
+            
+            // Simple jump sound
+            const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            const oscillator = audioCtx.createOscillator();
+            const gainNode = audioCtx.createGain();
+            
+            oscillator.type = 'sine';
+            oscillator.frequency.value = 500;
+            gainNode.gain.value = 0.1;
+            
+            oscillator.connect(gainNode);
+            gainNode.connect(audioCtx.destination);
+            
+            oscillator.start();
+            gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.3);
+            oscillator.stop(audioCtx.currentTime + 0.3);
+        }
+        
+        function startGame() {
+            // Reset game state
+            bird.y = canvas.height / 2;
+            bird.velocity = 0;
+            bird.rotation = 0;
+            pipes = [];
+            score = 0;
+            
+            // Adjust difficulty for mobile
+            if (isMobileDevice()) {
+                scrollSpeed = cheatMode ? 3.0 : 1.2;
+                pipeGap = canvas.height / 3;
+                pipeFrequency = cheatMode ? 1000 : 2200;
+                bird.gravity = cheatMode ? 0.2 : 0.3;
+                bird.jumpForce = cheatMode ? -10 : -7;
+            } else {
+                scrollSpeed = cheatMode ? 3.5 : 1.5;
+                pipeGap = canvas.height / 3.5;
+                pipeFrequency = cheatMode ? 800 : 2000;
+                bird.gravity = cheatMode ? 0.15 : 0.35;
+                bird.jumpForce = cheatMode ? -12 : -8;
+            }
+            
+            document.getElementById('score-display').textContent = score;
+            document.getElementById('final-score').textContent = score;
+            document.getElementById('final-high-score').textContent = highScore;
+            
+            document.getElementById('menu-screen').style.display = 'none';
+            document.getElementById('game-over-screen').style.display = 'none';
+            document.getElementById('cheat-modal').style.display = 'none';
+            
+            gameRunning = true;
+        }
+        
+        function gameOver() {
+            gameRunning = false;
+            cheatMode = false;
+            
+            if (score > highScore) {
+                highScore = score;
+                localStorage.setItem('flappyHighScore', highScore);
+                document.getElementById('high-score').textContent = highScore;
+            }
+            
+            document.getElementById('final-score').textContent = score;
+            document.getElementById('final-high-score').textContent = highScore;
+            document.getElementById('game-over-screen').style.display = 'flex';
+            
+            // Simple game over sound
+            const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            const oscillator = audioCtx.createOscillator();
+            const gainNode = audioCtx.createGain();
+            
+            oscillator.type = 'sine';
+            oscillator.frequency.setValueAtTime(200, audioCtx.currentTime);
+            oscillator.frequency.exponentialRampToValueAtTime(100, audioCtx.currentTime + 0.5);
+            gainNode.gain.value = 0.1;
+            
+            oscillator.connect(gainNode);
+            gainNode.connect(audioCtx.destination);
+            
+            oscillator.start();
+            gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.5);
+            oscillator.stop(audioCtx.currentTime + 0.5);
+        }
+        
+        function showMenu() {
+            cheatMode = false;
+            document.getElementById('game-over-screen').style.display = 'none';
+            document.getElementById('menu-screen').style.display = 'flex';
+        }
+        
+        window.onload = init;
+    </script>
+</body>
+</html>
