@@ -73,7 +73,9 @@ document.addEventListener("DOMContentLoaded", function () {
         // Random rotation for more natural effect
         const rotationDirection = Math.random() > 0.5 ? 1 : -1;
         const rotationDegrees = 5 + Math.random() * 15;
-        el.style.transform = `rotateZ(${rotationDegrees * rotationDirection}deg)`;
+        el.style.transform = `rotateZ(${
+          rotationDegrees * rotationDirection
+        }deg)`;
       });
 
       // Show notification and reload after animation
@@ -125,7 +127,13 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   });
 
-  // Data Q&A
+  // Chatbot functionality
+  const chatbotIcon = document.getElementById("chatbotIcon");
+  const chatbotBox = document.getElementById("chatbotBox");
+  const closeBtn = document.getElementById("closeBtn");
+  const chatbotMessages = document.getElementById("chatbotMessages");
+  const buttonOptions = document.getElementById("buttonOptions");
+
   const qaPairs = [
     {
       question: "Apa keahlian Anda?",
@@ -149,33 +157,321 @@ document.addEventListener("DOMContentLoaded", function () {
     },
   ];
 
-  // Chatbot functionality
-  const chatbotIcon = document.getElementById("chatbotIcon");
-  const chatbotBox = document.getElementById("chatbotBox");
-  const closeBtn = document.getElementById("closeBtn");
-  const chatbotMessages = document.getElementById("chatbotMessages");
-  const buttonOptions = document.getElementById("buttonOptions");
+  function renderButtons() {
+    if (buttonOptions) {
+      buttonOptions.innerHTML = qaPairs
+        .map(
+          (qa) => `
+        <button 
+          class="option-btn border-transparent bg-indigo-100 hover:bg-indigo-200 text-indigo-700 py-2 px-3 rounded-lg text-sm transition-colors"
+          data-question="${qa.question}"
+          data-answer="${qa.answer.replace(/"/g, "&quot;")}"
+        >
+          ${qa.question}
+        </button>
+      `
+        )
+        .join("");
+    }
+  }
 
-  if (chatbotIcon && chatbotBox) {
-    // Tampilkan tombol pilihan
-    function renderButtons() {
-      if (buttonOptions) {
-        buttonOptions.innerHTML = qaPairs
-          .map(
-            (qa) => `
-              <button 
-                class="option-btn border-transparent bg-indigo-100 hover:bg-indigo-200 text-indigo-700 py-2 px-3 rounded-lg text-sm transition-colors"
-                data-question="${qa.question}"
-                data-answer="${qa.answer.replace(/"/g, "&quot;")}"
-              >
-                ${qa.question}
-              </button>
-            `
-          )
-          .join("");
+  function addMessage(message, isBot = true, isHTML = false) {
+    const messageDiv = document.createElement("div");
+    messageDiv.className = `mb-3 ${isBot ? "" : "text-right"}`;
+
+    const bubble = document.createElement("div");
+    bubble.className = `inline-block rounded-lg px-4 py-2 max-w-[85%] ${
+      isBot
+        ? "bg-gray-200 rounded-tl-none"
+        : "bg-primary text-white rounded-tr-none"
+    }`;
+
+    bubble[isHTML ? "innerHTML" : "textContent"] = message;
+
+    messageDiv.appendChild(bubble);
+    chatbotMessages.appendChild(messageDiv);
+    chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
+  }
+
+  function handleOptionClick(e) {
+    if (e.target.classList.contains("option-btn")) {
+      const question = e.target.getAttribute("data-question");
+      const answer = e.target.getAttribute("data-answer");
+
+      addMessage(question, false);
+      setTimeout(() => {
+        addMessage(answer, true, true);
+      }, 500);
+    }
+  }
+
+  function openChatbot() {
+    chatbotBox.classList.remove("hidden");
+    chatbotBox.classList.add("flex");
+    chatbotIcon.classList.add("hidden");
+
+    initWeather();
+    setInterval(updateClock, 1000);
+  }
+
+  function closeChatbot() {
+    chatbotBox.classList.add("hidden");
+    chatbotBox.classList.remove("flex");
+    chatbotIcon.classList.remove("hidden");
+  }
+
+  chatbotIcon.addEventListener("click", openChatbot);
+  closeBtn.addEventListener("click", closeChatbot);
+  buttonOptions.addEventListener("click", handleOptionClick);
+
+  // Fungsi utama untuk mendapatkan lokasi dan cuaca
+  async function initWeather() {
+    showLoading(true);
+
+    try {
+      // 1. Dapatkan lokasi pengguna
+      const position = await getUserLocation();
+
+      // 2. Dapatkan data cuaca berdasarkan koordinat
+      const weatherData = await getWeatherByCoords(
+        position.coords.latitude,
+        position.coords.longitude
+      );
+
+      // 3. Update tampilan dengan data cuaca
+      updateWeatherDisplay(weatherData);
+
+      // 4. Update waktu lokal
+      updateLocalTime(position.coords.latitude, position.coords.longitude);
+    } catch (error) {
+      console.error("Error:", error);
+      // Fallback ke lokasi default jika gagal
+      fallbackWeather();
+    } finally {
+      showLoading(false);
+    }
+  }
+
+  // 1. Fungsi untuk mendapatkan lokasi pengguna
+  function getUserLocation() {
+    return new Promise((resolve, reject) => {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          (position) => resolve(position),
+          (error) => {
+            console.warn("Geolocation error:", error);
+            reject(error);
+          },
+          { timeout: 5000 }
+        );
+      } else {
+        reject(new Error("Geolocation tidak didukung"));
       }
+    });
+  }
+
+  // 2. Fungsi untuk mendapatkan cuaca berdasarkan koordinat
+  async function getWeatherByCoords(lat, lon) {
+    try {
+      const apiKey = "4bd8b8484f06fff4f8d3c8e1b9f79057"; // Ganti dengan API key Anda
+      const response = await fetch(
+        `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&units=metric&appid=${apiKey}&lang=id`
+      );
+      return await response.json();
+    } catch (error) {
+      console.error("Error fetching weather:", error);
+      throw error;
+    }
+  }
+
+  // 3. Fungsi untuk menampilkan data cuaca
+  function updateWeatherDisplay(weatherData) {
+    const weatherIcon = document.getElementById("weather-icon");
+    const currentTemp = document.getElementById("current-temp");
+    const weatherDesc = document.getElementById("weather-desc");
+    const currentLocation = document.getElementById("current-location");
+
+    // Set icon berdasarkan kondisi cuaca
+    const weatherCode = weatherData.weather[0].id;
+    weatherIcon.textContent = getWeatherIcon(weatherCode);
+
+    currentTemp.textContent = `${Math.round(weatherData.main.temp)}°C`;
+    weatherDesc.textContent = translateWeatherDesc(
+      weatherData.weather[0].description
+    );
+    currentLocation.textContent = `${weatherData.name}, ${weatherData.sys.country}`;
+  }
+
+  // 4. Fungsi untuk update waktu lokal
+  function updateLocalTime(lat, lon) {
+    const timeElement = document.getElementById("current-time");
+
+    // Fallback: Tampilkan waktu device dulu sambil loading
+    updateClock(new Date());
+
+    // Gunakan API TimezoneDB dengan key yang valid (daftar di https://timezonedb.com/api)
+    const apiKey = "Z1UF5NWLGLLH"; // Ganti dengan API key TimezoneDB yang valid
+
+    fetch(
+      `https://api.timezonedb.com/v2.1/get-time-zone?key=${apiKey}&format=json&by=position&lat=${lat}&lng=${lon}`
+    )
+      .then((response) => {
+        if (!response.ok) throw new Error("Network response was not ok");
+        return response.json();
+      })
+      .then((data) => {
+        if (data.status !== "OK") throw new Error(data.message);
+
+        const localTime = new Date(data.formatted);
+        updateClock(localTime);
+      })
+      .catch((error) => {
+        console.error("Error fetching timezone:", error);
+        // Fallback ke waktu device dengan notifikasi
+        updateClock(new Date());
+        addMessage(
+          "Couldn't fetch local time. Showing device time instead.",
+          true
+        );
+      });
+  }
+
+  function updateClock(date) {
+    const timeElement = document.getElementById("current-time");
+    if (!timeElement) return;
+
+    const options = {
+      hour: "2-digit",
+      minute: "2-digit",
+    };
+
+    timeElement.textContent = date.toLocaleTimeString(undefined, options);
+  }
+
+  // Tambahkan fungsi ini di script.js Anda
+  function updateDateTime() {
+    const now = new Date();
+
+    // Update tanggal (Mon, Jun 5)
+    const dateElement = document.getElementById("current-date");
+    if (dateElement) {
+      dateElement.textContent = now.toLocaleDateString([], {
+        weekday: "short",
+        month: "short",
+        day: "numeric",
+      });
     }
 
+    // Update waktu lengkap (12:34 PM)
+    const timeFullElement = document.getElementById("current-time-full");
+    if (timeFullElement) {
+      timeFullElement.textContent = now.toLocaleTimeString([], {
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+        timeZoneName: "short",
+      });
+    }
+  }
+
+  // Panggil fungsi ini setiap detik
+  setInterval(updateDateTime, 1000);
+
+  // Panggil sekali saat pertama kali load
+  updateDateTime();
+
+  // Fungsi pembantu
+  function getWeatherIcon(weatherCode) {
+    const icons = {
+      // Cuaca cerah
+      800: "☀️",
+      // Berawan
+      801: "⛅",
+      802: "⛅",
+      803: "☁️",
+      804: "☁️",
+      // Hujan
+      500: "🌧️",
+      501: "🌧️",
+      502: "🌧️",
+      503: "🌧️",
+      504: "🌧️",
+      300: "🌦️",
+      301: "🌦️",
+      302: "🌦️",
+      310: "🌦️",
+      311: "🌦️",
+      312: "🌦️",
+      // Hujan lebat
+      520: "🌧️",
+      521: "🌧️",
+      522: "🌧️",
+      // Badai
+      200: "⛈️",
+      201: "⛈️",
+      202: "⛈️",
+      210: "⛈️",
+      211: "⛈️",
+      212: "⛈️",
+      // Salju
+      600: "❄️",
+      601: "❄️",
+      602: "❄️",
+      611: "🌨️",
+      612: "🌨️",
+      613: "🌨️",
+      // Kabut
+      701: "🌫️",
+      711: "🌫️",
+      721: "🌫️",
+      731: "🌫️",
+      741: "🌫️",
+    };
+    return icons[weatherCode] || "🌤️";
+  }
+
+  function translateWeatherDesc(desc) {
+    const translations = {
+      "clear sky": "Cerah",
+      "few clouds": "Sedikit Berawan",
+      "scattered clouds": "Berawan",
+      "broken clouds": "Berawan Tebal",
+      "shower rain": "Hujan Ringan",
+      rain: "Hujan",
+      thunderstorm: "Badai Petir",
+      snow: "Salju",
+      mist: "Kabut",
+    };
+    return translations[desc.toLowerCase()] || desc;
+  }
+
+  function showLoading(show) {
+    const loadingElement = document.getElementById("weather-loading");
+    loadingElement.style.display = show ? "flex" : "none";
+  }
+
+  function fallbackWeather() {
+    document.getElementById("weather-icon").textContent = "🌤️";
+    document.getElementById("current-temp").textContent = "--°C";
+    document.getElementById("weather-desc").textContent =
+      "Tidak dapat memuat data cuaca";
+    document.getElementById("current-location").textContent =
+      "Lokasi tidak diketahui";
+  }
+
+  // Panggil initWeather saat chatbox dibuka
+  chatbotIcon.addEventListener("click", () => {
+    chatbotBox.classList.toggle("hidden");
+    chatbotBox.classList.toggle("flex");
+    chatbotIcon.classList.toggle("hidden");
+
+    if (!chatbotBox.classList.contains("hidden")) {
+      initWeather();
+      setInterval(updateClock, 1000);
+    }
+  });
+
+  if (chatbotIcon && chatbotBox) {
     // Tambahkan pesan ke chat
     function addMessage(message, isBot = true, isHTML = false) {
       if (!chatbotMessages) return;
@@ -199,22 +495,6 @@ document.addEventListener("DOMContentLoaded", function () {
       messageDiv.appendChild(bubble);
       chatbotMessages.appendChild(messageDiv);
       chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
-    }
-
-    // Handle tombol option
-    function handleOptionClick(e) {
-      if (e.target.classList.contains("option-btn")) {
-        const question = e.target.getAttribute("data-question");
-        const answer = e.target.getAttribute("data-answer");
-
-        // Tampilkan pertanyaan user
-        addMessage(question, false);
-
-        // Delay lalu tampilkan jawaban bot
-        setTimeout(() => {
-          addMessage(answer, true, true);
-        }, 500);
-      }
     }
 
     // Event Listeners
@@ -249,12 +529,16 @@ document.addEventListener("DOMContentLoaded", function () {
   // Theme Management System (Bagian Penting untuk Menyimpan Tema)
   const themeToggle = document.getElementById("theme-toggle");
   const themeToggleDarkIcon = document.getElementById("theme-toggle-dark-icon");
-  const themeToggleLightIcon = document.getElementById("theme-toggle-light-icon");
+  const themeToggleLightIcon = document.getElementById(
+    "theme-toggle-light-icon"
+  );
 
   // Fungsi untuk mengatur tema awal
   function setInitialTheme() {
     const savedTheme = localStorage.getItem("theme");
-    const systemPrefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+    const systemPrefersDark = window.matchMedia(
+      "(prefers-color-scheme: dark)"
+    ).matches;
 
     if (savedTheme === "dark" || (!savedTheme && systemPrefersDark)) {
       document.documentElement.classList.add("dark");
@@ -271,13 +555,13 @@ document.addEventListener("DOMContentLoaded", function () {
   function toggleTheme() {
     const html = document.documentElement;
     const isDark = html.classList.contains("dark");
-    
+
     // Toggle class dark pada html
     html.classList.toggle("dark");
-    
+
     // Simpan preferensi tema
     localStorage.setItem("theme", isDark ? "light" : "dark");
-    
+
     // Update icon toggle
     if (themeToggleDarkIcon && themeToggleLightIcon) {
       themeToggleDarkIcon.classList.toggle("hidden");
@@ -290,11 +574,12 @@ document.addEventListener("DOMContentLoaded", function () {
     if (event.key === "theme") {
       const newTheme = event.newValue;
       const html = document.documentElement;
-      
+
       if (newTheme === "dark") {
         html.classList.add("dark");
         if (themeToggleDarkIcon) themeToggleDarkIcon.classList.add("hidden");
-        if (themeToggleLightIcon) themeToggleLightIcon.classList.remove("hidden");
+        if (themeToggleLightIcon)
+          themeToggleLightIcon.classList.remove("hidden");
       } else {
         html.classList.remove("dark");
         if (themeToggleDarkIcon) themeToggleDarkIcon.classList.remove("hidden");
@@ -359,7 +644,8 @@ document.addEventListener("DOMContentLoaded", function () {
           Swal.fire({
             icon: "error",
             title: "Failed to Send",
-            text: "An error occurred: " + (err.text || "Please try again later"),
+            text:
+              "An error occurred: " + (err.text || "Please try again later"),
             confirmButtonColor: "#d33",
           });
           console.error("EmailJS Error:", err);
@@ -369,7 +655,9 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   // Image handling
-  const profileImgContainer = document.querySelector(".profile-image-container");
+  const profileImgContainer = document.querySelector(
+    ".profile-image-container"
+  );
   const aboutImgContainer = document.querySelector(".about-image-container");
   const profileImg = document.querySelector(".profile-image");
   const aboutImg = document.querySelector(".about-image");
