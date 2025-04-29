@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Offline App</title>
+    <link rel="stylesheet" href="../offline/styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Selamat Datang di Aplikasi Saya</h1>
+        <p>Ini adalah contoh aplikasi web yang bisa bekerja offline.</p>
+        <p>Coba matikan koneksi internet Anda untuk melihat halaman offline.</p>
+        <div class="status">
+            Status Koneksi: <span id="connection-status">Online</span>
+        </div>
+    </div>
+    <script src="../offline/app.js"></script>
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/service-worker.js')
+                    .then(registration => {
+                        console.log('ServiceWorker registration successful');
+                    })
+                    .catch(err => {
+                        console.log('ServiceWorker registration failed: ', err);
+                    });
+            });
+        }
+    </script>
+</body>
+</html>
