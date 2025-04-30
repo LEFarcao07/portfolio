@@ -336,7 +336,7 @@ document.addEventListener("DOMContentLoaded", function () {
       });
   }
 
-  function updateClock(date) {
+  function updateClock(date = new Date()) {
     const timeElement = document.getElementById("current-time");
     if (!timeElement) return;
 
