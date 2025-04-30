@@ -1,33 +1,36 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Offline App</title>
-    <link rel="stylesheet" href="../offline/styles.css">
-</head>
-<body>
-    <div class="container">
-        <h1>Selamat Datang di Aplikasi Saya</h1>
-        <p>Ini adalah contoh aplikasi web yang bisa bekerja offline.</p>
-        <p>Coba matikan koneksi internet Anda untuk melihat halaman offline.</p>
-        <div class="status">
-            Status Koneksi: <span id="connection-status">Online</span>
-        </div>
-    </div>
-    <script src="../offline/app.js"></script>
-    <script>
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('/service-worker.js')
-                    .then(registration => {
-                        console.log('ServiceWorker registration successful');
-                    })
-                    .catch(err => {
-                        console.log('ServiceWorker registration failed: ', err);
-                    });
-            });
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Offline Mode</title>
+
+  <!-- Tailwind CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: '#3B82F6',
+            success: '#10B981'
+          }
         }
-    </script>
+      }
+    };
+  </script>
+</head>
+<body class="bg-gradient-to-br from-primary to-success text-white flex items-center justify-center h-screen text-center p-4">
+
+  <div>
+    <h1 class="text-3xl font-bold mb-4">Koneksi Terputus</h1>
+    <p class="mb-6 text-lg">Anda sedang offline. Pastikan koneksi internet Anda aktif kembali.</p>
+    <button id="retryBtn" class="bg-white text-primary font-semibold px-6 py-2 rounded-lg hover:bg-gray-100 transition">
+      Coba Lagi
+    </button>
+  </div>
+
+  <script src="./script.js"></script>
 </body>
 </html>
