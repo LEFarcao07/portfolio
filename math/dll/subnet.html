@@ -1,13 +1,12 @@
 <!DOCTYPE html>
-
 <html lang="id">
-<head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>Kalkulator Subnet</title>
-<script src="https://cdn.tailwindcss.com"></script>
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script>
+  <head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Kalkulator Subnet</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
       (function () {
         const savedTheme =
           localStorage.getItem("theme") ||
@@ -74,7 +73,7 @@
         },
       };
     </script>
-<style>
+    <style>
       * {
         margin: 0;
         padding: 0;
@@ -83,15 +82,15 @@
       a {
         text-decoration: none;
       }
-      .ip-range-visualization {
-        height: 40px;
-        position: relative;
-        background: linear-gradient(to right, #e5e7eb, #d1d5db);
-        border-radius: 5px;
-        margin: 10px 0;
+      .active-segment {
+        border-left: 3px solid #3b82f6 !important;
+        border-right: 3px solid #3b82f6 !important;
+        background-color: rgba(59, 130, 246, 0.1) !important;
       }
-      .dark .ip-range-visualization {
-        background: linear-gradient(to right, #374151, #4b5563);
+      .dark .active-segment {
+        border-left: 3px solid #60a5fa !important;
+        border-right: 3px solid #60a5fa !important;
+        background-color: rgba(96, 165, 250, 0.1) !important;
       }
       .ip-marker {
         position: absolute;
@@ -127,237 +126,389 @@
         background-color: rgba(16, 185, 129, 0.2);
       }
     </style>
-<style>
-@media (hover: hover) and (pointer: fine) {
-  html,
-  body,
-  * {
-    cursor: none !important;
-    margin: 0;
-    padding: 0;
-  }
+    <style>
+      @media (hover: hover) and (pointer: fine) {
+        html,
+        body,
+        * {
+          cursor: none !important;
+          margin: 0;
+          padding: 0;
+        }
 
-  .cursor-outer,
-  .cursor-inner {
-    display: block !important;
-  }
-}
+        .cursor-outer,
+        .cursor-inner {
+          display: block !important;
+        }
+      }
 
-@media (hover: none) and (pointer: coarse) {
-  html,
-  body {
-    cursor: auto !important;
-    overflow-x: hidden;
-    margin: 0;
-    padding: 0;
-  }
+      @media (hover: none) and (pointer: coarse) {
+        html,
+        body {
+          cursor: auto !important;
+          overflow-x: hidden;
+          margin: 0;
+          padding: 0;
+        }
 
-  .cursor-outer,
-  .cursor-inner {
-    display: none !important;
-  }
-}
+        .cursor-outer,
+        .cursor-inner {
+          display: none !important;
+        }
+      }
 
-.cursor-outer {
-  position: fixed;
-  width: 30px;
-  height: 30px;
-  background-color: rgba(59, 130, 246, 0.2);
-  border-radius: 50%;
-  pointer-events: none;
-  transform: translate(-50%, -50%);
-  transition: transform 0.1s ease-out, background-color 0.1s ease-out;
-  z-index: 9999;
-  will-change: transform;
-}
+      .cursor-outer {
+        position: fixed;
+        width: 30px;
+        height: 30px;
+        background-color: rgba(59, 130, 246, 0.2);
+        border-radius: 50%;
+        pointer-events: none;
+        transform: translate(-50%, -50%);
+        transition: transform 0.1s ease-out, background-color 0.1s ease-out;
+        z-index: 9999;
+        will-change: transform;
+      }
 
-.cursor-inner {
-  position: fixed;
-  width: 6px;
-  height: 6px;
-  background-color: #fff;
-  border-radius: 50%;
-  pointer-events: none;
-  transform: translate(-50%, -50%);
-  z-index: 9999;
-  transition: transform 0.05s ease-out;
-  mix-blend-mode: difference;
-  will-change: transform;
-}
-</style></head>
-<body class="bg-gray-100 dark:bg-gray-900 min-h-screen">
-<!-- Custom Cursor -->
-<div class="cursor-outer"></div>
-<div class="cursor-inner"></div>
+      .cursor-inner {
+        position: fixed;
+        width: 6px;
+        height: 6px;
+        background-color: #fff;
+        border-radius: 50%;
+        pointer-events: none;
+        transform: translate(-50%, -50%);
+        z-index: 9999;
+        transition: transform 0.05s ease-out;
+        mix-blend-mode: difference;
+        will-change: transform;
+      }
+    </style>
+  </head>
+  <body class="bg-gray-100 dark:bg-gray-900 min-h-screen">
+    <!-- Custom Cursor -->
+    <div class="cursor-outer"></div>
+    <div class="cursor-inner"></div>
 
-<nav class="bg-white dark:bg-gray-800 shadow-sm">
-<div class="px-4 py-3 flex justify-between items-center">
-<a class="text-blue-600 dark:text-blue-400 font-semibold" href="../index">← Kembali</a>
-<button aria-label="Toggle dark mode" class="p-2 border-transparent bg-white dark:bg-dark-light text-dark dark:text-gray-300 rounded-lg focus:outline-none transform hover:rotate-12" id="theme-toggle" type="button">
-<svg class="w-5 h-5" fill="currentColor" id="theme-toggle-dark-icon" viewbox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-<path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path>
-</svg>
-<svg class="w-5 h-5 hidden" fill="currentColor" id="theme-toggle-light-icon" viewbox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-<path clip-rule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" fill-rule="evenodd"></path>
-</svg>
-</button>
-</div>
-</nav>
-<main class="container mx-auto px-4 py-8 max-w-4xl">
-<h1 class="text-2xl font-bold text-center mb-8 text-gray-800 dark:text-white">
+    <nav class="bg-white dark:bg-gray-800 shadow-sm">
+      <div class="px-4 py-3 flex justify-between items-center">
+        <a
+          class="text-blue-600 dark:text-blue-400 font-semibold"
+          href="../index"
+          >← Kembali</a
+        >
+        <button
+          aria-label="Toggle dark mode"
+          class="p-2 border-transparent bg-white dark:bg-dark-light text-dark dark:text-gray-300 rounded-lg focus:outline-none transform hover:rotate-12"
+          id="theme-toggle"
+          type="button"
+        >
+          <svg
+            class="w-5 h-5"
+            fill="currentColor"
+            id="theme-toggle-dark-icon"
+            viewbox="0 0 20 20"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"
+            ></path>
+          </svg>
+          <svg
+            class="w-5 h-5 hidden"
+            fill="currentColor"
+            id="theme-toggle-light-icon"
+            viewbox="0 0 20 20"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              clip-rule="evenodd"
+              d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z"
+              fill-rule="evenodd"
+            ></path>
+          </svg>
+        </button>
+      </div>
+    </nav>
+    <main class="container mx-auto px-4 py-8 max-w-4xl">
+      <h1
+        class="text-2xl font-bold text-center mb-8 text-gray-800 dark:text-white"
+      >
         Kalkulator Subnet
       </h1>
-<div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md mb-8">
-<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-<div>
-<label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+      <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md mb-8">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <label
+              class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+            >
               Alamat IP
             </label>
-<input class="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 dark:text-white" id="ip-address" placeholder="192.168.1.1" type="text" value="192.168.1.1"/>
-</div>
-<div>
-<label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+            <input
+              class="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 dark:text-white"
+              id="ip-address"
+              placeholder="192.168.1.1"
+              type="text"
+              value="192.168.1.1"
+            />
+          </div>
+          <div>
+            <label
+              class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+            >
               Subnet Mask
             </label>
-<div class="flex">
-<input class="flex-1 p-2 border border-gray-300 dark:border-gray-600 rounded-l-md bg-white dark:bg-gray-700 dark:text-white" id="subnet-mask" placeholder="255.255.255.0" type="text" value="255.255.255.0"/>
-<select class="p-2 border border-gray-300 dark:border-gray-600 rounded-r-md bg-white dark:bg-gray-700 dark:text-white border-l-0" id="cidr-select">
-<option value="/24">/24</option>
-<option value="/16">/16</option>
-<option value="/8">/8</option>
-<option value="/25">/25</option>
-<option value="/26">/26</option>
-<option value="/27">/27</option>
-<option value="/28">/28</option>
-<option value="/29">/29</option>
-<option value="/30">/30</option>
-</select>
-</div>
-</div>
-</div>
-<div class="mt-6">
-<button class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-md dark:bg-blue-700 dark:hover:bg-blue-800" id="calculate-btn">
+            <div class="flex">
+              <input
+                class="flex-1 p-2 border border-gray-300 dark:border-gray-600 rounded-l-md bg-white dark:bg-gray-700 dark:text-white"
+                id="subnet-mask"
+                placeholder="255.255.255.0"
+                type="text"
+                value="255.255.255.0"
+              />
+              <select
+                class="p-2 border border-gray-300 dark:border-gray-600 rounded-r-md bg-white dark:bg-gray-700 dark:text-white border-l-0"
+                id="cidr-select"
+              >
+                <option value="/24">/24</option>
+                <option value="/16">/16</option>
+                <option value="/8">/8</option>
+                <option value="/25">/25</option>
+                <option value="/26">/26</option>
+                <option value="/27">/27</option>
+                <option value="/28">/28</option>
+                <option value="/29">/29</option>
+                <option value="/30">/30</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="mt-6">
+          <button
+            class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-md dark:bg-blue-700 dark:hover:bg-blue-800"
+            id="calculate-btn"
+          >
             Hitung Subnet
           </button>
-</div>
-</div>
-<div class="hidden bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md" id="results">
-<h2 class="text-xl font-semibold mb-4 text-gray-800 dark:text-white">
+        </div>
+      </div>
+      <div
+        class="hidden bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md"
+        id="results"
+      >
+        <h2 class="text-xl font-semibold mb-4 text-gray-800 dark:text-white">
           Hasil Perhitungan
         </h2>
-<div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-<div class="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg">
-<h3 class="font-medium text-gray-800 dark:text-white mb-2">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+          <div class="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg">
+            <h3 class="font-medium text-gray-800 dark:text-white mb-2">
               Informasi Dasar
             </h3>
-<div class="space-y-2">
-<div class="flex justify-between">
-<span class="text-gray-600 dark:text-gray-300">Alamat IP:</span>
-<span class="font-mono text-gray-800 dark:text-white" id="ip-result"></span>
-</div>
-<div class="flex justify-between">
-<span class="text-gray-600 dark:text-gray-300">Subnet Mask:</span>
-<span class="font-mono text-gray-800 dark:text-white" id="mask-result"></span>
-</div>
-<div class="flex justify-between">
-<span class="text-gray-600 dark:text-gray-300">CIDR Notation:</span>
-<span class="font-mono text-gray-800 dark:text-white" id="cidr-result"></span>
-</div>
-<div class="flex justify-between">
-<span class="text-gray-600 dark:text-gray-300">Wildcard Mask:</span>
-<span class="font-mono text-gray-800 dark:text-white" id="wildcard-result"></span>
-</div>
-</div>
-</div>
-<div class="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg">
-<h3 class="font-medium text-gray-800 dark:text-white mb-2">
+            <div class="space-y-2">
+              <div class="flex justify-between">
+                <span class="text-gray-600 dark:text-gray-300">Alamat IP:</span>
+                <span
+                  class="font-mono text-gray-800 dark:text-white"
+                  id="ip-result"
+                ></span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-gray-600 dark:text-gray-300"
+                  >Subnet Mask:</span
+                >
+                <span
+                  class="font-mono text-gray-800 dark:text-white"
+                  id="mask-result"
+                ></span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-gray-600 dark:text-gray-300"
+                  >CIDR Notation:</span
+                >
+                <span
+                  class="font-mono text-gray-800 dark:text-white"
+                  id="cidr-result"
+                ></span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-gray-600 dark:text-gray-300"
+                  >Wildcard Mask:</span
+                >
+                <span
+                  class="font-mono text-gray-800 dark:text-white"
+                  id="wildcard-result"
+                ></span>
+              </div>
+            </div>
+          </div>
+          <div class="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg">
+            <h3 class="font-medium text-gray-800 dark:text-white mb-2">
               Informasi Jaringan
             </h3>
-<div class="space-y-2">
-<div class="flex justify-between">
-<span class="text-gray-600 dark:text-gray-300">Alamat Network:</span>
-<span class="font-mono text-gray-800 dark:text-white" id="network-result"></span>
-</div>
-<div class="flex justify-between">
-<span class="text-gray-600 dark:text-gray-300">Alamat Broadcast:</span>
-<span class="font-mono text-gray-800 dark:text-white" id="broadcast-result"></span>
-</div>
-<div class="flex justify-between">
-<span class="text-gray-600 dark:text-gray-300">Rentang Host:</span>
-<span class="font-mono text-gray-800 dark:text-white" id="range-result"></span>
-</div>
-</div>
-</div>
-</div>
-<div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-<div class="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg">
-<h3 class="font-medium text-gray-800 dark:text-white mb-2">
+            <div class="space-y-2">
+              <div class="flex justify-between">
+                <span class="text-gray-600 dark:text-gray-300"
+                  >Alamat Network:</span
+                >
+                <span
+                  class="font-mono text-gray-800 dark:text-white"
+                  id="network-result"
+                ></span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-gray-600 dark:text-gray-300"
+                  >Alamat Broadcast:</span
+                >
+                <span
+                  class="font-mono text-gray-800 dark:text-white"
+                  id="broadcast-result"
+                ></span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-gray-600 dark:text-gray-300"
+                  >Rentang Host:</span
+                >
+                <span
+                  class="font-mono text-gray-800 dark:text-white"
+                  id="range-result"
+                ></span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+          <div class="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg">
+            <h3 class="font-medium text-gray-800 dark:text-white mb-2">
               Kapasitas Jaringan
             </h3>
-<div class="space-y-2">
-<div class="flex justify-between">
-<span class="text-gray-600 dark:text-gray-300">Jumlah Host:</span>
-<span class="font-mono text-gray-800 dark:text-white" id="hosts-result"></span>
-</div>
-<div class="flex justify-between">
-<span class="text-gray-600 dark:text-gray-300">Host yang Dapat Digunakan:</span>
-<span class="font-mono text-gray-800 dark:text-white" id="usable-hosts-result"></span>
-</div>
-<div class="flex justify-between">
-<span class="text-gray-600 dark:text-gray-300">Blok Subnet:</span>
-<span class="font-mono text-gray-800 dark:text-white" id="block-result"></span>
-</div>
-</div>
-</div>
-<div class="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg">
-<h3 class="font-medium text-gray-800 dark:text-white mb-2">
+            <div class="space-y-2">
+              <div class="flex justify-between">
+                <span class="text-gray-600 dark:text-gray-300"
+                  >Jumlah Host:</span
+                >
+                <span
+                  class="font-mono text-gray-800 dark:text-white"
+                  id="hosts-result"
+                ></span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-gray-600 dark:text-gray-300"
+                  >Host yang Dapat Digunakan:</span
+                >
+                <span
+                  class="font-mono text-gray-800 dark:text-white"
+                  id="usable-hosts-result"
+                ></span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-gray-600 dark:text-gray-300"
+                  >Blok Subnet:</span
+                >
+                <span
+                  class="font-mono text-gray-800 dark:text-white"
+                  id="block-result"
+                ></span>
+              </div>
+            </div>
+          </div>
+          <div class="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg">
+            <h3 class="font-medium text-gray-800 dark:text-white mb-2">
               Informasi Binary
             </h3>
-<div class="space-y-2">
-<div class="flex justify-between">
-<span class="text-gray-600 dark:text-gray-300">Alamat IP (Binary):</span>
-<span class="font-mono text-gray-800 dark:text-white text-xs" id="binary-ip-result"></span>
-</div>
-<div class="flex justify-between">
-<span class="text-gray-600 dark:text-gray-300">Subnet Mask (Binary):</span>
-<span class="font-mono text-gray-800 dark:text-white text-xs" id="binary-mask-result"></span>
-</div>
-<div class="flex justify-between">
-<span class="text-gray-600 dark:text-gray-300">Alamat Network (Binary):</span>
-<span class="font-mono text-gray-800 dark:text-white text-xs" id="binary-network-result"></span>
-</div>
-</div>
-</div>
-</div>
-<div class="mb-6">
-<h3 class="font-medium text-gray-800 dark:text-white mb-2">
-            Visualisasi Rentang IP
+            <div class="space-y-2">
+              <div class="flex justify-between">
+                <span class="text-gray-600 dark:text-gray-300"
+                  >Alamat IP (Binary):</span
+                >
+                <span
+                  class="font-mono text-gray-800 dark:text-white text-xs"
+                  id="binary-ip-result"
+                ></span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-gray-600 dark:text-gray-300"
+                  >Subnet Mask (Binary):</span
+                >
+                <span
+                  class="font-mono text-gray-800 dark:text-white text-xs"
+                  id="binary-mask-result"
+                ></span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-gray-600 dark:text-gray-300"
+                  >Alamat Network (Binary):</span
+                >
+                <span
+                  class="font-mono text-gray-800 dark:text-white text-xs"
+                  id="binary-network-result"
+                ></span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+          <div class="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg">
+            <h3 class="font-medium text-gray-800 dark:text-white mb-2">
+              Informasi Segmen dan Host
+            </h3>
+            <div class="space-y-2">
+              <div class="flex justify-between">
+                <span class="text-gray-600 dark:text-gray-300"
+                  >Jumlah Segmen (2ˣ):</span
+                >
+                <span
+                  class="font-mono text-gray-800 dark:text-white"
+                  id="segment-result"
+                ></span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-gray-600 dark:text-gray-300"
+                  >Jumlah Host (2ʸ-2):</span
+                >
+                <span
+                  class="font-mono text-gray-800 dark:text-white"
+                  id="host-formula-result"
+                ></span>
+              </div>
+            </div>
+          </div>
+          <div class="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg">
+            <h3 class="font-medium text-gray-800 dark:text-white mb-2">
+              Kelas Jaringan
+            </h3>
+            <div class="space-y-2">
+              <div class="flex justify-between">
+                <span class="text-gray-600 dark:text-gray-300">Kelas:</span>
+                <span
+                  class="font-mono text-gray-800 dark:text-white"
+                  id="class-result"
+                ></span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-gray-600 dark:text-gray-300"
+                  >IP Publik/Privat:</span
+                >
+                <span
+                  class="font-mono text-gray-800 dark:text-white"
+                  id="ip-type-result"
+                ></span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="mb-6">
+          <h3 class="font-medium text-gray-800 dark:text-white mb-2">
+            Visualisasi Segmen IP
           </h3>
-<div class="ip-range-visualization">
-<div class="network-portion" id="network-portion"></div>
-<div class="host-portion" id="host-portion"></div>
-<div id="ip-markers"></div>
-</div>
-</div>
-<br/>
-<div class="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg">
-<h3 class="font-medium text-gray-800 dark:text-white mb-2">
-            Kelas Jaringan
-          </h3>
-<div class="space-y-2">
-<div class="flex justify-between">
-<span class="text-gray-600 dark:text-gray-300">Kelas:</span>
-<span class="font-mono text-gray-800 dark:text-white" id="class-result"></span>
-</div>
-<div class="flex justify-between">
-<span class="text-gray-600 dark:text-gray-300">IP Publik/Privat:</span>
-<span class="font-mono text-gray-800 dark:text-white" id="ip-type-result"></span>
-</div>
-</div>
-</div>
-</div>
-</main>
-<script>
+          <div class="ip-range-visualization">
+            <div class="network-portion" id="network-portion"></div>
+            <div class="host-portion" id="host-portion"></div>
+            <div id="ip-markers" class="space-y-2 mt-4"></div>
+          </div>
+        </div>
+      </div>
+    </main>
+    <script>
       document.addEventListener("DOMContentLoaded", function () {
         // Theme toggle
         const themeToggleBtn = document.getElementById("theme-toggle");
@@ -533,7 +684,6 @@
           let subnetMask = document.getElementById("subnet-mask").value.trim();
           const cidrSelect = document.getElementById("cidr-select");
 
-          // Validate inputs with SweetAlert2
           if (!validateIP(ipAddress)) {
             Swal.fire({
               icon: "error",
@@ -545,7 +695,6 @@
           }
 
           if (!validateSubnetMask(subnetMask)) {
-            // Check if CIDR is selected and use that
             if (maskToCidr[subnetMask]) {
               subnetMask = cidrToMask[cidrSelect.value];
             } else {
@@ -559,51 +708,58 @@
             }
           }
 
-          // Calculate CIDR notation
-          const cidr = subnetMask.split(".").reduce((acc, octet) => {
-            return acc + (parseInt(octet).toString(2).match(/1/g) || []).length;
-          }, 0);
+          const cidr = subnetMask
+            .split(".")
+            .reduce(
+              (acc, octet) =>
+                acc + (parseInt(octet).toString(2).match(/1/g) || []).length,
+              0
+            );
 
-          // Update CIDR select to match the mask
           if (maskToCidr[subnetMask]) {
             cidrSelect.value = maskToCidr[subnetMask];
           }
 
-          // Convert IP and mask to numbers
           const ipNumber = ipToNumber(ipAddress);
           const maskNumber = ipToNumber(subnetMask);
-
-          // Calculate network address
           const networkNumber = ipNumber & maskNumber;
+          const broadcastNumber =
+            ipNumber | ipToNumber(getWildcardMask(subnetMask));
           const networkAddress = numberToIp(networkNumber);
-
-          // Calculate broadcast address
-          const wildcardNumber = ipToNumber(getWildcardMask(subnetMask));
-          const broadcastNumber = ipNumber | wildcardNumber;
           const broadcastAddress = numberToIp(broadcastNumber);
-
-          // Calculate first and last host
           const firstHostNumber = networkNumber + 1;
           const lastHostNumber = broadcastNumber - 1;
           const firstHost = numberToIp(firstHostNumber);
           const lastHost = numberToIp(lastHostNumber);
 
-          // Calculate number of hosts
+          const resultsDiv = document.getElementById("results");
+          const ipMarkers = document.getElementById("ip-markers");
+
+          setTimeout(() => {
+            const markersHeight = ipMarkers.offsetHeight;
+            const baseHeight = 650; // Tinggi dasar tanpa segmen
+            resultsDiv.style.minHeight = `${baseHeight + markersHeight}px`;
+          }, 10);
+
           const numberOfHosts = Math.pow(2, 32 - cidr) - 2;
           const usableHosts = numberOfHosts < 0 ? 0 : numberOfHosts;
 
-          // Calculate network class and type
           const networkClass = getNetworkClass(ipAddress);
           const ipType = isPrivateIP(ipAddress) ? "Privat" : "Publik";
 
-          // Calculate block size (for classful networks)
           let blockSize = "N/A";
           if (cidr <= 8) blockSize = "16,777,214 host";
           else if (cidr <= 16) blockSize = "65,534 host";
           else if (cidr <= 24) blockSize = "254 host";
           else blockSize = Math.pow(2, 32 - cidr) + " host";
 
-          // Update the UI with results
+          const ipParts = ipAddress.split(".").map(Number);
+          const subnetBits = cidr > 24 ? cidr - 24 : 0;
+          const jumlahSegmen = Math.pow(2, subnetBits);
+          const hostBits = 32 - cidr;
+          const jumlahHost = Math.pow(2, hostBits) - 2;
+
+          // Update hasil ke UI
           document.getElementById("ip-result").textContent = ipAddress;
           document.getElementById("mask-result").textContent = subnetMask;
           document.getElementById("cidr-result").textContent = "/" + cidr;
@@ -613,8 +769,9 @@
             networkAddress;
           document.getElementById("broadcast-result").textContent =
             broadcastAddress;
-          document.getElementById("range-result").textContent =
-            firstHost + " - " + lastHost;
+          document.getElementById(
+            "range-result"
+          ).textContent = `${firstHost} - ${lastHost}`;
           document.getElementById("hosts-result").textContent = numberOfHosts;
           document.getElementById("usable-hosts-result").textContent =
             usableHosts;
@@ -622,7 +779,15 @@
           document.getElementById("class-result").textContent = networkClass;
           document.getElementById("ip-type-result").textContent = ipType;
 
-          // Binary representations
+          // Segmen dan Host
+          document.getElementById(
+            "segment-result"
+          ).textContent = `${jumlahSegmen} (2^${subnetBits})`;
+          document.getElementById(
+            "host-formula-result"
+          ).textContent = `${jumlahHost} (2^${hostBits} - 2)`;
+
+          // Binary
           document.getElementById("binary-ip-result").textContent =
             ipToBinary(ipAddress);
           document.getElementById("binary-mask-result").textContent =
@@ -630,7 +795,7 @@
           document.getElementById("binary-network-result").textContent =
             ipToBinary(networkAddress);
 
-          // Visualize IP range
+          // Visualisasi
           visualizeIPRange(
             networkAddress,
             broadcastAddress,
@@ -639,7 +804,7 @@
             cidr
           );
 
-          // Show results
+          // Tampilkan hasil
           document.getElementById("results").classList.remove("hidden");
         }
 
@@ -653,107 +818,72 @@
           const container = document.getElementById("ip-markers");
           container.innerHTML = "";
 
-          const networkNum = ipToNumber(network);
-          const broadcastNum = ipToNumber(broadcast);
-          const firstHostNum = ipToNumber(firstHost);
-          const lastHostNum = ipToNumber(lastHost);
+          const blockSize = Math.pow(2, 32 - cidr);
+          const ipParts = network.split(".").map(Number);
+          const inputIpParts = document
+            .getElementById("ip-address")
+            .value.trim()
+            .split(".")
+            .map(Number);
+          const ipBase = ipParts.slice(0, 3).join(".");
 
-          const totalWidth = broadcastNum - networkNum + 1;
+          let startOctet = 0;
+          const segments = [];
 
-          // Set network and host portion highlights
-          const networkPortion = document.getElementById("network-portion");
-          const hostPortion = document.getElementById("host-portion");
+          while (startOctet <= 255) {
+            const networkAddr = `${ipBase}.${startOctet}`;
+            const broadcastOctet = startOctet + blockSize - 1;
 
-          const networkWidthPercent =
-            (Math.pow(2, 32 - cidr) / totalWidth) * 100;
+            if (broadcastOctet > 255) break;
 
-          networkPortion.style.left = "0%";
-          networkPortion.style.width = `${networkWidthPercent}%`;
+            const broadcastAddr = `${ipBase}.${broadcastOctet}`;
+            const usableStart = startOctet + 1;
+            const usableEnd = broadcastOctet - 1;
 
-          hostPortion.style.left = `${networkWidthPercent}%`;
-          hostPortion.style.width = `${100 - networkWidthPercent}%`;
+            const usableStartIP =
+              usableStart < broadcastOctet ? `${ipBase}.${usableStart}` : "N/A";
+            const usableEndIP =
+              usableStart < broadcastOctet ? `${ipBase}.${usableEnd}` : "N/A";
 
-          // Create a better visualization with tooltips
-          const visualizationContainer = document.createElement("div");
-          visualizationContainer.className = "relative h-16 w-full";
+            // Cek apakah IP input berada di segmen ini
+            const isActiveSegment =
+              inputIpParts[3] >= startOctet &&
+              inputIpParts[3] <= broadcastOctet;
 
-          // Create the main bar
-          const mainBar = document.createElement("div");
-          mainBar.className =
-            "absolute top-1/2 left-0 right-0 h-4 bg-gray-200 dark:bg-gray-600 rounded-full";
-          visualizationContainer.appendChild(mainBar);
-
-          // Create markers with tooltips
-          const positions = [
-            { pos: 0, label: "Network", ip: network, color: "bg-red-500" },
-            {
-              pos: ((firstHostNum - networkNum) / totalWidth) * 100,
-              label: "First Host",
-              ip: firstHost,
-              color: "bg-blue-500",
-            },
-            {
-              pos: ((lastHostNum - networkNum) / totalWidth) * 100,
-              label: "Last Host",
-              ip: lastHost,
-              color: "bg-green-500",
-            },
-            {
-              pos: 100,
-              label: "Broadcast",
-              ip: broadcast,
-              color: "bg-purple-500",
-            },
-          ];
-
-          positions.forEach((item) => {
-            const markerGroup = document.createElement("div");
-            markerGroup.className = "absolute flex flex-col items-center";
-            markerGroup.style.left = `calc(${item.pos}% - 0.5rem)`;
-            markerGroup.style.top = "0";
-
-            // Marker dot
-            const marker = document.createElement("div");
-            marker.className = `w-4 h-4 rounded-full ${item.color} border-2 border-white dark:border-gray-800 shadow-md cursor-pointer`;
-            marker.dataset.tooltip = `${item.label}: ${item.ip}`;
-
-            // Tooltip
-            const tooltip = document.createElement("div");
-            tooltip.className =
-              "absolute hidden bg-gray-800 text-white text-xs px-2 py-1 rounded whitespace-nowrap -translate-x-1/2 mt-6";
-            tooltip.textContent = `${item.label}: ${item.ip}`;
-
-            marker.addEventListener("mouseenter", () => {
-              tooltip.classList.remove("hidden");
+            segments.push({
+              network: networkAddr,
+              broadcast: broadcastAddr,
+              usableStart: usableStartIP,
+              usableEnd: usableEndIP,
+              isActive: isActiveSegment,
             });
 
-            marker.addEventListener("mouseleave", () => {
-              tooltip.classList.add("hidden");
-            });
+            startOctet += blockSize;
+          }
 
-            markerGroup.appendChild(marker);
-            markerGroup.appendChild(tooltip);
-            visualizationContainer.appendChild(markerGroup);
+          segments.forEach((seg, index) => {
+            const div = document.createElement("div");
+            div.className = `p-2 border rounded-md mb-2 text-xs bg-gray-50 dark:bg-gray-700 text-gray-800 dark:text-gray-100 ${
+              seg.isActive ? "active-segment" : ""
+            }`;
+
+            div.innerHTML = `
+      <strong>Segmen ${index + 1}</strong><br>
+      Network: ${seg.network}<br>
+      Usable: ${seg.usableStart} - ${seg.usableEnd}<br>
+      Broadcast: ${seg.broadcast}
+      ${
+        seg.isActive
+          ? '<div class="mt-1 text-blue-600 dark:text-blue-400">← IP Anda berada di segmen ini</div>'
+          : ""
+      }
+    `;
+
+            container.appendChild(div);
           });
-
-          // Add range labels at the bottom
-          const rangeLabelContainer = document.createElement("div");
-          rangeLabelContainer.className =
-            "absolute left-0 right-0 bottom-0 flex justify-between text-xs text-gray-600 dark:text-gray-300";
-
-          const startLabel = document.createElement("div");
-          startLabel.textContent = network;
-
-          const endLabel = document.createElement("div");
-          endLabel.textContent = broadcast;
-
-          rangeLabelContainer.appendChild(startLabel);
-          rangeLabelContainer.appendChild(endLabel);
-          visualizationContainer.appendChild(rangeLabelContainer);
-
-          container.appendChild(visualizationContainer);
         }
       });
     </script>
-<script src="../cursor.js"></script></body>
+    <script src="../cursor.js"></script>
+  </body>
 </html>
