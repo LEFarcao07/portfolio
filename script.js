@@ -1,4 +1,68 @@
 document.addEventListener("DOMContentLoaded", function () {
+function getToastOptions(icon, message) {
+  const isDark = document.documentElement.classList.contains('dark');
+  return {
+    toast: true,
+    position: 'bottom',
+    icon: icon,
+    title: message,
+    showConfirmButton: false,
+    timer: 2200,
+    width: 'auto',
+    background: isDark ? 'rgba(31, 41, 55, 0.85)' : 'rgba(255, 255, 255, 0.9)',
+    color: isDark ? '#f3f4f6' : '#1f2937',
+    customClass: {
+      popup: 'rounded-xl shadow-xl px-4 py-2 text-sm'
+    }
+  };
+}
+
+const menu = document.getElementById("customContextMenu");
+
+document.addEventListener("contextmenu", function (e) {
+  e.preventDefault();
+  const winWidth = window.innerWidth;
+  const winHeight = window.innerHeight;
+  const menuWidth = menu.offsetWidth;
+  const menuHeight = menu.offsetHeight;
+
+  let posX = e.clientX;
+  let posY = e.clientY;
+
+  if (posX + menuWidth > winWidth) posX = winWidth - menuWidth - 10;
+  if (posY + menuHeight > winHeight) posY = winHeight - menuHeight - 10;
+
+  menu.style.top = posY + "px";
+  menu.style.left = posX + "px";
+  menu.classList.remove("hidden");
+});
+
+document.addEventListener("click", () => {
+  menu.classList.add("hidden");
+});
+
+window.copyText = function () {
+  const selectedText = window.getSelection().toString();
+  if (selectedText) {
+    navigator.clipboard.writeText(selectedText)
+      .then(() => {
+        Swal.fire(getToastOptions('success', 'Teks disalin!'));
+      })
+      .catch(() => {
+        Swal.fire(getToastOptions('error', 'Gagal menyalin'));
+      });
+  } else {
+    Swal.fire(getToastOptions('warning', 'Sorot dulu teksnya!'));
+  }
+  menu.classList.add("hidden");
+};
+
+
+window.toggleDarkMode = function () {
+  document.documentElement.classList.toggle("dark");
+  menu.classList.add("hidden");
+};
+
   // Efek hover yang lebih dinamis
   document.querySelectorAll(".project-card, .skill-badge").forEach((item) => {
     item.addEventListener("mouseenter", () => {
@@ -91,11 +155,6 @@ document.addEventListener("DOMContentLoaded", function () {
       }, 3000);
     });
   }
-
-  // Prevent right-click to make it more secret
-  document.addEventListener("contextmenu", function (e) {
-    e.preventDefault();
-  });
 
   // Eye tracking for chatbot
   document.addEventListener("mousemove", (e) => {

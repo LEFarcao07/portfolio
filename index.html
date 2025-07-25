@@ -1825,5 +1825,43 @@
       </div>
     </footer>
     <script src="script.js"></script>
+<div
+  id="customContextMenu"
+  class="hidden fixed z-[1000] bg-white dark:bg-gray-900 shadow-xl rounded-lg py-1 w-52 text-sm transition-all duration-150"
+>
+  <!-- Copy -->
+  <button
+    onclick="copyText()"
+    class="flex items-center gap-3 w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-700 dark:text-gray-200 transition-colors duration-100"
+  >
+    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 stroke-current" fill="none" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M8 16h8M8 12h8m-4-8H6a2 2 0 00-2 2v12a2 2 0 002 2h8a2 2 0 002-2V8l-4-4z"/>
+    </svg>
+    <span>Copy Text</span>
+  </button>
+
+  <!-- Reload -->
+  <button
+    onclick="location.reload()"
+    class="flex items-center gap-3 w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-700 dark:text-gray-200 transition-colors duration-100"
+  >
+    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 stroke-current" fill="none" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M4 4v6h6M20 20v-6h-6M4 20l4-4a9 9 0 0112.36-12.36l1.42 1.42"/>
+    </svg>
+    <span>Reload Page</span>
+  </button>
+
+  <!-- Dark Mode -->
+  <button
+    onclick="toggleDarkMode()"
+    class="flex items-center gap-3 w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-700 dark:text-gray-200 transition-colors duration-100"
+  >
+    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 stroke-current" fill="none" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M12 3v1m0 16v1m8.66-12.66l-.71.71M4.05 19.95l-.71.71M21 12h1M2 12H1m3.34-7.66l.71.71M19.95 19.95l.71.71M12 6a6 6 0 100 12 6 6 0 000-12z"/>
+    </svg>
+    <span>Toggle Dark Mode</span>
+  </button>
+</div>
+
   </body>
 </html>
